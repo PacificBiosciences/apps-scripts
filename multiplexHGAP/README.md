@@ -140,7 +140,7 @@ The json file linked to on this wiki is for HGAP4 and can be generated using ``p
 ## Comparing Results
 The following script is provided as a way to collate results reports for multiple SMRT-Link jobs.  Note that this tool depends on the python module [pandas](http://pandas.pydata.org/) (not incuded in the SMRT Analysis python) as well as [pbcommand](https://github.com/PacificBiosciences/pbcommand).  
 
-* [collateReports.py](://github.com/PacificBiosciences/apps-scripts/multiplexHGAP/scripts/collateReports.py)
+* [collateReports.py](https://github.com/PacificBiosciences/apps-scripts/blob/master/multiplexHGAP/scripts/collateReports.py)
 
 This takes a csv file with the minimum columns ``host``, ``jobId``, and ``jobName`` and attempts to collate reports from the listed jobs for export to csv and excel formats.
 
