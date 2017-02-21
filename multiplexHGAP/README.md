@@ -66,7 +66,7 @@ the examples correspond to the following barcodes:
 
 ## Auotomated HGAP Job Submission per Barcode using Python
 
-Automating barcoded job submission can be done using the tools and Python API in the SMRT-Link installation.  The scripts needed for this tutorial can be found below.  The scripts use the [pbcommand](https://github.com/PacificBiosciences/pbcommand) library and the [pbservice](https://github.com/PacificBiosciences/apps-scripts/blob/master/wiki/pbservice) tool to interact with SMRT-Link services.  You will need to know the location of your SMRT-Link install to modify the scripts for your system. 
+Automating barcoded job submission can be done using the tools and Python API in the SMRT-Link installation.  The scripts needed for this tutorial can be found below.  The scripts use the [pbcommand](https://github.com/PacificBiosciences/pbcommand) library and the [pbservice](https://github.com/PacificBiosciences/SMRT-Link/wiki/pbservice) tool to interact with SMRT-Link services.  You will need to know the location of your SMRT-Link install to modify the scripts for your system. 
 
 * [Bash quickstart (multiplexHGAP4.sh)](https://github.com/PacificBiosciences/apps-scripts/blob/master/multiplexHGAP/scripts/multiplexHGAP4.sh)
 * [Splitting and Importing (splitBarcodeUpload.py)](https://github.com/PacificBiosciences/apps-scripts/blob/master/multiplexHGAP/scripts/splitBarcodeUpload.py)
