@@ -1,34 +1,53 @@
-from pbcore.io import DataSet,Filters,FastaReader
+from pbcore.io import SubreadSet,Filters,FastaReader
+import sys
 
 def main(parser):
     args = parser.parse_args()
 
     filt  = Filters()
-    dset  = DataSet(args.inXml)
-    reads = FastaReader(args.inFasta)
+    dset  = SubreadSet(args.inXml)
+    names = nameGen(args.inFile,
+                    fileType='list' if args.list else 'fasta')
     if args.subreads:
-        filt.addRequirement(QNAME=[('=',rec.name) for rec in reads])
+        filt.addRequirement(QNAME=[('=',name) for name in names])
     else:
-        filt.addRequirement(zm=[('=',hn) for hn in set(map(getZmw,reads))])
+        assert len(dset.movieIds) == 1, 'This method olny works for single-movie subreadsets.  use --subreads option for mutli-movie subreadsets'
+        filt.addRequirement(zm=[('=',hn) for hn in set(map(getZmw,names))])
     dset.addFilters(filt)
     dset.write(args.outXml)
 
-def getZmw(rec):
-    return int(rec.name.split('/')[1])
+def nameGen(inFile,fileType='fasta'):
+    if fileType=='fasta':
+        for rec in FastaReader(inFile):
+            yield rec.name
+    if fileType=='list':
+        #assumes text file where each line starts with 
+        #<movie>/<holenumber>/[qstart_qend]
+        #e.g. blasr output, no header
+        for rec in inFile.read().split('\n'):
+            if not rec:
+                continue
+            #return first three '/'-sep fields
+            yield '/'.join(rec.split('/')[:3])
+
+def getZmw(name):
+    return int(name.split('/')[1])
 
 if __name__ == '__main__':
 
     import argparse
 
-    parser = argparse.ArgumentParser(prog='datasetWhitelistZmw.py', description='Generate a whitelisted dataset xml from an input fasta of reads (subreads or ccs)')
+    parser = argparse.ArgumentParser(prog='datasetWhitelist.py', description='Generate a whitelisted dataset xml from an input fasta of reads (subreads or ccs) or file of readnames (e.g. blasr)')
     parser.add_argument('inXml', metavar='inXml', type=str,
                     help='input pacbio subread dataset.')
-    parser.add_argument('inFasta', metavar='inFasta', type=str,
-                    help='fasta of subread or ccs sequences.')
-    parser.add_argument('outXml', metavar='outXml', type=str,
+    parser.add_argument('inFile', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
+                    help='file with read names (e.g. fasta,blasr output,text file of names). default stdin')
+    parser.add_argument('-o,--outXml', dest='outXml', type=str, required=True,
                     help='output xml.' )
     parser.add_argument('-s,--subreads', dest='subreads', action='store_true', default=False,
-                    help='whitelist subread names instead of zmws (will only work with fasta of subreads).  default false.')
+                    help='whitelist subread names instead of zmws (will only work with subread names, not ccs names).  default false.')
+    parser.add_argument('-l,--list', dest='list', action='store_true',  default=False,
+                    help='input names as text list.  default false.')
 
     main(parser)
 
