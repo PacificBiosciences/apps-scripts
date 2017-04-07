@@ -32,10 +32,11 @@ Include only subreads explicitly identified by BLASR mapping
     python datasetWhitelist.py -h
 
     usage: datasetWhitelist.py [-h] -o,--outXml OUTXML [-s,--subreads] [-l,--list]
+                               [--noUuid]
                                inXml [inFile]
     
     Generate a whitelisted dataset xml from an input fasta of reads (subreads or
-    ccs) or file of readnames (e.g. blasr)
+    ccs) or file of readnames
     
     positional arguments:
       inXml               input pacbio subread dataset.
@@ -48,3 +49,5 @@ Include only subreads explicitly identified by BLASR mapping
       -s,--subreads       whitelist subread names instead of zmws (will only work
                           with subread names, not ccs names). default false.
       -l,--list           input names as text list. default false.
+      --noUuid            do not generate a new uuid for the dataset. default true
+                          (create new uuid).

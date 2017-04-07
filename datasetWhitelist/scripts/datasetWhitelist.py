@@ -11,9 +11,11 @@ def main(parser):
     if args.subreads:
         filt.addRequirement(QNAME=[('=',name) for name in names])
     else:
-        assert len(dset.movieIds) == 1, 'This method olny works for single-movie subreadsets.  use --subreads option for mutli-movie subreadsets'
+        assert len(dset.movieIds) == 1, 'This method only works for single-movie subreadsets.  use --subreads option for multi-movie subreadsets'
         filt.addRequirement(zm=[('=',hn) for hn in set(map(getZmw,names))])
     dset.addFilters(filt)
+    if args.newUuid:
+        dset.newUuid()
     dset.write(args.outXml)
 
 def nameGen(inFile,fileType='fasta'):
@@ -37,7 +39,7 @@ if __name__ == '__main__':
 
     import argparse
 
-    parser = argparse.ArgumentParser(prog='datasetWhitelist.py', description='Generate a whitelisted dataset xml from an input fasta of reads (subreads or ccs) or file of readnames (e.g. blasr)')
+    parser = argparse.ArgumentParser(prog='datasetWhitelist.py', description='Generate a whitelisted dataset xml from an input fasta of reads (subreads or ccs) or file of readnames')
     parser.add_argument('inXml', metavar='inXml', type=str,
                     help='input pacbio subread dataset.')
     parser.add_argument('inFile', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
@@ -48,6 +50,8 @@ if __name__ == '__main__':
                     help='whitelist subread names instead of zmws (will only work with subread names, not ccs names).  default false.')
     parser.add_argument('-l,--list', dest='list', action='store_true',  default=False,
                     help='input names as text list.  default false.')
+    parser.add_argument('--noUuid', dest='newUuid', action='store_false',  default=True,
+                    help='do not generate a new uuid for the dataset.  default true (create new uuid).')
 
     main(parser)
 
