@@ -12,7 +12,9 @@ Filtered subreadsets can be uploaded to the SMRT-Link server using `pbservice im
 
 Include all subreads from any ZMW identified by reads in `myReads.fasta`
 
-    python datasetWhitelist.py $SSET myReads.fasta -o myFilteredData.subreadset.xml
+    python datasetWhitelist.py $SSET myReads.fasta                    \
+                                     -o myFilteredData.subreadset.xml \
+                                     --name myNewFilteredSubreads
     
 Include all subreads from any ZMW identified by BLASR mapping
 
@@ -21,7 +23,9 @@ Include all subreads from any ZMW identified by BLASR mapping
 ## Whitelist Subreads
 Include only subreads explicitly listed in `myReads.fasta`
 
-    python datasetWhitelist.py --subreads $SSET myReads.fasta -o myFilteredData.subreadset.xml
+    python datasetWhitelist.py --subreads $SSET myReads.fasta   \
+                               -o myFilteredData.subreadset.xml \
+                               --name myNewFilteredSubreads
 
 Include only subreads explicitly identified by BLASR mapping
 
@@ -31,8 +35,8 @@ Include only subreads explicitly identified by BLASR mapping
 
     python datasetWhitelist.py -h
 
-    usage: datasetWhitelist.py [-h] -o,--outXml OUTXML [-s,--subreads] [-l,--list]
-                               [--noUuid]
+    usage: datasetWhitelist.py [-h] -o,--outXml OUTXML [-n,--name NAME]
+                               [-s,--subreads] [-l,--list] [--noUuid]
                                inXml [inFile]
     
     Generate a whitelisted dataset xml from an input fasta of reads (subreads or
@@ -46,6 +50,7 @@ Include only subreads explicitly identified by BLASR mapping
     optional arguments:
       -h, --help          show this help message and exit
       -o,--outXml OUTXML  output xml.
+      -n,--name NAME      name for filtered dataset. default keep original name
       -s,--subreads       whitelist subread names instead of zmws (will only work
                           with subread names, not ccs names). default false.
       -l,--list           input names as text list. default false.

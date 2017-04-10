@@ -16,6 +16,8 @@ def main(parser):
     dset.addFilters(filt)
     if args.newUuid:
         dset.newUuid()
+    if args.name:
+        dset.name = args.name
     dset.write(args.outXml)
 
 def nameGen(inFile,fileType='fasta'):
@@ -46,6 +48,8 @@ if __name__ == '__main__':
                     help='file with read names (e.g. fasta,blasr output,text file of names). default stdin')
     parser.add_argument('-o,--outXml', dest='outXml', type=str, required=True,
                     help='output xml.' )
+    parser.add_argument('-n,--name', dest='name', type=str, default=None,
+                    help='name for filtered dataset.  default keep original name' )
     parser.add_argument('-s,--subreads', dest='subreads', action='store_true', default=False,
                     help='whitelist subread names instead of zmws (will only work with subread names, not ccs names).  default false.')
     parser.add_argument('-l,--list', dest='list', action='store_true',  default=False,
