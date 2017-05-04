@@ -6,4 +6,4 @@ A repository for Applications using SMRT Sequencing technology
 
 * [Multiplexed HGAP Analysis](https://github.com/PacificBiosciences/apps-scripts/blob/master/multiplexHGAP/)
 * [Whitelisting Datasets](https://github.com/PacificBiosciences/apps-scripts/blob/master/datasetWhitelist/)
-* [FALCONAssemblyTools](https://github.com/PacificBiosciences/apps-scripts/blob/master/PolishedContigFiltering/)
+* [FALCON AssemblyTools](https://github.com/PacificBiosciences/apps-scripts/blob/master/FALCONAssemblyTools/)
