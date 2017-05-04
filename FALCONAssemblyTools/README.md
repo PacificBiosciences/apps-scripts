@@ -1,6 +1,7 @@
 # A collection of scripts and tools for manupulating FALCON and FALCON-Unzip Assemblies
 
 ## Split Primary Contigs and Haplotigs into Separate Fasta Files
+
     splitPrimariesHaplotigs.sh myUnzipAsm.fasta
 
 ## Filter contigs with poor polishing
