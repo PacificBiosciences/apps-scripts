@@ -9,7 +9,7 @@
 
     splitPrimariesHaplotigs.sh myUnzipAsm.fasta
 
-## Filter contigs with poor polishing
+## Filter Contigs with Poor Polishing
 
 ### Dependencies
 [pbcore](https://github.com/PacificBiosciences/pbcore)
@@ -19,3 +19,19 @@ Default setting is to remove contigs with fewer than 50% of their bases polished
 ### Usage
 
     trimLowercaseContigs.py myPolishedAsm.fasta myoutfile.fasta
+    
+## Align haplotigs to their primary contig with nucmer
+
+### Dependencies
+[samtools](http://samtools.sourceforge.net/)
+
+[mummer](http://mummer.sourceforge.net/)
+
+### Usage
+    alignHaplotigs2Primary.sh myUnzipAsm.fasta primaryContigID
+
+primary contig ID formatted as: 000123F
+
+### Visualization
+
+view filtered delta file (primaryContigID.g.delta) in [assemblytics](http://qb.cshl.edu/assemblytics/) or [mummerplot](http://mummer.sourceforge.net/manual/#mummerplot).
