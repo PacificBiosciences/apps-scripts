@@ -2,8 +2,8 @@
 # Written by Sarah Kingan
 
 # script requires samtools
-source /mnt/software/Modules/current/init/bash
-module load samtools
+#source /mnt/software/Modules/current/init/bash
+#module load samtools
 
 # user input assembly file, must have ".fasta" file extension
 ASM=$1
