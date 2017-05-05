@@ -35,3 +35,19 @@ primary contig ID formatted as: 000123F
 ### Visualization
 
 view filtered delta file (primaryContigID.g.delta) in [assemblytics](http://qb.cshl.edu/assemblytics/) or [mummerplot](http://mummer.sourceforge.net/manual/#mummerplot).
+
+## Remove Nested Haplotigs
+
+### Dependencies
+python2
+
+numpy
+
+[samtools](http://samtools.sourceforge.net/)
+
+[mummer](http://mummer.sourceforge.net/)
+
+### Usage
+    removeNestedHaplotigs.sh myUnzipAsm.fasta
+
+This shell script aligns all haplotigs against their primary contig using nucmer, then identifies haplotigs that are nested within other haplotigs using nestedHaplotigs.py. Understanding why these small haplotigs are assembled is an area of ongoing research, but users may wish to remove these haplotigs from their assembly.
