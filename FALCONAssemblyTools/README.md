@@ -27,7 +27,7 @@ Default setting is to remove contigs with fewer than 50% of their bases polished
     
     
     
-## Align haplotigs to their primary contig with nucmer
+## Align Haplotigs/Associated Contigs to their Primary Contig with Nucmer
 
 ### Dependencies
 [samtools](http://samtools.sourceforge.net/)
@@ -35,8 +35,13 @@ Default setting is to remove contigs with fewer than 50% of their bases polished
 [mummer](http://mummer.sourceforge.net/)
 
 ### Usage
+For Unzip Assemblies
     alignHaplotigs2Primary.sh myUnzipAsm.fasta primaryContigID
 
+For FALCON Assemblies
+    alignAssoc2Primary.sh myFALCONAsm.fasta primaryContigID
+
+Assembly file must contain both primary contigs and haplotig or associated contigs
 primary contig ID formatted as: 000123F
 
 ### Visualization
