@@ -1,3 +1,9 @@
+# Sarah B. Kingan
+# 7 April 2017
+# 
+# Pacific Biosciences
+# Applications Lab
+
 # if no arguments or help statement, print usage
 if ! [ $1 ]; then
   echo "Usage: `basename $0` [FALCON-Unzip_Assembly.fasta]"
