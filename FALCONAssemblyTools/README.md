@@ -36,13 +36,17 @@ Default setting is to remove contigs with fewer than 50% of their bases polished
 
 ### Usage
 For Unzip Assemblies
+
     alignHaplotigs2Primary.sh myUnzipAsm.fasta primaryContigID
 
 For FALCON Assemblies
+
     alignAssoc2Primary.sh myFALCONAsm.fasta primaryContigID
 
-Assembly file must contain both primary contigs and haplotig or associated contigs
-primary contig ID formatted as: 000123F
+
+Assembly file must contain both primary contigs and haplotig or associated contigs.
+
+Primary contig ID formatted as: 000123F.
 
 ### Visualization
 
