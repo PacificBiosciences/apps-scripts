@@ -1,5 +1,6 @@
 # Scripts for manipulating FALCON and FALCON-Unzip Assemblies
 
+
 ## Split Primary Contigs and Haplotigs into Separate Fasta Files
 
 ### Dependencies
@@ -8,6 +9,8 @@
 ### Usage
 
     splitPrimariesHaplotigs.sh myUnzipAsm.fasta
+
+
 
 
 ## Filter Contigs with Poor Polishing
@@ -20,6 +23,8 @@ Default setting is to remove contigs with fewer than 50% of their bases polished
 ### Usage
 
     trimLowercaseContigs.py myPolishedAsm.fasta myoutfile.fasta
+    
+    
     
     
 ## Align haplotigs to their primary contig with nucmer
@@ -39,6 +44,8 @@ primary contig ID formatted as: 000123F
 view filtered delta file (primaryContigID.g.delta) in [assemblytics](http://qb.cshl.edu/assemblytics/) or [mummerplot](http://mummer.sourceforge.net/manual/#mummerplot).
 
 
+
+
 ## Remove Nested Haplotigs
 
 ### Dependencies
@@ -54,3 +61,14 @@ numpy
     removeNestedHaplotigs.sh myUnzipAsm.fasta
 
 This shell script aligns all haplotigs against their primary contig using nucmer, then identifies haplotigs that are nested within other haplotigs using nestedHaplotigs.py. Understanding why these small haplotigs are assembled is an area of ongoing research, but users may wish to remove these haplotigs from their assembly.
+
+
+
+
+## Contig Mean Qualities
+Outputs contig ID, mean quality across all bases, and contig length
+
+### Usage fastq2meanQ.py myAsm.fastq
+
+
+
