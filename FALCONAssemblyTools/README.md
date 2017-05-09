@@ -44,7 +44,7 @@ For FALCON Assemblies
     alignAssoc2Primary.sh myFALCONAsm.fasta primaryContigID
 
 
-Assembly file must contain both primary contigs and haplotig or associated contigs.
+Assembly file must contain both primary contigs and haplotigs or associated contigs.
 
 Primary contig ID formatted as: 000123F.
 
