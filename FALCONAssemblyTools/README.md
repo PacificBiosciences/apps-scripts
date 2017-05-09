@@ -60,7 +60,7 @@ view filtered delta file (primaryContigID.g.delta) in [assemblytics](http://qb.c
 ### Dependencies
 python2
 
-numpy
+[numpy](http://www.numpy.org/)
 
 [samtools](http://samtools.sourceforge.net/)
 
@@ -79,6 +79,8 @@ Outputs contig ID, mean quality across all bases, and contig length
 
 ### Usage 
     fastq2meanQ.py myAsm.fastq
+
+Fastq sequence and quality lines must not be wrapped
 
 
 
