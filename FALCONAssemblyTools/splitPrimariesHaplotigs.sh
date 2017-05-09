@@ -1,3 +1,9 @@
+# Sarah B. Kingan
+# 4 May 2017
+# 
+# Pacific Biosciences
+# Applications Lab
+
 # creates two fasta files one of primary contigs, the other of haplotigs from FALCON-Unzip Assembly
 # Written by Sarah Kingan
 
