@@ -65,7 +65,7 @@ This shell script aligns all haplotigs against their primary contig using nucmer
 
 
 
-## Contig Mean Qualities
+## Mean Contig Qualities
 Outputs contig ID, mean quality across all bases, and contig length
 
 ### Usage fastq2meanQ.py myAsm.fastq
