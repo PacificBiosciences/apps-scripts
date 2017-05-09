@@ -1,4 +1,4 @@
-# Scripts for manipulating FALCON and FALCON-Unzip Assemblies
+# SCRIPTS FOR MANIPULATING FALCON AND FALCON-UNZIP ASSEMBLIES
 
 
 ## Split Primary Contigs and Haplotigs into Separate Fasta Files
