@@ -1,3 +1,9 @@
+# Sarah B. Kingan
+# 9 May 2017
+# 
+# Pacific Biosciences
+# Applications Lab
+
 USAGE="Usage: `basename $0` [FALCON_Assembly.fasta] [Primary Contig ID]"
 EXAMPLE="Example: alignHaplotigs2Primary.sh myFCNAsm.fasta 000123F"
 
