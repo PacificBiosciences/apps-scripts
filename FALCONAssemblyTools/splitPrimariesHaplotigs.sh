@@ -5,18 +5,32 @@
 # Applications Lab
 
 # creates two fasta files one of primary contigs, the other of haplotigs from FALCON-Unzip Assembly
-# Written by Sarah Kingan
 
 # script requires samtools
 #source /mnt/software/Modules/current/init/bash
 #module load samtools
+
+USAGE="Usage: `basename $0` [myUnzipAsm.fasta]"
+
+# if no arguments or help statement, print usage
+if ! [[ $# == 1 ]]; then
+	echo $USAGE
+	exit 0
+fi
+
+if [ "$1" == "-h" ]; then
+	echo $USAGE
+	exit 0
+fi
+
+
 
 # user input assembly file, must have ".fasta" file extension
 ASM=$1
 
 # check if samtools index file exists, create if doesn't
 if ! [[ -s "$ASM.fai" ]]; then
-    printf "samtools faidx $ASM\n"
+    printf "indexing assembly file with samtools...\n"
     samtools faidx $ASM
 fi
 FAI=$ASM.fai

@@ -77,4 +77,4 @@ done
 
 # run nucmer
 nucmer -maxmatch ref.fa qry.fa -prefix $PRIM_ID
-delta-filter -g $PRIM_ID.delta > $PRIM_ID.global.delta
+delta-filter -q $PRIM_ID.delta > $PRIM_ID.q.delta
