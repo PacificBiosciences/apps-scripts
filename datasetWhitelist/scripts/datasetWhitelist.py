@@ -9,10 +9,20 @@ def main(parser):
     names = nameGen(args.inFile,
                     fileType='list' if args.list else 'fasta')
     if args.subreads:
-        filt.addRequirement(QNAME=[('=',name) for name in names])
+        if args.inverted:
+            for name in names:
+                filt.addRequirement(QNAME=[('!=',name)])
+        else:
+            filt.addRequirement(QNAME=[('=',name) 
+                                       for name in names])
     else:
         assert len(dset.movieIds) == 1, 'This method only works for single-movie subreadsets.  use --subreads option for multi-movie subreadsets'
-        filt.addRequirement(zm=[('=',hn) for hn in set(map(getZmw,names))])
+        uniqHn = set(map(getZmw,names))
+        if args.inverted:
+            for hn in uniqHn:
+                filt.addRequirement(zm=[('!=',hn)])
+        else:
+            filt.addRequirement(zm=[('=',hn) for hn in uniqHn])
     dset.addFilters(filt)
     if args.newUuid:
         dset.newUuid()
@@ -56,6 +66,8 @@ if __name__ == '__main__':
                     help='input names as text list.  default false.')
     parser.add_argument('--noUuid', dest='newUuid', action='store_false',  default=True,
                     help='do not generate a new uuid for the dataset.  default true (create new uuid).')
+    parser.add_argument('-i,--inverted', dest='inverted', action='store_true',  default=False,
+                    help='invert list. i.e. \'Blacklist\' the input values from the dataset.  default false.')
 
     main(parser)
 

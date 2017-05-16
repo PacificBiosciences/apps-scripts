@@ -12,24 +12,31 @@ Filtered subreadsets can be uploaded to the SMRT-Link server using `pbservice im
 
 Include all subreads from any ZMW identified by reads in `myReads.fasta`
 
-    python datasetWhitelist.py $SSET myReads.fasta                    \
-                                     -o myFilteredData.subreadset.xml \
-                                     --name myNewFilteredSubreads
+    python datasetWhitelist.py $SSET myReads.fasta              \
+                               -o myFilteredData.subreadset.xml \
+                               -n myNewFilteredSubreads
     
 Include all subreads from any ZMW identified by BLASR mapping
 
-    blasr myReads.fasta myRef.fasta | python datasetWhitelist.py --list $SSET -o myFilteredData.subreadset.xml 
+    blasr myReads.fasta myRef.fasta | python datasetWhitelist.py -l $SSET -o myFilteredData.subreadset.xml 
 
 ## Whitelist Subreads
 Include only subreads explicitly listed in `myReads.fasta`
 
-    python datasetWhitelist.py --subreads $SSET myReads.fasta   \
+    python datasetWhitelist.py -s $SSET myReads.fasta           \
                                -o myFilteredData.subreadset.xml \
-                               --name myNewFilteredSubreads
+                               -n myNewFilteredSubreads
 
 Include only subreads explicitly identified by BLASR mapping
 
-    blasr myReads.fasta myRef.fasta | python datasetWhitelist.py --subreads --list $SSET -o myFilteredData.subreadset.xml
+    blasr myReads.fasta myRef.fasta | python datasetWhitelist.py -s -l $SSET -o myFilteredData.subreadset.xml
+
+## Blacklist
+The inverse of the above opperations can be done by adding the -i option to 'blacklist' the input read names. 
+
+    python datasetWhitelist.py -s -i $SSET myReads.fasta        \
+                               -o myFilteredData.subreadset.xml \
+                               -n myNewFilteredSubreads
 
 ## Check the --help
 
@@ -37,6 +44,7 @@ Include only subreads explicitly identified by BLASR mapping
 
     usage: datasetWhitelist.py [-h] -o,--outXml OUTXML [-n,--name NAME]
                                [-s,--subreads] [-l,--list] [--noUuid]
+                               [-i,--inverted]
                                inXml [inFile]
     
     Generate a whitelisted dataset xml from an input fasta of reads (subreads or
@@ -56,3 +64,5 @@ Include only subreads explicitly identified by BLASR mapping
       -l,--list           input names as text list. default false.
       --noUuid            do not generate a new uuid for the dataset. default true
                           (create new uuid).
+      -i,--inverted       invert list. i.e. 'Blacklist' the input values from the
+                          dataset. default false.
