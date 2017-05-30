@@ -5,7 +5,7 @@ In general, running demultiplexed analyses in SMRT Analysis requires three basic
     2) Demultiplex
     3) Analysis
 
-This document is intended to explain these three steps (**without** SMRT-Link)so that users can generate custom command-line workflows as necessary. These are essentially the steps that are used in the scripts found in this repository (via SMRT-Link), but here they are explained such that users can implement their own scripts if desired.
+This document is intended to explain these three steps (**without** SMRT-Link) so that users can generate custom command-line workflows as necessary. These are essentially the steps that are used in the scripts found in this repository (via SMRT-Link), but here they are explained such that users can implement their own scripts if desired.
 
 ## Terminology
 * **Barcoding**
