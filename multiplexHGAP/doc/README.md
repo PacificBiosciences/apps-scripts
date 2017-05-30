@@ -65,11 +65,13 @@ An additional filtering step is recommended for most applications to prevent inc
 ## Analysis
 The resultant (filtered) demultiplexed subreadsets can be used as entry subreadsets to any pbsmrtpipe application.  Generate and edit the preset json files according to steps above.
 
-    pbsmrtpipe pipeline-id pbsmrtpipe.pipelines.polished_falcon_fat -o myOutDir \
-                                                                    --preset-json myPresets.json \
-                                                                    -e "eid_subread:barcoded.chunk#.filtered.subreadset.xml"
+    pbsmrtpipe pipeline-id pbsmrtpipe.pipelines.polished_falcon_fat \
+                           -o myOutDir \
+                           --preset-json myPresets.json \
+                           -e "eid_subread:barcoded.chunk#.filtered.subreadset.xml"
 
-    pbsmrtpipe pipeline-id pbsmrtpipe.pipelines.sa3_ds_resequencing_fat -o myOutDir \
-                                                                        --preset-json myPresets.json \
-                                                                        -e "eid_subread:barcoded.chunk#.filtered.subreadset.xml" \
-                                                                        -e "eid_ref_dataset:myReference.xml"
+    pbsmrtpipe pipeline-id pbsmrtpipe.pipelines.sa3_ds_resequencing_fat \
+                           -o myOutDir \
+                           --preset-json myPresets.json \
+                           -e "eid_subread:barcoded.chunk#.filtered.subreadset.xml" \
+                           -e "eid_ref_dataset:myReference.xml"
