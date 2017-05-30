@@ -1,8 +1,10 @@
 # Multiplexed Analysis Explained
-In general, running demultiplexed analyses in SMRt Analysis requires three basic steps: 
+In general, running demultiplexed analyses in SMRT Analysis requires three basic steps: 
+
     1) Barcode
     2) Demultiplex
     3) Analysis
+
 This document is intended to explain these three steps so that users can generate custom command-line workflows as necessary. These are essentially the steps that are used in the scripts found in this repository (via SMRT-Link), but here they are explained such that users can implement their own scripts if desired.
 
 ## Terminology
@@ -36,7 +38,7 @@ Using pbsmrtpipe:
     pbsmrtpipe pipeline-id pbsmrtpipe.pipelines.sa3_ds_barcode [options] -o outputDirectory -e "eid_subread:<movie>.subreadset.xml" -e "eid_barcode:myBarcodes.barcodeset.xml"
 
 ## Demultiplex
-Generally, it is only necessary to generate a *dataset* xml file defining each subset corresponding to the barcodes in the original data, rather than physically separating the barcoded BAM files.  Each application will extract the requisite raw reads for analysis, given the dataset definition.
+Generally, it is only necessary to generate a dataset xml file defining each subset corresponding to the barcodes in the original data, rather than physically separating the barcoded BAM files.  Each application will extract the requisite raw reads for analysis, given the dataset definition.
 
 The `bam2bam` application in the previous step will generate a `subreadset.xml` file in the output location which can be passed to the demultiplexing step.  Alternately, `pbsmrtpipe` will generate a *gathered* `file.subreadset.xml` dataset in the directory `<outDir>/tasks/pbcoretools.tasks.gather_subreadset-1/` which can be passed to the next step. 
 
