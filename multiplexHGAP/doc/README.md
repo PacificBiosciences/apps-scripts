@@ -31,11 +31,18 @@ Barcoding in SMRT Analysis v3+ is accomplished with the tool `bam2bam`.  On the 
     
 Direct barcoding:
 
-    bam2bam -j 8 -b 8 --barcodes myBarcodes.barcodeset.xml -o myBarcodedReads --scoreMode symmetric <movie>.subreadset.xml
+    bam2bam -j 8 -b 8 \
+            --barcodes myBarcodes.barcodeset.xml \
+            -o myBarcodedReads \
+            --scoreMode symmetric \
+            <movie>.subreadset.xml
 
 Using pbsmrtpipe:
 
-    pbsmrtpipe pipeline-id pbsmrtpipe.pipelines.sa3_ds_barcode [options] -o outputDirectory -e "eid_subread:<movie>.subreadset.xml" -e "eid_barcode:myBarcodes.barcodeset.xml"
+    pbsmrtpipe pipeline-id pbsmrtpipe.pipelines.sa3_ds_barcode \
+                           -o outputDirectory \
+                           -e "eid_subread:<movie>.subreadset.xml" \
+                           -e "eid_barcode:myBarcodes.barcodeset.xml"
 
 ## Demultiplex
 Generally, it is only necessary to generate a dataset xml file defining each subset corresponding to the barcodes in the original data, rather than physically separating the barcoded BAM files.  Each application will extract the requisite raw reads for analysis, given the dataset definition.
