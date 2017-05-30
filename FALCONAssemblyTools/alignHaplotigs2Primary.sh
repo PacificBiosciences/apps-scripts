@@ -68,6 +68,7 @@ fi
 # fetch and format primary sequence for nucmer
 samtools faidx $ASM $P | sed 's/'$SUFFIX'//' > ref.fa
 
+> qry.fa
 # fetch and format haplotigs
 for H in $HAPLOTIGS
 do

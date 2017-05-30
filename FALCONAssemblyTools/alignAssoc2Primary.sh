@@ -60,6 +60,7 @@ fi
 # fetch and format primary sequence
 samtools faidx $ASM $P > ref.fa
 
+> qry.fa
 # fetch and format haplotigs
 for H in $HAPLOTIGS
 do
