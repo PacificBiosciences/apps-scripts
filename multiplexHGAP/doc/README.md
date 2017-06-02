@@ -36,6 +36,14 @@ Direct barcoding:
             -o myBarcodedReads \
             --scoreMode symmetric \
             <movie>.subreadset.xml
+    
+    or (using bams):
+
+    bam2bam -j 8 -b 8 \
+            --barcodes myBarcodes.barcodeset.xml \
+            -o myBarcodedReads \
+            --scoreMode symmetric \
+            <movie>.subreads.bam <movie>.scraps.bam
 
 Using pbsmrtpipe:
 
@@ -44,12 +52,25 @@ Using pbsmrtpipe:
                            -e "eid_subread:<movie>.subreadset.xml" \
                            -e "eid_barcode:myBarcodes.barcodeset.xml"
 
+To create a subreadset.xml from arbitrary bam(s) for use with PacBio applications:
+
+    dataset create --type SubreadSet \
+                   --name mySubreadsetName \
+                   mySubreadSetName.subreadset.xml \
+                   a.bam b.bam [...]
+
+Note that for generating **new** barcode calls in the first step, **both** the subreads.bam and scraps.bam must be included in the subreadset.xml definition. 
+
+PacBio bam files which are already barcoded (see bam header) do not need to include the scraps.bam file for downstream applications which use the barcode tags.  See [PacBioFileFormats](https://github.com/PacificBiosciences/PacBioFileFormats/blob/4.0/BAM.rst#bam-filename-conventions) for more information.
+
 ## Demultiplex
 Generally, it is only necessary to generate a dataset xml file defining each subset corresponding to the barcodes in the original data, rather than physically separating the barcoded BAM files.  Each application will extract the requisite raw reads for analysis, given the dataset definition.
 
 The `bam2bam` application in the previous step will generate a `subreadset.xml` file in the output location which can be passed to the demultiplexing step.  Alternately, `pbsmrtpipe` will generate a *gathered* `file.subreadset.xml` dataset in the directory `<outDir>/tasks/pbcoretools.tasks.gather_subreadset-1/` which can be passed to the next step. 
 
-    dataset split --barcodes --outdir mySplitDatasets/ myBarcodedReads.subreadset.xml
+    dataset split --barcodes \
+                  --outdir mySplitDatasets/ \
+                  myBarcodedReads.subreadset.xml
 
 The result of this step will be a set of `barcoded.chunk##.subreadset.xml` files in the output directory, each of which corresponds to a filter on the barcoded dataset for one barcode in the barcodeset that was used in the barcoding step above.  
 
