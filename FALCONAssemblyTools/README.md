@@ -94,5 +94,5 @@ python2.7.x
 ### Usage
     python get_homologs.py --nproc 24 /path/to/primary_contigs.fasta
 
-    The output is a directory of mummerplot 'Qfiles' listing homologous contigs, along with a plots.sh script that
-    can be run independently to draw dotplots for each reference contig with all homologous queries aligned to it.
+The output is a directory of mummerplot 'Qfiles' listing homologous contigs, along with a plots.sh script that
+can be run independently to draw dotplots for each reference contig with all homologous queries aligned to it.
