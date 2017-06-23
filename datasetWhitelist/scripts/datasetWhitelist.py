@@ -38,7 +38,8 @@ def nameGen(inFile,fileType='fasta'):
         #assumes text file where each line starts with 
         #<movie>/<holenumber>/[qstart_qend]
         #e.g. blasr output, no header
-        for rec in inFile.read().split('\n'):
+        handle = inFile if hasattr(inFile,'read') else open(inFile)
+        for rec in handle.read().split('\n'):
             if not rec:
                 continue
             #return first three '/'-sep fields
