@@ -84,3 +84,15 @@ Fastq sequence and quality lines must not be wrapped
 
 
 
+## Identify Homologous contigs in primary contigs output
+
+### Depedencies
+python2.7.x
+
+[mummer 4.0.0](https://github.com/mummer4/mummer/releases/tag/v4.0.0beta)
+
+### Usage
+    python get_homologs.py --nproc 24 /path/to/primary_contigs.fasta
+
+The output is a directory of mummerplot 'Qfiles' listing homologous contigs, along with a plots.sh script that
+can be run independently to draw dotplots for each reference contig with all homologous queries aligned to it.
