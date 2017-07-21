@@ -57,17 +57,17 @@ if __name__ == '__main__':
                     help='input pacbio subread dataset.')
     parser.add_argument('inFile', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
                     help='file with read names (e.g. fasta,blasr output,text file of names). default stdin')
-    parser.add_argument('-o,--outXml', dest='outXml', type=str, required=True,
+    parser.add_argument('-o','--outXml', dest='outXml', type=str, required=True,
                     help='output xml.' )
-    parser.add_argument('-n,--name', dest='name', type=str, default=None,
+    parser.add_argument('-n','--name', dest='name', type=str, default=None,
                     help='name for filtered dataset.  default keep original name' )
-    parser.add_argument('-s,--subreads', dest='subreads', action='store_true', default=False,
+    parser.add_argument('-s','--subreads', dest='subreads', action='store_true', default=False,
                     help='whitelist subread names instead of zmws (will only work with subread names, not ccs names).  default false.')
-    parser.add_argument('-l,--list', dest='list', action='store_true',  default=False,
+    parser.add_argument('-l','--list', dest='list', action='store_true',  default=False,
                     help='input names as text list.  default false.')
     parser.add_argument('--noUuid', dest='newUuid', action='store_false',  default=True,
                     help='do not generate a new uuid for the dataset.  default true (create new uuid).')
-    parser.add_argument('-i,--inverted', dest='inverted', action='store_true',  default=False,
+    parser.add_argument('-i','--inverted', dest='inverted', action='store_true',  default=False,
                     help='invert list. i.e. \'Blacklist\' the input values from the dataset.  default false.')
 
     main(parser)
