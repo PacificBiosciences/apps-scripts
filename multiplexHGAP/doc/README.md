@@ -79,9 +79,9 @@ Please note that the **chunk##** does **NOT** correspond to the barcode or barco
     dataset summarize barcoded.chunk#.subreadset.xml
 
 ### Filter
-An additional filtering step is recommended for most applications to prevent inclusion of false-positive calls in analysis.  This step will filter barcode calls based on a minimum barcode score, here we recommend a minimum score of 30-40 for most applications.
+An additional filtering step is recommended for most applications to prevent inclusion of false-positive calls in analysis.  This step will filter barcode calls based on a minimum barcode score, here we recommend a minimum score of 26 for most applications.
 
-    dataset filter barcoded.chunk#.subreadset.xml barcoded.chunk#.filtered.subreadset.xml "bq>=40"
+    dataset filter barcoded.chunk#.subreadset.xml barcoded.chunk#.filtered.subreadset.xml "bq>=26"
 
 ## Analysis
 The resultant (filtered) demultiplexed subreadsets can be used as entry subreadsets to any pbsmrtpipe application.  Generate and edit the preset json files according to steps above.
