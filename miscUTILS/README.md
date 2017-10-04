@@ -1,9 +1,10 @@
-# This repo contains miscellaneous stand-alone scripts for working with PacBio Data
+# Description
+This repo contains miscellaneous stand-alone scripts for working with PacBio Data
 
 ## getJobData.py
-###Dependencies
+### Dependencies
  - pbcommand
-###Usage
+### Usage
     $ python getJobData.py -h
     usage: getJobData.py [-h] [-o,--outDir OUTDIR] [-n,--names] [--host HOST]
                          [--port PORT]
@@ -23,7 +24,7 @@
                           False
       --host HOST         smrtlink host name. default smrtlink
       --port PORT         smrtlink services port. default 8081
-###Examples
+### Examples
 -Print description and paths to output files
     $ python getJobData.py --host smrtlink-release --port 9091 -n 12258
     Amplicon Consensus Report               /pbi/analysis/smrtlink/release/smrtsuite/userdata/jobs_root/012/012258/tasks/pbreports.tasks.amplicon_analysis_consensus-0/consensus_report.json
@@ -40,12 +41,6 @@
     $ python getJobData.py --host smrtlink-release --port 9091 12258 'Amplicon Consensus Report' 'Input Molecule Report CSV' -o /my/output/directory
     'Amplicon Consensus Report'             =>      /my/output/directory/consensus_report.json
     'Input Molecule Report CSV'             =>      /my/output/directory/file.csv
-
-
-
-
-
-
 
 Disclaimer
 THIS WEBSITE AND CONTENT AND ALL SITE-RELATED SERVICES, INCLUDING ANY DATA, ARE PROVIDED "AS IS," WITH ALL FAULTS, WITH NO REPRESENTATIONS OR WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTIES OF MERCHANTABILITY, SATISFACTORY QUALITY, NON-INFRINGEMENT OR FITNESS FOR A PARTICULAR PURPOSE. YOU ASSUME TOTAL RESPONSIBILITY AND RISK FOR YOUR USE OF THIS SITE, ALL SITE-RELATED SERVICES, AND ANY THIRD PARTY WEBSITES OR APPLICATIONS. NO ORAL OR WRITTEN INFORMATION OR ADVICE SHALL CREATE A WARRANTY OF ANY KIND. ANY REFERENCES TO SPECIFIC PRODUCTS OR SERVICES ON THE WEBSITES DO NOT CONSTITUTE OR IMPLY A RECOMMENDATION OR ENDORSEMENT BY PACIFIC BIOSCIENCES.
