@@ -27,7 +27,11 @@ This repo contains miscellaneous stand-alone scripts for working with PacBio Dat
 ### Examples
     Print description and paths to output files
 
-    $ python getJobData.py --host smrtlink-release --port 9091 -n 12258
+    $ python getJobData.py --host smrtlink-release \
+                           --port 9091 \
+                           -n \
+                          12258
+
     Amplicon Consensus Report               /path/to/012258/tasks/pbreports.tasks.amplicon_analysis_consensus-0/consensus_report.json
     Consensus Sequence Statistics           /path/to/012258/tasks/pbcoretools.tasks.gather_csv-1/file.csv
     Chimeric/Noise Sequences by barcode     /path/to/012258/tasks/pbcoretools.tasks.split_laa_fastq-0/chimera_fastq.gz
@@ -42,7 +46,12 @@ This repo contains miscellaneous stand-alone scripts for working with PacBio Dat
 
     Copy outputs to local directory
 
-    $ python getJobData.py --host smrtlink-release --port 9091 12258 'Amplicon Consensus Report' 'Input Molecule Report CSV' -o /my/output/directory
+    $ python getJobData.py --host smrtlink-release \
+                           --port 9091 \
+                           12258 \
+                           'Amplicon Consensus Report' 'Input Molecule Report CSV' \
+                           -o /my/output/directory
+
     'Amplicon Consensus Report'             =>      /my/output/directory/consensus_report.json
     'Input Molecule Report CSV'             =>      /my/output/directory/file.csv
 
