@@ -2,6 +2,7 @@
 This repo contains miscellaneous stand-alone scripts for working with PacBio Data
 
 ## getJobData.py
+Access downloadable data from SMRT Link jobs via the command line.  Can be used to print SMRT Link job output data names and locations, or to copy the outputs to a new location.
 ### Dependencies
  - pbcommand
 ### Usage
