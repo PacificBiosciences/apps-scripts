@@ -57,7 +57,7 @@ Access downloadable data from SMRT Link jobs via the command line.  Can be used 
     'Input Molecule Report CSV'             =>      /my/output/directory/file.csv
 
 ## pbiPrintColumn.py
-Print out values from 'pbi index to stdout.  Useful for generating quick statistics for PacBio BAM data.
+Print out values from .pbi index to stdout.  Useful for generating quick statistics for PacBio BAM data.
 ### Dependencies
  - pbcore
 ### Example
