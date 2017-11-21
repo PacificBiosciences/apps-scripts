@@ -12,30 +12,39 @@ Input: primary contigs and haplotigs from FALCON Unzip assembly.
 
 Output: two contig sets of roughly equal size and length distribution.
 
-### usage: 
+### Usage: 
 ```bash
 0_splitRef.sh myPrimaryContigs.fa myHaplotigs.fa
 ```
 
-### dependencies
+### Dependencies
 [samtools](http://www.htslib.org/)
+
 [falcon_tools](https://github.com/gconcepcion/falcon_tools) which is part of [FALCON](http://pb-falcon.readthedocs.io/en/latest/quick_start.html) installation
 
 ## 1_resequencing
-User must perform two separate resquencing analyses using the contig sets generated in the previous step.
+User must perform two separate resquencing analyses using the contig sets generated in the previous step. Downstream steps depend on [SMRT Link](http://www.pacb.com/support/software-downloads/) job directories.
 
 ## 2_sharedReads.sh
 *Generate list of reads mapped to both contig sets*
+
+This is the most time and compute intensive step. Samtools uses a lot of memory at this step so monitor your resource usage. Perhaps there is a better way to pull the read IDs?
 
 Input: Two SMRT Link job paths, number of processors to use.
 
 Output: Text file containing list of reads that are shared between the resulting BAM files of the resequencing jobs.
 
+### Usage
+
 ```bash
-2_sharedReads.sh /pbi/dept/secondary/siv/smrtlink/smrtlink-beta/smrtsuite_166987/userdata/jobs_root/076/076209 \
-                  /pbi/dept/secondary/siv/smrtlink/smrtlink-beta/smrtsuite_166987/userdata/jobs_root/076/076210 \
-                  24
+2_sharedReads.sh SMRTLinkJobDir1 SMRTLinkJobDir2 12
 ```
+
+### Dependencies
+
+[samtools](http://www.htslib.org/)
+
+[GNU parallel](https://www.gnu.org/software/parallel/)
 
 ## 3_mergeReseqJobs.sh
 *Modify resulting BAM files from Resequencing Jobs to remove lower quality alignments*
