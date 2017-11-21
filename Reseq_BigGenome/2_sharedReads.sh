@@ -27,23 +27,23 @@ nproc=$3
 find $DIR1 -name "mapped.alignmentset.bam" > BAM1.fofn
 find $DIR2 -name "mapped.alignmentset.bam" > BAM2.fofn
 
-# make/empty temp dirs
+# make/#make tmp dirs
 if [ -d "tmp1" ]; then
-	rm tmp1/*
-else
-	mkdir tmp1
+	rm -rf tmp1
 fi
+mkdir tmp1
+
 
 if [ -d "tmp2" ]; then
-        rm tmp2/*
-else
-        mkdir tmp2
+	rm -rf tmp2
 fi
+mkdir tmp2
+
 
 
 # get read IDs for each pbalign job
-parallel --verbose -j 24 --files --tmpdir ./tmp1/ 'samtools view {} | cut -f1'  :::: BAM1.fofn
-parallel --verbose -j 24 --files --tmpdir ./tmp2/ 'samtools view {} | cut -f1'  :::: BAM2.fofn
+parallel --verbose -j $nproc --files --tmpdir ./tmp1/ 'samtools view {} | cut -f1'  :::: BAM1.fofn
+parallel --verbose -j $nproc --files --tmpdir ./tmp2/ 'samtools view {} | cut -f1'  :::: BAM2.fofn
 
 
 # concatenate read IDs, sort, uniq
@@ -67,3 +67,4 @@ sort readIDs2.txt | uniq > tmp
 mv tmp readIDs2.txt
 
 comm -12 readIDs1.txt readIDs2.txt > sharedReads.txt
+
