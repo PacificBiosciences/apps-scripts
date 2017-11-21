@@ -2,7 +2,7 @@ Perform two resequencing jobs using contigSet1.fa and contigSet2.fa as the refer
 
 I recommend the following settings be changed from the default:
 
-Concordant alignment: FALSE
-Minimum (alignment) length: 500
-Minimum subread length: 500
+1. Concordant alignment: FALSE
+2. Minimum (alignment) length: 500
+3. Minimum subread length: 500
 
