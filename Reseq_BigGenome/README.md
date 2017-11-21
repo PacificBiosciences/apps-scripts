@@ -9,6 +9,7 @@ This unsupported method has the following steps:
 *Split reference into two files*
 
 Input: primary contigs and haplotigs from FALCON Unzip assembly.
+
 Output: two contig sets of roughly equal size and length distribution.
 
 ### usage: 
@@ -23,6 +24,7 @@ User must perform two separate resquencing analyses using the contig sets genera
 *Generate list of reads mapped to both contig sets*
 
 Input: Two SMRT Link job paths and number of processors to use
+
 Output: Text file containing list of reads that are shared between the resulting BAM files of the resequencing jobs.
 
 ```bash
