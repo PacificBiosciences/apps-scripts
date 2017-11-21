@@ -23,7 +23,7 @@ User must perform two separate resquencing analyses using the contig sets genera
 ## 2_sharedReads.sh
 *Generate list of reads mapped to both contig sets*
 
-Input: Two SMRT Link job paths and number of processors to use
+Input: Two SMRT Link job paths, number of processors to use.
 
 Output: Text file containing list of reads that are shared between the resulting BAM files of the resequencing jobs.
 
