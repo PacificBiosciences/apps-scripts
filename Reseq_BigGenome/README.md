@@ -52,3 +52,12 @@ Output: Text file containing list of reads that are shared between the resulting
 Pairs of BAM files from the two resquencing jobs are queried for shared reads and the alignment with the better (more negative) BLASR score is retained while the other is omitted. Resequencing chunks the subreads in a reproducible manner such that this can be done in parallel.
 
 NOTE: New BAM files are written to the local directory. 
+
+### Dependencies
+
+python 2.7
+
+pysam, os, csv, argparse, collections
+
+[GNU parallel](https://www.gnu.org/software/parallel/)
+
