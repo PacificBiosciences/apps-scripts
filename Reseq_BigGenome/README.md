@@ -28,7 +28,7 @@ User must perform two separate resquencing analyses using the contig sets genera
 ## 2_sharedReads.sh
 *Generate list of reads mapped to both contig sets*
 
-This is the most time and compute intensive step. Samtools uses a lot of memory at this step so monitor your resource usage. Perhaps there is a better way to pull the read IDs?
+NOTE: This is the most time and compute intensive step. Samtools uses a lot of memory at this step so monitor your resource usage. Perhaps there is a better way to pull the read IDs?
 
 Input: Two SMRT Link job paths, number of processors to use.
 
@@ -47,8 +47,8 @@ Output: Text file containing list of reads that are shared between the resulting
 [GNU parallel](https://www.gnu.org/software/parallel/)
 
 ## 3_mergeReseqJobs.sh
-*Modify resulting BAM files from Resequencing Jobs to remove lower quality alignments*
+*Rewrite resulting BAM files from resequencing jobs to remove lower quality alignments*
 
-For each of these reads, the BAM files are queried and the alignment with the better (more negative) BLASR score is retained while the other is omitted. NOTE: New BAM files are written to the local directory.
+Pairs of BAM files from the two resquencing jobs are queried for shared reads and the alignment with the better (more negative) BLASR score is retained while the other is omitted. Resequencing chunks the subreads in a reproducible manner such that this can be done in parallel.
 
-
+NOTE: New BAM files are written to the local directory. 
