@@ -24,8 +24,8 @@ DIR2=$2
 nproc=$3
 
 # file of filenames for mapped.alignmentset.bam 
-find $DIR1 -name "mapped.alignmentset.bam" > BAM1.fofn
-find $DIR2 -name "mapped.alignmentset.bam" > BAM2.fofn
+find $DIR1 -name "mapped.alignmentset.bam" | sort > BAM1.fofn
+find $DIR2 -name "mapped.alignmentset.bam" | sort > BAM2.fofn
 
 # make/#make tmp dirs
 if [ -d "tmp1" ]; then
