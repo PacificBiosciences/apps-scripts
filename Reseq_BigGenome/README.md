@@ -46,18 +46,18 @@ Output: Text file containing list of reads that are shared between the resulting
 
 [GNU parallel](https://www.gnu.org/software/parallel/)
 
-## 3_mergeReseqJobs.sh
-*Rewrite resulting BAM files from resequencing jobs to remove lower quality alignments*
+## 3_merge_ReseqJobs.sh
+*Rewrite resulting BAM files from resequencing jobs to remove lower quality alignments by calling auxillary python script, "MergeBAMpair.py."*
 
 Pairs of BAM files from the two resquencing jobs are queried for shared reads and the alignment with the better (more negative) BLASR score is retained while the other is omitted. Resequencing chunks the subreads in a reproducible manner such that this can be done in parallel.
 
-NOTE: New BAM files are written to the local directory. 
+NOTE: New BAM files are written to the local subdir directory, "newBAMs". 
 
 ### Dependencies
 
 python 2.7
 
-pysam, os, csv, argparse, collections
+pysam, os, csv, argparse, collections, sys
 
 [GNU parallel](https://www.gnu.org/software/parallel/)
 
