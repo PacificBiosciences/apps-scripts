@@ -68,6 +68,13 @@ e.g.
 
 NOTE: New BAM files are written to the local subdir directory, "newBAMs". 
 
+### Usage
+
+```bash
+3_merge_ReseqBAMS.sh <nproc>
+```
+
+
 ### Dependencies
 
 python 2.7
@@ -76,11 +83,5 @@ pysam, os, csv, argparse, collections, sys
 
 [GNU parallel](https://www.gnu.org/software/parallel/)
 
-
-### Usage
-
-```bash
-3_merge_ReseqBAMS.sh <nproc>
-```
 
 
