@@ -76,3 +76,11 @@ pysam, os, csv, argparse, collections, sys
 
 [GNU parallel](https://www.gnu.org/software/parallel/)
 
+
+### Usage
+
+```bash
+3_merge_ReseqBAMS.sh <nproc>
+```
+
+
