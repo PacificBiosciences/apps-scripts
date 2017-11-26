@@ -11,7 +11,7 @@ If you are using this pipeline, you have a large genome and a lot of raw reads. 
 During raw read alignment, the resequencing pipeline chunks subreads into smaller datasets and runs pbalign (BLASR) in parallel on each dataset chunk. This stage produces a series of files: `<job_dir>/tasks/pbalign.tasks.pbalign-[0-9]{1,2}/mapped.alignmentset.bam`. The subread chunking process is reproducible such that, for example, the file `pbalign.tasks.pbalign-13/mapped.alignmentset.bam` from resequencing of contig set 1 and contig set 2 contain the same subreads. Thus, the process of finding shared read alignments and ommiting the poorer alignment can be done in parallel on each of the pairs of`mapped.alignmentset.bam` files.
 
 
-This unsupported method has the following steps:
+# This unsupported method has the following steps:
 
 ## 0_splitRef.sh
 *Split reference into two files*
