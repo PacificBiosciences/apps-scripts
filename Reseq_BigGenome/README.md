@@ -63,7 +63,7 @@ e.g.
 [GNU parallel](https://www.gnu.org/software/parallel/)
 
 ## 3_merge_ReseqBAMs.sh
-*Rewrite resulting BAM files from resequencing jobs to remove lower quality alignments by calling auxillary python script, "MergeBAMpair.py."*
+*Rewrite resequencing BAM files to remove lower quality alignments by calling auxillary python script, "MergeBAMpair.py."*
 
 
 NOTE: New BAM files are written to the local subdir directory, "newBAMs". 
