@@ -22,7 +22,7 @@ Output: two contig sets of roughly equal size and length distribution.
 
 ### Usage: 
 ```bash
-0_splitRef.sh myPrimaryContigs.fa myHaplotigs.fa
+0_splitRef.sh <myPrimaryContigs.fa> <myHaplotigs.fa>
 ```
 
 ### Dependencies
@@ -45,7 +45,13 @@ Output: Text file containing list of reads that are shared between the resulting
 ### Usage
 
 ```bash
-2_sharedReads.sh SMRTLinkJobDir1 SMRTLinkJobDir2 12
+2_sharedReads.sh <SMRTLinkJobDir1> <SMRTLinkJobDir2> <nproc>
+```
+
+e.g.
+
+```bash
+2_sharedReads.sh </pbi/dept/secondary/siv/smrtlink/smrtlink-beta/smrtsuite_166987/userdata/jobs_root/076/076209/> \     /pbi/dept/secondary/siv/smrtlink/smrtlink-beta/smrtsuite_166987/userdata/jobs_root/076/076210/> <12>
 ```
 
 ### Dependencies
