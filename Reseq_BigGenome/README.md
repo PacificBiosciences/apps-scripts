@@ -3,6 +3,14 @@
 
 The resequencing pipeline is recommended for polishing genomes assembled with PacBio data to increase base accuracy. Resequencing uses [BLASR](https://github.com/PacificBiosciences/blasr) to map raw reads to the draft reference and arrow for [genomic consensus](https://github.com/PacificBiosciences/GenomicConsensus) and can be accessed with the [SMRT Link GUI](http://www.pacb.com/wp-content/uploads/SMRT_Link_User_Guide.pdf) or [pbsmrtpipe](http://pbsmrtpipe.readthedocs.io/en/master/getting_started.html#basic-resequencing) at the command line. BLASR cannot index reference sequences longer than 2^32 (4.29 Gb).
 
+This repository contains an unsupported workflow which will help you split your reference into two set of contigs, run resequencing on the two chunks, and then merge the resequencing jobs back together by removing reads that map to both contig sets. From this stage, you can run genomic consensus, or estimate coverage across your assembly, among other things. I have made the final merged BAM file optional but have included some code which can be uncommented.
+
+### A note on resequencing
+If you are using this pipeline, you have a large genome and a lot of raw reads. You can imagine that finding reads that map to both contig sets ("shared reads") can be inefficient. Fortunately, the engineering of read alignment in the resequencing pipeline allow the process of finding and assessing the alignments of shared reads to be done in a parallel manner.
+
+During raw read alignment, the resequencing pipeline chunks subreads into smaller datasets and runs pbalign (BLASR) in parallel on each dataset chunk. This stage produces a series of files: `<job_dir>/tasks/pbalign.tasks.pbalign-[0-9]{1,2}/mapped.alignmentset.bam`. The subread chunking process is reproducible such that, for example, the file `pbalign.tasks.pbalign-13/mapped.alignmentset.bam` from resequencing of contig set1 and contig set 2 contain the same subreads. Thus, the process of finding shared read alignments and ommiting the poorer alignment can be done in parallel on each pair of `mapped.alignmentset.bam` files.
+
+
 This unsupported method has the following steps:
 
 ## 0_splitRef.sh
@@ -46,10 +54,9 @@ Output: Text file containing list of reads that are shared between the resulting
 
 [GNU parallel](https://www.gnu.org/software/parallel/)
 
-## 3_merge_ReseqJobs.sh
+## 3_merge_ReseqBAMs.sh
 *Rewrite resulting BAM files from resequencing jobs to remove lower quality alignments by calling auxillary python script, "MergeBAMpair.py."*
 
-Pairs of BAM files from the two resquencing jobs are queried for shared reads and the alignment with the better (more negative) BLASR score is retained while the other is omitted. Resequencing chunks the subreads in a reproducible manner such that this can be done in parallel.
 
 NOTE: New BAM files are written to the local subdir directory, "newBAMs". 
 
