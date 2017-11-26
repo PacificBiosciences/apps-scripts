@@ -51,7 +51,9 @@ Output: Text file containing list of reads that are shared between the resulting
 e.g.
 
 ```bash
-2_sharedReads.sh </pbi/dept/secondary/siv/smrtlink/smrtlink-beta/smrtsuite_166987/userdata/jobs_root/076/076209/> \     /pbi/dept/secondary/siv/smrtlink/smrtlink-beta/smrtsuite_166987/userdata/jobs_root/076/076210/> <12>
+2_sharedReads.sh </pbi/dept/secondary/siv/smrtlink/smrtlink-beta/smrtsuite_166987/userdata/jobs_root/076/076209/> \     
+
+/pbi/dept/secondary/siv/smrtlink/smrtlink-beta/smrtsuite_166987/userdata/jobs_root/076/076210/> <12>
 ```
 
 ### Dependencies
