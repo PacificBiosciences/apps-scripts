@@ -1,7 +1,7 @@
 # Whitelisting Subread Datasets for SMRT Analysis v4.0 through v5.0.1 
 ## *DEPRECATED for SMRT analysis v5.1* 
 
-Starting with SMRT Analysis v5.1, whitelisting can be done natively in pbcore with the `dataset` tool by passing a file of read names or ZMWs as the filter argument.  Set intersetions are handled by pbcore 'under the hood'
+Starting with SMRT Analysis v5.1, whitelisting can be done natively in pbcore with the `dataset` tool by passing a file of read names or ZMWs as the filter argument.  Set intersections are handled by pbcore 'under the hood'
 
 For subreads:
 
