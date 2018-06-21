@@ -1,5 +1,26 @@
-# Whitelisting Subread Datasets for SMRT Analysis v4.0+
+# Whitelisting Subread Datasets for SMRT Analysis v4.0 through v5.0.1 *DEPRECATED for SMRT analysis v5.1* 
 Users wishing to specify exactly which ZMWs or subreads are used in SMRT Analysis applications can apply "whitelist" filtering to datasets using the script here.  Whitelisted dataset xml files can be used as input to any SMRT Analysis application which accepts a dataset as input, including SMRT-Link protocols or command-line tools.
+
+Starting with SMRT Analysis v5.1, whitelisting can be done natively in pbcore with the `dataset` tool by passing a file of read names or ZMWs as the filter argument.  Set intersetions are handled by pbcore 'under the hood'
+
+For subreads:
+
+    dataset filter in.dataset.xml filtered.dataset.xml 'qname=/path/to/textFile1.txt'
+
+Where `textFile1.txt` is a simple text file of PacBio subread names `[movie]/[holenumber]/[qStart]_[qEnd]`, one per line
+
+For ZMWs:
+
+    dataset filter in.dataset.xml filtered.dataset.xml 'zm=/path/to/textFile2.txt'
+
+Where `textFile2.txt` is a simple text file with sequencing hole numbers, one per line (Note that this assumes a single smrtcell/movie).
+This method will create a new dataset (view) of the filtered data without copyin raw sequence data into a new bam(s).
+
+Alternatively, the tool `bamsieve` in the SMRT Analysis executables bin can be used to create new filtered BAM files from white-/blacklists:
+
+    bamsieve --whitelist textFile3.txt in.bam out.filtered.bam
+
+See `bamsieve --help` for more information.
 
 Filtered subreadsets can be uploaded to the SMRT-Link server using `pbservice import-dataset` 
 
