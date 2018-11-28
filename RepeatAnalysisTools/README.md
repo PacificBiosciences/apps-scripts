@@ -42,11 +42,11 @@ Generate "waterfall" and repeat count kde plots for CCS reads.
 ### Output
 [sample].[label].repeatCount_kde.png
 
-    ![RepeatCount plot Example](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1002.FMR1.repeatCount_kde.png)
+![RepeatCount plot Example](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1002.FMR1.repeatCount_kde.png)
 
 [sample].[label].waterfall.png
 
-    ![Waterfall plot Example](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1002.FMR1.waterfall.png)
+![Waterfall plot Example](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1002.FMR1.waterfall.png)
 
 [sample].[label].repeatCounts.csv
 
