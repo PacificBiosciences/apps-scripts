@@ -52,24 +52,24 @@ Generate "waterfall" and repeat count kde plots for CCS reads.
 
     $ column -ts, bc1002.FMR1.repeatCounts.csv | head
     readName                           AGG  CGG
-    m54006_180727_184845/10027338/ccs  1    200
-    m54006_180727_184845/10486148/ccs  1    141
-    m54006_180727_184845/10945324/ccs  1    245
-    m54006_180727_184845/12452147/ccs  1    23
-    m54006_180727_184845/12649105/ccs  1    22
-    m54006_180727_184845/12649463/ccs  2    132
-    m54006_180727_184845/13959293/ccs  1    213
-    m54006_180727_184845/15335794/ccs  1    23
-    m54006_180727_184845/15336396/ccs  1    22
+    m54006_180727_184845/10748847/ccs  2    27
+    m54006_180727_184845/11469406/ccs  2    28
+    m54006_180727_184845/11796868/ccs  2    27
+    m54006_180727_184845/11928405/ccs  2    27
+    m54006_180727_184845/12387293/ccs  1    326
+    m54006_180727_184845/12649067/ccs  2    27
+    m54006_180727_184845/12714233/ccs  2    27
+    m54006_180727_184845/12780515/ccs  2    27
+    m54006_180727_184845/13763208/ccs  2    27
 
 [sample].[label].summary.csv
 
     $ column -ts, bc1002.FMR1.summary.csv
-    totalReads     2240
-    spanningReads  165
-    oneSided       84
-    poorAlignment  1991
-    reference      rources/FMR1_L446_R503.fasta
+    totalReads     5679
+    spanningReads  174
+    oneSided       119
+    poorAlignment  5386
+    reference      resources/FMR1_L446_R503.fasta
 
 ## minimap2_e40.sh
 Map repeat-extension data to targets, parameterized to reduce alignment cost for long expansions
