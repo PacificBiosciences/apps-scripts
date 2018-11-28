@@ -41,9 +41,35 @@ Generate "waterfall" and repeat count kde plots for CCS reads.
 
 ### Output
  - [sample].[label].repeatCount_kde.png
+
+    ![RepeatCount plot Example](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1002.FMR1.repeatCount_kde.png)
+
  - [sample].[label].waterfall.png
+
+    ![Waterfall plot Example](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1002.FMR1.waterfall.png)
+
  - [sample].[label].repeatCounts.csv
+
+    $ column -ts, bc1002.FMR1.repeatCounts.csv | head
+    readName                           AGG  CGG
+    m54006_180727_184845/10027338/ccs  1    200
+    m54006_180727_184845/10486148/ccs  1    141
+    m54006_180727_184845/10945324/ccs  1    245
+    m54006_180727_184845/12452147/ccs  1    23
+    m54006_180727_184845/12649105/ccs  1    22
+    m54006_180727_184845/12649463/ccs  2    132
+    m54006_180727_184845/13959293/ccs  1    213
+    m54006_180727_184845/15335794/ccs  1    23
+    m54006_180727_184845/15336396/ccs  1    22
+
  - [sample].[label].summary.csv
+
+    $ column -ts, bc1002.FMR1.summary.csv
+    totalReads     2240
+    spanningReads  165
+    oneSided       84
+    poorAlignment  1991
+    reference      rources/FMR1_L446_R503.fasta
 
 ## minimap2_e40.sh
 Map repeat-extension data to targets, parameterized to reduce alignment cost for long expansions
