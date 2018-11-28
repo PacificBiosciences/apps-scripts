@@ -29,14 +29,12 @@ Generate "waterfall" and repeat count kde plots for CCS reads.
     optional arguments:
       -h, --help          show this help message and exit
       -t,--target TARGET  fasta reference of sequence flanking repeat region (2
-                          sequences). Default /pbi/dept/appslab/projects/2018/jh_u
-                          ppsala_noamp/references/flanks/FMR1_L446_R503.fasta
+                          sequences). Default resources/FMR1_L446_R503.fasta
       -p,--preset PRESET  preset motifs to search for. default 'FMR1'. Available:
                           FMR1,FUCHS,HTT,ALS
       -m,--motifs MOTIFS  Comma separated motifs to search for. Will over-ride
                           presets. Default none.
-      -o,--outDir OUTDIR  Output directory. Default
-                          /pbi/dept/appslab/projects/2018/jh_uppsala_noamp
+      -o,--outDir OUTDIR  Output directory. Default cwd
       -s,--sample SAMPLE  Sample name, prepended to output files. Default None
       -l,--label LABEL    Label, prepended to output files after sample name, e.g.
                           'FMR1'. Defaults to preset name, except if -m set
