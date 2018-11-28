@@ -123,7 +123,7 @@ def main(parser):
          .astype(int)\
          .to_csv(outfileName('repeatCounts','csv'))
 
-    return None
+    return allDf
 
 def rc(seq):
     return "".join([_RC_MAP[c] for c in seq[::-1]])
