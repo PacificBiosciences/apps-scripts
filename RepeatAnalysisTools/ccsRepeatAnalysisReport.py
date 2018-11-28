@@ -12,7 +12,7 @@ import mappy as mp
 
 sns.set_style('white')
 DPI=400
-FMR1FLANKS='/pbi/dept/appslab/projects/2018/jh_uppsala_noamp/references/flanks/FMR1_L446_R503.fasta'
+FMR1FLANKS='resources/FMR1_L446_R503.fasta'
 
 _RC_MAP = {'-': '-',
            'A': 'T',
@@ -88,9 +88,8 @@ def main(parser):
                       .rename(columns={'level_0':'idx','level_1':'readName'})
                     for motif in motifs]
     except ValueError,e:
-        raise ccsWaterFallRepeats_Exception('No reads map to target!')
-    finally:
         writeSummary()
+        raise ccsWaterFallRepeats_Exception('No reads map to target!')
 
     allDf = pd.concat(motifDfs,ignore_index=True)
 
