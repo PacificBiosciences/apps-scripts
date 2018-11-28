@@ -14,17 +14,6 @@ sns.set_style('white')
 DPI=400
 FMR1FLANKS='resources/FMR1_L446_R503.fasta'
 
-_RC_MAP = {'-': '-',
-           'A': 'T',
-           'C': 'G',
-           'G': 'C',
-           'N': 'N',
-           'T': 'A',
-           'a': 't',
-           'c': 'g',
-           'g': 'c',
-           't': 'a'}
-
 repeatPatterns = {'FMR1' : ['CGG','AGG'],
                   'HTT'  : ['CAG'],
                   'ALS'  : ['GGCCCC'],
@@ -125,6 +114,17 @@ def main(parser):
 
     return allDf
 
+_RC_MAP = {'-': '-',
+           'A': 'T',
+           'C': 'G',
+           'G': 'C',
+           'N': 'N',
+           'T': 'A',
+           'a': 't',
+           'c': 'g',
+           'g': 'c',
+           't': 'a'}
+
 def rc(seq):
     return "".join([_RC_MAP[c] for c in seq[::-1]])
 
@@ -145,7 +145,7 @@ def extractRepeat(sequence,aligner):
 
 def getPositions(motif):
     def finder(seq):
-        df = pd.DataFrame([m.start()/3. for m in re.finditer(motif,seq)],
+        df = pd.DataFrame([1.0*m.start()/len(motif) for m in re.finditer(motif,seq)],
                            columns=['position'])
         df['motif'] = motif
         return df
