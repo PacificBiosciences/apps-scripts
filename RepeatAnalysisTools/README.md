@@ -40,15 +40,15 @@ Generate "waterfall" and repeat count kde plots for CCS reads.
                           'FMR1'. Defaults to preset name, except if -m set
 
 ### Output
- - [sample].[label].repeatCount_kde.png
+[sample].[label].repeatCount_kde.png
 
     ![RepeatCount plot Example](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1002.FMR1.repeatCount_kde.png)
 
- - [sample].[label].waterfall.png
+[sample].[label].waterfall.png
 
     ![Waterfall plot Example](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1002.FMR1.waterfall.png)
 
- - [sample].[label].repeatCounts.csv
+[sample].[label].repeatCounts.csv
 
     $ column -ts, bc1002.FMR1.repeatCounts.csv | head
     readName                           AGG  CGG
@@ -62,7 +62,7 @@ Generate "waterfall" and repeat count kde plots for CCS reads.
     m54006_180727_184845/15335794/ccs  1    23
     m54006_180727_184845/15336396/ccs  1    22
 
- - [sample].[label].summary.csv
+[sample].[label].summary.csv
 
     $ column -ts, bc1002.FMR1.summary.csv
     totalReads     2240
