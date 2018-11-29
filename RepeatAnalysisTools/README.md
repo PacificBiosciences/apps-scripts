@@ -3,6 +3,34 @@ This repo contains miscellaneous stand-alone scripts for diagnosing and plotting
 
 UNDER CONSTRUCTION
 
+## countOnTarget.py
+Generate table of ZMW counts per target.
+### Dependencies
+ - pandas
+ - numpy
+ - pbcore
+### Usage
+    $ python countOnTarget.py -h
+    usage: countOnTarget.py [-h] [-o,--outdir OUTDIR] inBam roiBED
+    
+    Generate table of ZMW counts per target
+    
+    positional arguments:
+      inBam               BAM file of aligned reads. Must have .pbi index
+      roiBED              BED file with targets
+    
+    optional arguments:
+      -h, --help          show this help message and exit
+      -o,--outdir OUTDIR  directory to save output file. default cwd.
+
+### Example
+    $ python countOnTarget.py combined.consensusalignmentset.bam resources/human_hs37d5.targets.bed
+    $ cat onTargetCounts.tsv
+            onTargetZMWs
+    C9orf72 0
+    FMR1    755
+    HTT     1164
+
 ## ccsRepeatAnalysisReport.py
 Generate "waterfall" and repeat count kde plots for CCS reads.  
 ### Dependencies
