@@ -7,8 +7,7 @@ UNDER CONSTRUCTION
 Generate table of ZMW counts per target.
 ### Dependencies
  - pandas
- - numpy
- - pbcore
+ - pysam
 ### Usage
     $ python countOnTarget.py -h
     usage: countOnTarget.py [-h] [-o,--outdir OUTDIR] inBam roiBED
