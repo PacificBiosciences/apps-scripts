@@ -36,8 +36,11 @@ def isGoodAlignment(rec,start,stop):
 
 def makeCounter(bam):
     def counter(ctg,start,stop):
-        return sum(1 for rec in bam.fetch(ctg,start,stop) if isGoodAlignment(rec,start,stop))
+        return len({getZmw(rec.query_name) for rec in bam.fetch(ctg,start,stop) if isGoodAlignment(rec,start,stop)})
     return counter
+
+def getZmw(readname):
+    return '/'.join(readname.split('/')[:2])
 
 class countOnTarget_Exception(Exception):
     pass

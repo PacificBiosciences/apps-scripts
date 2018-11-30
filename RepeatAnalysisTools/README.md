@@ -15,7 +15,7 @@ Generate table of ZMW counts per target.
     Generate table of ZMW counts per target
     
     positional arguments:
-      inBam               BAM file of aligned reads. Must have .pbi index
+      inBam               BAM file of aligned reads. Must have .bai index
       roiBED              BED file with targets
     
     optional arguments:
@@ -27,7 +27,7 @@ Generate table of ZMW counts per target.
     $ cat onTargetCounts.tsv
             onTargetZMWs
     C9orf72 0
-    FMR1    755
+    FMR1    754
     HTT     1164
 
 ## ccsRepeatAnalysisReport.py
