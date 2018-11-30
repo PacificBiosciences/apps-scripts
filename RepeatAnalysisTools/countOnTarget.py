@@ -1,7 +1,7 @@
 #! /home/UNIXHOME/jharting/anaconda2/bin/python
 
 import pandas as pd
-import os,pysam
+import sys,os,pysam
 
 def main(parser):
     args = parser.parse_args()
@@ -12,9 +12,13 @@ def main(parser):
     bam      = pysam.AlignmentFile(args.inBam,'rb')
     counter  = makeCounter(bam)
     #count alignments passing 'good' filter
-    counts = pd.Series({ row["name"] : counter(row.ctg,row.start,row.end)
-                        for i,row in targets.iterrows()})\
-               .rename('onTargetZMWs')
+    try:
+        counts = pd.Series({ row["name"] : counter(row.ctg,row.start,row.end)
+                            for i,row in targets.iterrows()})\
+                   .rename('onTargetZMWs')
+    except ValueError,e:
+        #try to catch input bams without .bai
+        raise countOnTarget_Exception(e)
 
     counts.to_csv('{}/onTargetCounts.tsv'.format(args.outdir),
                   sep='\t',header=True)
