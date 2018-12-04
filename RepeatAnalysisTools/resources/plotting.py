@@ -22,13 +22,18 @@ def countPlot(data,targetDict):
     if 'target' not in data.columns:
         data['target'] = targetDict.keys()[0]
     #filter for primary motif
-    qry    = '|'.join(['(target=="%s" & motif=="%s")' % tup for tup in targetDict.items()])
+    qry    = '|'.join(['(target=="{t}" & motif=="{m}")'.format(t=t,m=ms.split(',')[0])
+                       for t,ms in targetDict.items()])
     counts = data.query(qry)\
                  .groupby(['target','idx'])\
                  .size()\
                  .rename(name)\
                  .reset_index()
-    g   = sns.FacetGrid(counts,row='target',height=4,aspect=2)
+    g   = sns.FacetGrid(counts,
+                        row='target',
+                        height=4,
+                        aspect=2,
+                        sharex=False,
+                        sharey=False)
     g.map(sns.kdeplot,name,bw=2)
     return g
-

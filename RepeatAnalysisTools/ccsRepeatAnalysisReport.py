@@ -10,7 +10,7 @@ from resources.utils import extractRepeat,\
 from resources.plotting import waterfallPlot,countPlot
 
 DPI=400
-FMR1FLANKS='resources/flanks/FMR1_L446_R503.fasta'
+FMR1FLANKS='%s/resources/FMR1_L446_R503.fasta' % sys.path[0]
 
 repeatPatterns = {'FMR1' : ['CGG','AGG'],
                   'HTT'  : ['CAG','CAA', 'CCG', 'CCA', 'CGG'],
