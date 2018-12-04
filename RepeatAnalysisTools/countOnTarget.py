@@ -8,9 +8,9 @@ def main(parser):
     args = parser.parse_args()
 
     #get targets
-    targets  = readBED(args.roiBED,names=['ctg','start','end','name'])
+    targets  = readBED(args.inBED,names=['ctg','start','end','name'])
     #open alignments
-    bam      = pysam.AlignmentFile(args.inBam,'rb')
+    bam      = pysam.AlignmentFile(args.inBAM,'rb')
     counter  = makeCounter(bam)
     #count alignments passing 'good' filter
     try:
@@ -45,9 +45,9 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(prog='countOnTarget.py', description='Generate table of ZMW counts per target')
-    parser.add_argument('inBam', metavar='inBam', type=str,
+    parser.add_argument('inBAM', metavar='inBAM', type=str,
                     help='BAM file of aligned reads.  Must have .bai index')
-    parser.add_argument('roiBED', metavar='roiBED', type=str,
+    parser.add_argument('inBED', metavar='inBED', type=str,
                     help='BED file with targets')
     parser.add_argument('-o,--outdir', dest='outdir', type=str, default=os.getcwd(),
                     help='directory to save output file.  default cwd.')

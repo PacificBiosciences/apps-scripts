@@ -10,13 +10,13 @@ Generate table of ZMW counts per target.
  - pysam
 ### Usage
     $ python countOnTarget.py -h
-    usage: countOnTarget.py [-h] [-o,--outdir OUTDIR] inBam roiBED
+    usage: countOnTarget.py [-h] [-o,--outdir OUTDIR] inBAM inBED
     
     Generate table of ZMW counts per target
     
     positional arguments:
-      inBam               BAM file of aligned reads. Must have .bai index
-      roiBED              BED file with targets
+      inBAM               BAM file of aligned reads. Must have .bai index
+      inBED               BED file with targets
     
     optional arguments:
       -h, --help          show this help message and exit
@@ -30,22 +30,22 @@ Generate table of ZMW counts per target.
     FMR1    754
     HTT     1164
 
-## ccsRepeatAnalysisReport.py
-Generate "waterfall" and repeat count kde plots for CCS reads.  
+## fastxRepeatAnalysisReport.py
+Generate "waterfall" and repeat count kde plots for unaligned CCS reads using flanking sequence.  
 ### Dependencies
  - matplotlib
  - numpy
  - pandas
  - seaborn
- - pbcore
  - mappy
+ - pysam
 ### Usage
-    $ python ccsRepeatAnalysisReport.py -h
-    usage: ccsRepeatAnalysisReport.py [-h] [-t,--target TARGET]
-                                      [-p,--preset PRESET] [-m,--motifs MOTIFS]
-                                      [-o,--outDir OUTDIR] [-s,--sample SAMPLE]
-                                      [-l,--label LABEL]
-                                      ccsFastx
+    $ python fastxRepeatAnalysisReport.py -h
+    usage: fastxRepeatAnalysisReport.py [-h] [-t,--target TARGET]
+                                        [-p,--preset PRESET] [-m,--motifs MOTIFS]
+                                        [-o,--outDir OUTDIR] [-s,--sample SAMPLE]
+                                        [-l,--label LABEL]
+                                        ccsFastx
     
     generate repeat-kde plot,waterfall plot, and summary for repeat expansion ccs
     reads
@@ -58,10 +58,10 @@ Generate "waterfall" and repeat count kde plots for CCS reads.
       -t,--target TARGET  fasta reference of sequence flanking repeat region (2
                           sequences). Default resources/FMR1_L446_R503.fasta
       -p,--preset PRESET  preset motifs to search for. default 'FMR1'. Available:
-                          FMR1,FUCHS,HTT,ALS
+                          FMR1,FUCHS,HTT,ALS,Sca10
       -m,--motifs MOTIFS  Comma separated motifs to search for. Will over-ride
                           presets. Default none.
-      -o,--outDir OUTDIR  Output directory. Default cwd
+      -o,--outDir OUTDIR  Output directory. Default cwd.
       -s,--sample SAMPLE  Sample name, prepended to output files. Default None
       -l,--label LABEL    Label, prepended to output files after sample name, e.g.
                           'FMR1'. Defaults to preset name, except if -m set
@@ -97,6 +97,41 @@ Generate "waterfall" and repeat count kde plots for CCS reads.
     oneSided       119
     poorAlignment  5386
     reference      resources/FMR1_L446_R503.fasta
+
+## RepeatAnalysisReport.py
+Generate "waterfall" and repeat count kde plots for aligned CCS reads using BED file with defined repeat regions.
+### Dependencies
+ - matplotlib
+ - numpy
+ - pandas
+ - seaborn
+ - mappy
+ - pysam
+### Usage
+    $ python RepeatAnalysisReport.py -h
+    usage: RepeatAnalysisReport.py [-h] [-o,--outDir OUTDIR] [-s,--sample SAMPLE]
+                                   [-f,--flanksize FLANKSIZE]
+                                   inBAM inBED reference
+    
+    generate repeat-kde plot, waterfall plot, and summary for repeat expansions
+    
+    positional arguments:
+      inBAM                 input BAM of CCS alignments
+      inBED                 input BED defining location of repeat region. Repeats
+                            ONLY, no flanking sequence. 
+                            Columns (ordered): ctg, start, end, name, motifs
+      reference             Reference fasta used for mapping BAM. Must have .fai
+                            index.
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -o,--outDir OUTDIR    Output directory. Default cwd.
+      -s,--sample SAMPLE    Sample name, prepended to output files. Default None
+      -f,--flanksize FLANKSIZE
+                            Size of flanking sequence mapped for extracting repeat
+                            region. Default 100
+### Output
+_Same as fastxRepeatAnalysisReport.py_
 
 ## minimap2_e40.sh
 Map repeat-extension data to targets, parameterized to reduce alignment cost for long expansions

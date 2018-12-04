@@ -61,7 +61,7 @@ def main(parser):
                     for motif in motifs]
     except ValueError,e:
         writeSummary()
-        raise ccsWaterFallRepeats_Exception('No reads map to target!')
+        raise fastRepeatAnalysisReport_Exception('No reads map to target!')
 
     allDf = pd.concat(motifDfs,ignore_index=True)
 
@@ -86,13 +86,13 @@ def main(parser):
 
     return allDf
 
-class ccsWaterFallRepeats_Exception(Exception):
+class fastRepeatAnalysisReport_Exception(Exception):
     pass
 
 if __name__ == '__main__':
     import argparse
 
-    parser = argparse.ArgumentParser(prog='ccsRepeatAnalysisReport.py', description='generate repeat-kde plot,waterfall plot, and summary for repeat expansion ccs reads')
+    parser = argparse.ArgumentParser(prog='fastxRepeatAnalysisReport.py', description='generate repeat-kde plot,waterfall plot, and summary for repeat expansion ccs reads')
     parser.add_argument('ccsFastx', metavar='ccsFastx', type=str,
                     help='input ccs reads, can be fasta or fastq')
     parser.add_argument('-t,--target', dest='target', type=str, 
@@ -111,6 +111,6 @@ if __name__ == '__main__':
     
     try:
         result = main(parser)
-    except ccsWaterFallRepeats_Exception,e:
+    except fastRepeatAnalysisReport_Exception,e:
         print 'ERROR: %s' % e
         sys.exit(1)

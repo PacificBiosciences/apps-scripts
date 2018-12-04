@@ -7,9 +7,6 @@ if [ -z $SAMPLE ]; then
  SAMPLE=""
 fi
 
-source /mnt/software/Modules/current/init/bash
-module load minimap2 samtools
-
 minimap2 -a \
          -x map-pb \
          --eqx \

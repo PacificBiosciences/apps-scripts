@@ -21,7 +21,11 @@ def main(parser):
     
     #Read inputs
     bam  = pysam.AlignmentFile(args.inBAM)
-    bed  = readBED(args.inBED,names=['ctg','start','end','name','motifs'])
+    try:
+        bed  = readBED(args.inBED,names=['ctg','start','end','name','motifs'])
+    except Exception as e:
+        #catch missing columns in bed
+        raise RepeatAnalysisReport_Exception(e.message)
     ref  = pysam.FastaFile(args.reference)
     
     targets,summaries = {},{}

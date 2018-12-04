@@ -30,7 +30,7 @@ def readBED(bedfile,names=['ctg','start','end','name'],usecols=None):
                        usecols=None)
     missing = df.columns[df.isna().apply(np.all) == True]
     if len(missing):
-        raise ValueError('Missing columns in BED file: %s' % ','.join(map(str,missing)))
+        raise RepeatAnalysisUtils_Exception('Missing columns in BED file')#: %s' % ','.join(map(str,missing)))
     return df
 
 def getSubSeq(seq,aln):
@@ -66,3 +66,6 @@ def countAlignments(repeatRegions,reference=None):
     if reference:
         summary['reference'] = reference
     return summary,repeatRegions.drop(oneSided.append(poorAln))
+
+class RepeatAnalysisUtils_Exception(Exception):
+    pass
