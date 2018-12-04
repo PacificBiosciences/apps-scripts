@@ -2,12 +2,13 @@
 
 import pandas as pd
 import sys,os,pysam
+from resources.utils import readBED,getZmw
 
 def main(parser):
     args = parser.parse_args()
 
     #get targets
-    targets  = readBED(args.roiBED)
+    targets  = readBED(args.roiBED,names=['ctg','start','end','name'])
     #open alignments
     bam      = pysam.AlignmentFile(args.inBam,'rb')
     counter  = makeCounter(bam)
@@ -25,22 +26,17 @@ def main(parser):
 
     return counts
 
-
-def readBED(bedfile):
-    return pd.read_table(bedfile,sep='\s+',names=['ctg','start','end','name'])
-
 def isGoodAlignment(rec,start,stop):
     #spanning reads.  
     #Add other filters as needed for map quality, etc here
     return rec.reference_start < start and rec.reference_end > stop
 
-def makeCounter(bam):
+def makeCounter(bam,**kwargs):
     def counter(ctg,start,stop):
-        return len({getZmw(rec.query_name) for rec in bam.fetch(ctg,start,stop) if isGoodAlignment(rec,start,stop)})
+        return len({getZmw(rec.query_name) 
+                    for rec in bam.fetch(ctg,start,stop) 
+                    if isGoodAlignment(rec,start,stop,**kwargs)})
     return counter
-
-def getZmw(readname):
-    return '/'.join(readname.split('/')[:2])
 
 class countOnTarget_Exception(Exception):
     pass
