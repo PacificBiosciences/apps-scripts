@@ -2,16 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 
-_RC_MAP = {'-': '-',
-           'A': 'T',
-           'C': 'G',
-           'G': 'C',
-           'N': 'N',
-           'T': 'A',
-           'a': 't',
-           'c': 'g',
-           'g': 'c',
-           't': 'a'}
+_RC_MAP = dict(zip('-ACGNTacgt','-TGCNAtgca'))
 
 def rc(seq):
     '''revcomp'''
@@ -27,7 +18,7 @@ def readBED(bedfile,names=['ctg','start','end','name'],usecols=None):
     df = pd.read_table(bedfile,
                        sep='\s+',
                        names=names,
-                       usecols=None)
+                       usecols=usecols)
     missing = df.columns[df.isna().apply(np.all) == True]
     if len(missing):
         raise RepeatAnalysisUtils_Exception('Missing columns in BED file')#: %s' % ','.join(map(str,missing)))

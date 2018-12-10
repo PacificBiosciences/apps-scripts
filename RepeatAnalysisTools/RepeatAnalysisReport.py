@@ -62,6 +62,7 @@ def main(parser):
                         for motif in motifs]
             df = pd.concat(motifDfs,ignore_index=True)
         except ValueError:
+            #catch targets with no motifs found, set df to empty w/columns
             df = pd.DataFrame(columns=['idx','readName','position','motif'])
         #add results to containers for concating later
         targets[row['name']]   = df
@@ -115,19 +116,6 @@ def getFlankAligner(ref,ctg,start,stop,**kwargs):
     tmpRef.close()
     aligner = mp.Aligner(tmpRef.name)
     return aligner,tmpRef
-
-def countAlignments(repeatRegions):
-    summary = pd.Series(index=['totalReads',
-                               'spanningReads',
-                               'oneSided',
-                               'poorAlignment'])
-    summary['totalReads']    = len(repeatRegions)
-    oneSided = repeatRegions.query('subsequence=="One Sided"').index
-    poorAln  = repeatRegions.query('subsequence=="Poor/no Alignment"').index
-    summary['oneSided']      = len(oneSided)
-    summary['poorAlignment'] = len(poorAln)
-    summary['spanningReads'] = len(repeatRegions) - (summary['oneSided'] + summary['poorAlignment'])
-    return summary.astype(int),repeatRegions.drop(oneSided.append(poorAln))
 
 class RepeatAnalysisReport_Exception(Exception):
     pass

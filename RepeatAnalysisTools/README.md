@@ -130,6 +130,11 @@ Generate "waterfall" and repeat count kde plots for aligned CCS reads using BED 
       -f,--flanksize FLANKSIZE
                             Size of flanking sequence mapped for extracting repeat
                             region. Default 100
+### Example BED file
+    $ column -t resources/human_hs37d5.targets_repeatonly.bed
+    4  3076554    3076717    HTT      CAG,CAA,CCG,CCA,CGG
+    9  27573435   27573596   C9orf72  GGGGCC
+    X  146993569  146993629  FMR1     CGG,AGG
 ### Output
 _Same as fastxRepeatAnalysisReport.py_
 
