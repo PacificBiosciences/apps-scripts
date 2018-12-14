@@ -29,7 +29,7 @@ def main(parser):
     genomeSize            = sum(bam.lengths)
     targets['expected']   = (nZMWs * (avgReadLength - targets.length) / genomeSize).clip_lower(0)
     results               = targets.join(counts)
-    results['enrichment'] = results.eval('onTargetZMWs / expected')
+    results['enrichment'] = results.eval('onTargetZMWs / expected').fillna(0)
     #write output
     results.to_csv('{}/onTargetCounts.tsv'.format(args.outdir),
                    float_format=FLOATFORMAT,header=True)
