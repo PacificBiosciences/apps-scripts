@@ -46,9 +46,8 @@ def isGoodAlignment(rec,start,stop):
 
 def makeCounter(bam,**kwargs):
     def counter(ctg,start,stop):
-        return len([rec 
-                    for rec in bam.fetch(ctg,start,stop) 
-                    if isGoodAlignment(rec,start,stop,**kwargs)])
+        return sum(1 for rec in bam.fetch(ctg,start,stop) 
+                   if isGoodAlignment(rec,start,stop,**kwargs))
     return counter
 
 def getReadStats(bam):
