@@ -2,7 +2,7 @@
 
 import pandas as pd
 import sys,os,pysam
-from resources.utils import readBED,getZmw
+from resources.utils import readBED
 
 FLOATFORMAT='%.4f'
 
@@ -37,15 +37,17 @@ def main(parser):
     return results
 
 def isGoodAlignment(rec,start,stop):
-    #spanning reads.  
+    #spanning primary mapped reads
     #Add other filters as needed for map quality, etc here
-    return rec.reference_start < start and rec.reference_end > stop
+    return     rec.reference_start < start \
+           and rec.reference_end > stop \
+           and not (rec.flag & 0x900)
 
 def makeCounter(bam,**kwargs):
     def counter(ctg,start,stop):
-        return len({getZmw(rec.query_name) 
+        return len([rec 
                     for rec in bam.fetch(ctg,start,stop) 
-                    if isGoodAlignment(rec,start,stop,**kwargs)})
+                    if isGoodAlignment(rec,start,stop,**kwargs)])
     return counter
 
 def getReadStats(bam):
@@ -53,6 +55,8 @@ def getReadStats(bam):
     mean = 0.0
     bam.reset()
     for rec in bam:
+        if rec.flag & 0x900:
+            continue
         n += 1
         mean += (rec.query_length - mean) / n
     return n,mean

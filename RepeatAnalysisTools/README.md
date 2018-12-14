@@ -26,11 +26,10 @@ Generate table of ZMW counts per target.
     $ python countOnTarget.py combined.consensusalignmentset.bam resources/human_hs37d5.targets.bed
     $ column -ts, onTargetCounts.tsv
     name     ctg  start      end        length  expected  onTargetZMWs  enrichment
-    HTT      4    3076554    3076717    163     0.0172    1164          67683.5412
-    C9orf72  9    27573435   27573596   161     0.0172    0             0.0000
-    FMR1     X    146993447  146993679  232     0.0166    754           45332.5720
+    HTT      4    3076554    3076717    163     0.0167    1164          69787.1946
+    C9orf72  9    27573435   27573596   161     0.0167    0             0.0000
+    FMR1     X    146993447  146993679  232     0.0161    754           46761.0800
     ATXN10   22   46189527   46191972   2445    0.0000    0             0.0000
-
     
 ## fastxRepeatAnalysisReport.py
 Generate "waterfall" and repeat count kde plots for unaligned CCS reads using flanking sequence.  
