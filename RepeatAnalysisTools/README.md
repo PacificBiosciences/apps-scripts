@@ -6,8 +6,8 @@ UNDER CONSTRUCTION
 ## countOnTarget.py
 Generate table of ZMW counts per target.
 ### Dependencies
- - pandas
- - pysam
+ - [pandas](https://pandas.pydata.org/)
+ - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
 ### Usage
     $ python countOnTarget.py -h
     usage: countOnTarget.py [-h] [-o,--outdir OUTDIR] inBAM inBED
@@ -24,21 +24,23 @@ Generate table of ZMW counts per target.
 
 ### Example
     $ python countOnTarget.py combined.consensusalignmentset.bam resources/human_hs37d5.targets.bed
-    $ cat onTargetCounts.tsv
-            onTargetZMWs
-    C9orf72 0
-    FMR1    754
-    HTT     1164
+    $ column -ts, onTargetCounts.tsv
+    name     ctg  start      end        length  expected  onTargetZMWs  enrichment
+    HTT      4    3076554    3076717    163     0.0172    1164          67683.5412
+    C9orf72  9    27573435   27573596   161     0.0172    0             0.0000
+    FMR1     X    146993447  146993679  232     0.0166    754           45332.5720
+    ATXN10   22   46189527   46191972   2445    0.0000    0
 
+    
 ## fastxRepeatAnalysisReport.py
 Generate "waterfall" and repeat count kde plots for unaligned CCS reads using flanking sequence.  
 ### Dependencies
- - matplotlib
- - numpy
- - pandas
- - seaborn
- - mappy
- - pysam
+ - [matplotlib](https://matplotlib.org/)
+ - [numpy](http://www.numpy.org/)
+ - [pandas](https://pandas.pydata.org/)
+ - [seaborn](https://seaborn.pydata.org/)
+ - [mappy](https://github.com/lh3/minimap2/tree/master/python)
+ - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
 ### Usage
     $ python fastxRepeatAnalysisReport.py -h
     usage: fastxRepeatAnalysisReport.py [-h] [-t,--target TARGET]
@@ -101,12 +103,12 @@ Generate "waterfall" and repeat count kde plots for unaligned CCS reads using fl
 ## RepeatAnalysisReport.py
 Generate "waterfall" and repeat count kde plots for aligned CCS reads using BED file with defined repeat regions.
 ### Dependencies
- - matplotlib
- - numpy
- - pandas
- - seaborn
- - mappy
- - pysam
+ - [matplotlib](https://matplotlib.org/)
+ - [numpy](http://www.numpy.org/)
+ - [pandas](https://pandas.pydata.org/)
+ - [seaborn](https://seaborn.pydata.org/)
+ - [mappy](https://github.com/lh3/minimap2/tree/master/python)
+ - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
 ### Usage
     $ python RepeatAnalysisReport.py -h
     usage: RepeatAnalysisReport.py [-h] [-o,--outDir OUTDIR] [-s,--sample SAMPLE]
@@ -142,8 +144,18 @@ _Same as fastxRepeatAnalysisReport.py_
 Map repeat-extension data to targets, parameterized to reduce alignment cost for long expansions
 
 ### Dependencies
- - minimap2
- - samtools
+ - [minimap2](https://github.com/lh3/minimap2)
+ - [samtools](https://github.com/samtools/samtools)
 
 ### Usage
-    minimap2_e40.sh REFFASTA QUERY OUTBAM
+    minimap2_e40.sh REFFASTA QUERY OUTBAM [SAMPLE]
+
+## pbmm2_extension.sh
+Map repeat-extension data to targets using pbmm2 (recommended), parameterized to reduce alignment cost for long expansions
+
+### Dependencies
+ - [pbmm2](https://github.com/PacificBiosciences/pbmm2) 
+
+### Usage
+    pbmm2_extension.sh REFFASTA QUERY OUTFILE [SAMPLE]
+
