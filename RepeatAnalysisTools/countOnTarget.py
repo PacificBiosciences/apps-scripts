@@ -4,6 +4,7 @@ import pandas as pd
 import sys,os,pysam
 from resources.utils import readBED
 
+ALIGNFILTER=0x900
 FLOATFORMAT='%.4f'
 
 def main(parser):
@@ -41,7 +42,7 @@ def isGoodAlignment(rec,start,stop):
     #Add other filters as needed for map quality, etc here
     return     rec.reference_start < start \
            and rec.reference_end > stop \
-           and not (rec.flag & 0x900)
+           and not (rec.flag & ALIGNFILTER)
 
 def makeCounter(bam,**kwargs):
     def counter(ctg,start,stop):
@@ -55,7 +56,7 @@ def getReadStats(bam):
     mean = 0.0
     bam.reset()
     for rec in bam:
-        if rec.flag & 0x900:
+        if rec.flag & ALIGNFILTER:
             continue
         n += 1
         mean += (rec.query_length - mean) / n
