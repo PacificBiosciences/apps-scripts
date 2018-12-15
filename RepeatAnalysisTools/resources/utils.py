@@ -12,6 +12,10 @@ def getZmw(readname):
     '''extract the first two fields <movie>/<holenumber>/<other>'''
     return '/'.join(readname.split('/')[:2])
 
+def getHn(name):
+    '''extract the holenumber from a readname'''
+    return int(name.split('/')[1])
+
 def readBED(bedfile,names=['ctg','start','end','name'],usecols=None):
     if not usecols:
         usecols = range(len(names))
