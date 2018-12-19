@@ -10,7 +10,7 @@ UNDER CONSTRUCTION
  - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
  - [pbcore](https://github.com/pacificbiosciences/pbcore/)
 ### Usage
-    $ python RepeatAnalysisTools/NoAmpRestrictionDiagnostics.py  -h
+    $ python NoAmpRestrictionDiagnostics.py  -h
     usage: NoAmpRestrictionDiagnostics.py [-h] [-o,--outDir OUTDIR]
                                           [-s,--subreadsBAM SUBREADSBAM]
                                           [-a,--adapterFasta ADAPTERFASTA]
@@ -45,7 +45,12 @@ UNDER CONSTRUCTION
       -f,--minFlankScore MINFLANKSCORE
                             minimum adapter flanking score. Default 0
 ### Example
-    $ python RepeatAnalysisTools/NoAmpRestrictionDiagnostics.py ccs.recalled.2.hs37d5.bam human_hs37d5.targets.bed human_hs37d5.fasta restriction_enzymes.tsv -s tetraloop_recall.subreads.bam -a adapters.tetraloop.fasta
+    $ python NoAmpRestrictionDiagnostics.py ccs.recalled.2.hs37d5.bam \
+                                            human_hs37d5.targets.bed \
+                                            human_hs37d5.fasta \
+                                            restriction_enzymes.tsv \
+                                            -s tetraloop_recall.subreads.bam \
+                                            -a adapters.tetraloop.fasta
 ### Output
     $ column -t adapterReport.tsv
     adapters     ZMWcount  TotalFraction  mappedCCS  CCSfrac
