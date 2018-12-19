@@ -11,6 +11,8 @@ from resources.utils import rc,\
 
 ALIGNFILTER=0x900
 FLOATFORMAT='%.2f'
+PCTFUNC='{:,.2%}'.format
+NOADAPTER='NoAd'
 
 def main(parser):
     args = parser.parse_args()
@@ -39,20 +41,17 @@ def main(parser):
         adClassifier = classifyZmw(args.adapterFasta)
         holeClasses  = adapters.groupby('holeNumber')\
                                .ad_parsed.apply(adClassifier)\
-                               .map(str)\
-                               .str.replace(',',';')\
-                               .str.replace(' ','')\
-                               .str.replace('\'','')
-        #write summary table
+                               .str.join(';')
+        #build summary table (write later)
+        noAdaps  = ';'.join([NOADAPTER,NOADAPTER])
         cnts     = holeClasses.value_counts()\
-                              .rename('ZMWcount')
-        frac     = (1.*cnts/cnts.sum()).rename('Fraction')\
-                                       .map('{:,.2%}'.format)
+                              .append(pd.Series({noAdaps:bam.unmapped - len(adapters)}))\
+                              .rename('ZMWcount')\
+                              .sort_values(ascending=False)
+        frac     = (1.*cnts/cnts.sum()).rename('TotalFraction')\
+                                       .map(PCTFUNC)
         adreport = pd.DataFrame([cnts,frac]).T
         adreport.index.name = 'adapters'
-        adreport.to_csv('{}/adapterReport.tsv'.format(args.outDir),
-                          sep='\t',
-                          float_format=FLOATFORMAT)
     else:
         print 'WARNING: No adapter information will be generated'
 
@@ -144,6 +143,17 @@ def main(parser):
         #include adapter information from subread data
         onTarget['adapters'] = onTarget.holeNumber.map(holeClasses.to_dict())
         grpCols += ['adapters']
+        #also write adapter report here, after adding CCS info
+        aBam.reset()
+        adreport['mappedCCS'] = holeClasses[[getHn(rec.query_name) for rec in aBam
+                                             if not (rec.flag & ALIGNFILTER)]]\
+                                           .value_counts().astype(int)
+        adreport.fillna(0)
+        adreport['CCSfrac']   = (adreport.mappedCCS / adreport.ZMWcount).fillna(0)\
+                                                                        .map(PCTFUNC)
+        adreport.to_csv('{}/adapterReport.tsv'.format(args.outDir),
+                          sep='\t',
+                          float_format=FLOATFORMAT)
     #count up read classes
     classCounts = onTarget.groupby(grpCols+enzCols)\
                           .size().rename('ZMWcount')\
@@ -151,7 +161,7 @@ def main(parser):
                           .fillna(0)
     #add fractions column
     classCounts['Fraction'] = (1.0*classCounts.ZMWcount / classCounts.ZMWcount.sum())\
-                              .map('{:,.2%}'.format)
+                              .map(PCTFUNC)
 
     #write results
     classCounts.to_csv('{}/restrictionCounts.csv'.format(args.outDir),
@@ -169,7 +179,7 @@ def adapterParser(adapterFasta, minAlnScore=0,minFlankScore=0):
                         .astype({1:float,2:int})
         split.loc[((split[1] < minAlnScore) | (split[2] < minFlankScore)),0] = None
         return split[0].map(adMap)\
-                       .fillna('NoAd')
+                       .fillna(NOADAPTER)
     return parser
 
 def classifyZmw(adapterFasta):

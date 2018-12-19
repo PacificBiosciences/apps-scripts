@@ -3,6 +3,75 @@ This repo contains miscellaneous stand-alone scripts for diagnosing and plotting
 
 UNDER CONSTRUCTION
 
+## NoAmpRestrictionDiagnostics.py
+### Dependencies
+ - [numpy](http://www.numpy.org/)
+ - [pandas](https://pandas.pydata.org/)
+ - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
+ - [pbcore](https://github.com/pacificbiosciences/pbcore/)
+### Usage
+    $ python RepeatAnalysisTools/NoAmpRestrictionDiagnostics.py  -h
+    usage: NoAmpRestrictionDiagnostics.py [-h] [-o,--outDir OUTDIR]
+                                          [-s,--subreadsBAM SUBREADSBAM]
+                                          [-a,--adapterFasta ADAPTERFASTA]
+                                          [-m,--minAdapterScore MINADAPTERSCORE]
+                                          [-f,--minFlankScore MINFLANKSCORE]
+                                          inBAM inBED reference reTable
+    
+    Generate restriction enzyme and [optionally] adapter report for NoAmp protocol
+    
+    positional arguments:
+      inBAM                 input BAM of CCS alignments to reference
+      inBED                 input BED defining location of repeat region(s).
+                            Columns ['ctg','start','end','name']
+      reference             Reference fasta used for mapping BAM
+      reTable               tsv table of restriction enzymes and cut sequences.
+                            Use multiple lines for degenerate cutsites Columns:
+                            ['name','cutsite']
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -o,--outDir OUTDIR    Output directory. Default
+                            /home/UNIXHOME/jharting/gitrepos/apps-scripts
+      -s,--subreadsBAM SUBREADSBAM
+                            refarmed subreads bam for identifying adapter types.
+                            Must have 'ad' tag from '--adpqc' option in bam2bam.
+                            Default None
+      -a,--adapterFasta ADAPTERFASTA
+                            fasta of re-farmed adapter sequences. Required if '-s'
+                            option used. Default None
+      -m,--minAdapterScore MINADAPTERSCORE
+                            minimum adapter score. Default 0
+      -f,--minFlankScore MINFLANKSCORE
+                            minimum adapter flanking score. Default 0
+### Example
+    $ python RepeatAnalysisTools/NoAmpRestrictionDiagnostics.py ccs.recalled.2.hs37d5.bam human_hs37d5.targets.bed human_hs37d5.fasta restriction_enzymes.tsv -s tetraloop_recall.subreads.bam -a adapters.tetraloop.fasta
+### Output
+    $ column -t adapterReport.tsv
+    adapters     ZMWcount  TotalFraction  mappedCCS  CCSfrac
+    NoAd;NoAd    96376     74.96%                    0.00%
+    TL_42;tc6    16556     12.88%         11277.00   68.11%
+    NoAd;TL_42   11097     8.63%          1.00       0.01%
+    NoAd;tc6     3122      2.43%                     0.00%
+    tc6;tc6      816       0.63%          441.00     54.04%
+    TL_42;TL_42  607       0.47%          361.00     59.47%
+
+    $ column -t restrictionCounts.csv
+    target  adapters     Acc1_int  SexA1_int  BamH1_int  EcoR1_int  EcoR1_rend  ZMWcount  Fraction
+    ATXN10  TL_42;tc6    2         1          1          0          0           1         0.06%
+    ATXN10  TL_42;tc6    2         1          1          0          1           434       24.00%
+    ATXN10  tc6;tc6      2         1          0          0          0           1         0.06%
+    ATXN10  tc6;tc6      2         1          1          1          0           3         0.17%
+    FMR1    TL_42;TL_42  0         0          1          0          1           1         0.06%
+    FMR1    TL_42;tc6    0         0          1          0          0           1         0.06%
+    FMR1    TL_42;tc6    0         0          1          0          1           189       10.45%
+    FMR1    TL_42;tc6    0         0          1          1          0           140       7.74%
+    FMR1    tc6;tc6      0         0          1          1          0           3         0.17%
+    HTT     TL_42;tc6    0         0          1          0          0           10        0.55%
+    HTT     TL_42;tc6    0         0          1          0          1           602       33.30%
+    HTT     TL_42;tc6    0         0          1          1          0           421       23.29%
+    HTT     tc6;tc6      0         0          1          0          1           2         0.11%
+
 ## countOnTarget.py
 Generate table of ZMW counts per target.
 ### Dependencies
