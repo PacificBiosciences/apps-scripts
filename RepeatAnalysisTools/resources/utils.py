@@ -45,7 +45,9 @@ def extractRepeat(sequence,aligner):
 
 def getPositions(motif):
     def finder(seq):
-        df = pd.DataFrame([1.0*m.start()/len(motif) for m in re.finditer(motif,seq)],
+        #df = pd.DataFrame([1.0*m.start()/len(motif) for m in re.finditer(motif,seq)],
+        #                   columns=['position'])
+        df = pd.DataFrame([1.0*m.start() for m in re.finditer(motif,seq)],
                            columns=['position'])
         df['motif'] = motif
         return df

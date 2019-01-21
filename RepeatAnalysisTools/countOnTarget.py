@@ -32,7 +32,8 @@ def main(parser):
     results               = targets.join(counts)
     results['enrichment'] = results.eval('onTargetZMWs / expected').fillna(0)
     #write output
-    results.to_csv('{}/onTargetCounts.tsv'.format(args.outdir),
+    s = args.sample + '.' if args.sample else ''
+    results.to_csv('{d}/{s}onTargetCounts.csv'.format(d=args.outdir,s=s),
                    float_format=FLOATFORMAT,header=True)
 
     return results
@@ -74,6 +75,8 @@ if __name__ == '__main__':
                     help='BED file with targets')
     parser.add_argument('-o,--outdir', dest='outdir', type=str, default=os.getcwd(),
                     help='directory to save output file.  default cwd.')
+    parser.add_argument('-s,--sample', dest='sample', type=str, default=None,
+                    help='Sample name to prepend to output file.  default None')
     
     try:
         result = main(parser)

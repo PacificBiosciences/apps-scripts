@@ -12,7 +12,7 @@ def waterfallPlot(data,row=None,x='position',y='idx',hue='motif'):
                       sharex=False,sharey=False)
     g.map(plt.scatter,x,y,marker=',',s=1.5)
     g.add_legend()
-    g.set_xlabels('Repeat Copies')
+    g.set_xlabels('Position')
     g.set_ylabels('CCS Read')
     return g
 

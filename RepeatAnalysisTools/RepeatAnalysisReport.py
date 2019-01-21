@@ -13,6 +13,7 @@ from resources.utils import extractRepeat,\
 from resources.plotting import waterfallPlot,\
                                countPlot
 
+ALIGNFILTER=0x900
 #Plotting resolution
 DPI=400
 
@@ -38,7 +39,8 @@ def main(parser):
         #extract sequence between flanks
         repeatRegions = pd.DataFrame({'read'       : rec.query_name,
                                       'subsequence': extractRepeat(rec.query_sequence,aligner)}
-                                      for rec in bam.fetch(row.ctg,row.start,row.end))
+                                      for rec in bam.fetch(row.ctg,row.start,row.end)
+                                      if not (rec.flag & ALIGNFILTER))
         #make empty df for targets with no hits
         if not len(repeatRegions):
             repeatRegions    = pd.DataFrame(columns=['read','subsequence'])
@@ -98,6 +100,10 @@ def main(parser):
             .rename('repeats')\
             .reset_index()\
             .to_csv(outfileName('repeatCounts','csv'),
+                    index=False)
+
+    print 'Writing extracted reagions'
+    filtered.to_csv(outfileName('exractedSequence','csv'),
                     index=False)
 
     return repeatDf,summaryDf

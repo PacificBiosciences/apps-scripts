@@ -26,9 +26,10 @@ def main(parser):
         bam      = pysam.AlignmentFile(args.subreadsBAM,
                                        check_sq=False)
         adapters = pd.DataFrame([{'holeNumber':getHn(rec.query_name),
-                                  'ad'        :rec.get_tag('ad')}
-                         for rec in bam 
-                         if rec.has_tag('ad')])
+                                  'ad'        :getAdTag(rec)}
+                                 # 'ad'        :rec.get_tag('ad')}
+                                 for rec in bam]) 
+                   #              if rec.has_tag('ad')])
         adParser = adapterParser(args.adapterFasta,
                                  minAlnScore=args.minAdapterScore,
                                  minFlankScore=args.minFlankScore)
@@ -43,9 +44,8 @@ def main(parser):
                                .ad_parsed.apply(adClassifier)\
                                .str.join(';')
         #build summary table (write later)
-        noAdaps  = ';'.join([NOADAPTER,NOADAPTER])
+        #noAdaps  = ';'.join([NOADAPTER,NOADAPTER])
         cnts     = holeClasses.value_counts()\
-                              .append(pd.Series({noAdaps:bam.unmapped - len(adapters)}))\
                               .rename('ZMWcount')\
                               .sort_values(ascending=False)
         frac     = (1.*cnts/cnts.sum()).rename('TotalFraction')\
@@ -65,12 +65,12 @@ def main(parser):
     #for each read intersecting a target, get holenumber 
     #and ref start/stop of primary alignment
     onTarget = pd.DataFrame([{'holeNumber': getHn(rec.query_name),
-                              'target'    : name,
-                              'ctg'       : target.ctg,
+                              'target'    : target,
+                              'ctg'       : row.ctg,
                               'rStart'    : rec.reference_start,
                               'rEnd'      : rec.reference_end}
-                             for name,target in targets.iterrows()
-                             for rec in aBam.fetch(target.ctg,target.start,target.end)
+                             for target,row in targets.iterrows()
+                             for rec in aBam.fetch(row.ctg,row.start,row.end)
                              if not (rec.flag & ALIGNFILTER)])
     #the part of the reference sequence in the region of each target that is
     #covered by at least one read (plus some extra offset/buffer)
@@ -130,7 +130,7 @@ def main(parser):
                                      & (onTarget.rEnd   <= stop  + row.rStart)
                 mid  = isOnTargetCtg & (onTarget.rStart <  start + row.rStart)\
                                      & (onTarget.rEnd   >  stop  + row.rStart)
-                #ad hits to table
+                #add hits to table
                 onTarget.loc[lend,enz+suff['lend']] += 1
                 onTarget.loc[rend,enz+suff['rend']] += 1
                 onTarget.loc[mid,enz+suff['int']]   += 1
@@ -139,6 +139,11 @@ def main(parser):
     #remaining enzyme columns are all to right of 'target'
     enzCols  = list(onTarget.columns[onTarget.columns.get_loc('target') + 1:])
     grpCols = ['target']
+
+    #outfile name function
+    sample      = args.sampleName + '.' if args.sampleName else ''
+    outfilename = lambda name: '{d}/{s}{n}'.format(d=args.outDir,s=sample,n=name)
+
     if args.adapterFasta:
         #include adapter information from subread data
         onTarget['adapters'] = onTarget.holeNumber.map(holeClasses.to_dict())
@@ -151,9 +156,8 @@ def main(parser):
         adreport.fillna(0)
         adreport['CCSfrac']   = (adreport.mappedCCS / adreport.ZMWcount).fillna(0)\
                                                                         .map(PCTFUNC)
-        adreport.to_csv('{}/adapterReport.tsv'.format(args.outDir),
-                          sep='\t',
-                          float_format=FLOATFORMAT)
+        adreport.to_csv(outfilename('adapterReport.csv'),
+                        float_format=FLOATFORMAT)
     #count up read classes
     classCounts = onTarget.groupby(grpCols+enzCols)\
                           .size().rename('ZMWcount')\
@@ -164,20 +168,27 @@ def main(parser):
                               .map(PCTFUNC)
 
     #write results
-    classCounts.to_csv('{}/restrictionCounts.csv'.format(args.outDir),
-                         sep='\t',
-                         float_format=FLOATFORMAT)
+    cols = sorted(classCounts.columns[:-2]) + list(classCounts.columns[-2:])
+    classCounts[cols].to_csv(outfilename('restrictionCounts.csv'),
+                             float_format=FLOATFORMAT)
 
     return classCounts
+
+def getAdTag(rec):
+    if rec.has_tag('ad'):
+        return rec.get_tag('ad')
+    else:
+        return '.;.'
 
 def adapterParser(adapterFasta, minAlnScore=0,minFlankScore=0):
     '''id,alnScore,flankScore'''
     adMap = {str(i):rec.name for i,rec in enumerate(FastaReader(adapterFasta))}
+    adMap['.'] = NOADAPTER
     def parser(adSeries):
         split = adSeries.str.split(',',expand=True)\
                         .fillna(-1)\
                         .astype({1:float,2:int})
-        split.loc[((split[1] < minAlnScore) | (split[2] < minFlankScore)),0] = None
+        split.loc[((split[1] < minAlnScore) | (split[2] < minFlankScore)),0] = NOADAPTER
         return split[0].map(adMap)\
                        .fillna(NOADAPTER)
     return parser
@@ -239,6 +250,8 @@ if __name__ == '__main__':
                     help='minimum adapter score.  Default 0')
     parser.add_argument('-f,--minFlankScore', dest='minFlankScore', type=int, default=0,
                     help='minimum adapter flanking score.  Default 0')
+    parser.add_argument('-n,--sampleName', dest='sampleName', type=str, default='',
+                    help='Sample name to prepend to output files.  Default None')
     
     try:
         result = main(parser)

@@ -84,6 +84,10 @@ def main(parser):
          .astype(int)\
          .to_csv(outfileName('repeatCounts','csv'))
 
+    print 'Writing extracted Sequence'
+    filtered.to_csv(outfileName('extractedSequence','csv'),
+                    index=False)
+
     return allDf
 
 class fastRepeatAnalysisReport_Exception(Exception):
