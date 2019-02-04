@@ -4,7 +4,7 @@
 
 ### Requirements
  * bam2bam software suite
-    Temporarily unavailable.  Contact [PacBio Appslab](jharting@pacificbiosciences.com)
+    Temporarily unavailable.  Contact [PacBio Appslab](mailto:jharting@pacificbiosciences.com)
  * Adapter sequences fasta
  * Raw subreads/scraps bam files
 
@@ -26,7 +26,8 @@ We recommend calling CCS consensus on the subreads for further analysis.
 ## Alignment to Reference
 We provide two bash scripts to parameterize alignment of CCS reads to the reference.  Both scripts use minimap2 as the aligner and have parameters set such that reads with extended repeat motifs are correctly mapped to the reference.
 
-    pbmm2_extension.sh human_hs37d5.fasta ccs/m54006_181206_225403.tetraloop_recall.consensusreadset.xml \
+    pbmm2_extension.sh human_hs37d5.fasta \
+                       ccs/m54006_181206_225403.tetraloop_recall.consensusreadset.xml \
                        aligned/m54006_181206_225403.tetraloop_recall.consensusalignmentset.xml \
                        [samplename]
 
@@ -43,7 +44,7 @@ No-Amp prep can be diagnosed for adapter configuration and restriction enzyme cu
            human_hs37d5.fasta \
            restriction_enzymes.tsv
 
-Inputs include a BED file of target regions (contig,start,stop,name,motifs):
+Inputs include a BED file of target regions. *Columns* contig, start, stop, name, motifs.
     
     $ head resources/human_hs37d5.targets_repeatonly.bed
     4   3076554     3076717     HTT     CAG,CAA,CCG,CCA,CGG
