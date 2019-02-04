@@ -16,7 +16,7 @@ Adapter recalling can be done with a single command.  This takes as input the su
             --adapters adapters.tetraloop.fasta \
             m54006_181206_225403.subreadset.xml
 
-# Call CCS Reads
+## Call CCS Reads
 We recommend calling CCS consensus on the subreads for further analysis.
 
     ccs -j 20 \
