@@ -98,14 +98,21 @@ def main(parser):
     summaryDf.to_csv(outfileName('summary','csv'))
 
     print 'Writing counts table'
-    repeatDf.reset_index()\
-            .groupby(['target','readName','motif'])\
-            .size()\
-            .rename('repeats')\
-            .reset_index()\
-            .to_csv(outfileName('repeatCounts','csv'),
-                    index=False)
-
+    table = repeatDf.reset_index()\
+                    .groupby(['target','readName','motif'])\
+                    .size()\
+                    .rename('repeats')\
+                    .reset_index()
+    writer = pd.ExcelWriter(outfileName('repeatCounts','xlsx'))
+    for target,data in table.groupby('target'):
+        motifs = [('repeats',m) for m in bed.query('name=="%s"'%target).motifs.iloc[0].split(',')]
+        data[['readName','motif','repeats']].set_index(['motif','readName'])\
+                                            .unstack(0)\
+                                            .fillna(0).astype(int)\
+                                            .reindex(columns=motifs)\
+                                            .dropna(axis=1)\
+                                            .sort_values(motifs[0])\
+                                            .to_excel(writer,target)
 
     return repeatDf,summaryDf
 
