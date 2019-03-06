@@ -6,7 +6,7 @@ OUTDIR=$5
 
 #Recall tool, not currently available for customers
 RECALLADAPTERS=/mnt/software/p/ppa/develop-61955/bam2bam
-NPROC=48
+NPROC=24
 CCSPROC=8
 MINBARCODESCORE=26
 
