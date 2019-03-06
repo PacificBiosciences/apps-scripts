@@ -28,6 +28,10 @@ def main(parser):
         #catch missing columns in bed
         raise RepeatAnalysisReport_Exception(e.message)
     ref  = pysam.FastaFile(args.reference)
+
+    #function to make output file names
+    s           = args.sample + '.' if args.sample else ''
+    outfileName = lambda name,ext: '{d}/{s}{n}.{e}'.format(d=args.outDir,s=s,n=name,e=ext)
     
     targets,summaries = {},{}
     for i,row in bed.iterrows():
@@ -69,6 +73,9 @@ def main(parser):
         #add results to containers for concating later
         targets[row['name']]   = df
         summaries[row['name']] = summary
+        #write extracted regions
+        filtered.to_csv(outfileName('exractedSequence_%s'%row['name'],'csv'),
+                        index=False)
         #remove temp flank ref
         os.remove(tmp.name)
     #concat results
@@ -76,9 +83,6 @@ def main(parser):
                   .reset_index('foo',drop=True)
     summaryDf = pd.concat(summaries).unstack()
     summaryDf.index.name = 'target'
-    #function to make output file names
-    s           = args.sample + '.' if args.sample else ''
-    outfileName = lambda name,ext: '{d}/{s}{n}.{e}'.format(d=args.outDir,s=s,n=name,e=ext)
 
     print 'Plotting Waterfall'
     g = waterfallPlot(repeatDf.reset_index(),row='target')
@@ -102,9 +106,6 @@ def main(parser):
             .to_csv(outfileName('repeatCounts','csv'),
                     index=False)
 
-    print 'Writing extracted reagions'
-    filtered.to_csv(outfileName('exractedSequence','csv'),
-                    index=False)
 
     return repeatDf,summaryDf
 
