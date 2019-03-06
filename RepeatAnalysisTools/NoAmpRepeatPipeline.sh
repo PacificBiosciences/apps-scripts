@@ -4,6 +4,9 @@ BARCODES=$3
 REFERENCE=$4
 OUTDIR=$5
 
+source /mnt/software/Modules/current/init/bash
+module load smrttools parallel
+
 #Recall tool, not currently available for customers
 RECALLADAPTERS=/mnt/software/p/ppa/develop-61955/bam2bam
 NPROC=24
