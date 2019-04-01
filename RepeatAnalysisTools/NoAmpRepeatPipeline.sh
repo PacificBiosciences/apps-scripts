@@ -4,14 +4,37 @@ BARCODES=$3
 REFERENCE=$4
 OUTDIR=$5
 
-source /mnt/software/Modules/current/init/bash
-module load smrttools/mainline parallel
-
 #Recall tool, not currently available for customers
-RECALLADAPTERS=/mnt/software/p/ppa/develop-61955/bam2bam
 NPROC=24
 CCSPROC=8
 MINBARCODESCORE=26
+
+#Check for requires executables
+RECALLADAPTERS=$(command -v recalladapters)
+if [ ! -x "${RECALLADAPTERS}" ]; then
+ echo 'Not found: *recalladapters* is needed to run this script. See https://github.com/PacificBiosciences/pbbioconda'
+ exit 1
+fi
+LIMA=$(command -v lima)
+if [ ! -x "${LIMA}" ]; then
+ echo 'Not found: *lima* is needed to run this script. See https://github.com/PacificBiosciences/pbbioconda'
+ exit 1
+fi  
+CCS=$(command -v ccs)
+if [ ! -x "${CCS}" ]; then
+ echo 'Not found: *ccs* is needed to run this script. See https://github.com/PacificBiosciences/pbbioconda'
+ exit 1
+fi
+PBMM2=$(command -v pbmm2)
+if [ ! -x "${PBMM2}" ]; then
+ echo 'Not found: *pbmm2* is needed to run this script. See https://github.com/PacificBiosciences/pbbioconda'
+ exit 1
+fi
+PARALLEL=$(command -v parallel)
+if [ ! -x "${PARALLEL}" ]; then
+ echo 'Not found: *gnu parallel* is needed to run this script. See https://github.com/PacificBiosciences/pbbioconda'
+ exit 1
+fi
 
 #get movie name
 MOVIENAME=$(basename ${SUBREADSET} | cut -d. -f1)
@@ -36,7 +59,7 @@ barcodeOut="${barcodeDir}/$(basename ${SUBREADSET} .subreadset.xml).refarm.barco
 barcodeSh="${barcodeDir}/runLima.sh"
 
 mkdir -p "${barcodeDir}"
-echo "$(which lima) \
+echo "${LIMA} \
 --same \
 --min-score ${MINBARCODESCORE} \
 --split-bam-named \
@@ -62,9 +85,9 @@ else
  nproc=${CCSPROC}
 fi
 
-echo "$(which parallel) \
+echo "${PARALLEL} \
 -j ${nParallel} \
-$(which ccs) \
+${CCS} \
 --numThreads ${nproc} \
 {} '${ccsOut}' \
 ::: ${barcodeDir}/*.subreadset.xml" > "${ccsSh}"
@@ -77,9 +100,9 @@ bcList=$(ls ${ccsDir}/*xml | awk -F. '{print $(NF-2)}' | paste -s)
 
 mkdir -p "${alignDir}"
 
-echo "$(which parallel) \
+echo "${PARALLEL} \
 -j ${nParallel} \
-$(which pbmm2) align \
+${PBMM2} align \
 --sort \
 --alignment-threads ${nproc} \
 -r 2k \
