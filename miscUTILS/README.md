@@ -1,7 +1,35 @@
 # Description
 This repo contains miscellaneous stand-alone scripts for working with PacBio Data
 
-## getJobData.py
+## updateBamBarcode2SM.py
+Update RG and SM tags in aligned PacBio BAM file using barcode values.  By default PacBio RG field is defined per movie/SMRTcell.  For barcoded BAM files (with the bc tag), this script updates each row with existing RG ID value plus barcode name.  The BAM header is also updated with added RG values.
+### Dependencies
+ - pysam
+### Usage
+    $ python updateBamBarcode2SM.py -h
+    usage: updateBamBarcode2SM.py [-h] [-b,--barcodes BARCODES]
+                                  [-o,--outfile OUTFILE]
+                                  infile
+    
+    Update RG tags with barcode information, and setting SM=barcode
+    
+    positional arguments:
+      infile                BAM file to edit
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -b,--barcodes BARCODES
+                            No header in m5 file. Default use standard PB
+                            barcodes, lexicographically ordered: bc1001..bc1384
+      -o,--outfile OUTFILE  Output BAM file. Default stdout 
+
+### Example
+    $ python updateBamBarcode2SM.py infile.bam > outfile.bam
+
+    $ python updateBamBarcode2SM.py -b barcodes.fasta infile.bam -o outfile.bam
+
+
+## getJobData.py DEPRECATED SAv6.0  Use pbservice instead
 Access downloadable data from SMRT Link jobs via the command line.  Can be used to print SMRT Link job output data names and locations, or to copy the outputs to a new location.
 ### Dependencies
  - pbcommand
