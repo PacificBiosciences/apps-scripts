@@ -49,7 +49,7 @@ if __name__ == '__main__':
     parser.add_argument('infile', metavar='infile', type=str,
                     help='BAM file to edit')
     parser.add_argument('-b,--barcodes', dest='barcodes', type=str, default=None,
-                    help='No header in m5 file.  Default use standard PB barcodes, lexicographically ordered: bc1001..bc1384' )
+                    help='Barcode fasta to get barcode names.  Default use standard PB barcodes, lexicographically ordered: bc1001..bc1384' )
     parser.add_argument('-o,--outfile', dest='outfile', type=str, default=sys.stdout,
                     help='Output BAM file.  Default stdout' )
 
