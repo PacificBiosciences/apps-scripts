@@ -19,7 +19,7 @@ Update RG and SM tags in aligned PacBio BAM file using barcode values.  By defau
     optional arguments:
       -h, --help            show this help message and exit
       -b,--barcodes BARCODES
-                            No header in m5 file. Default use standard PB
+                            Barcode fasta to get barcode names. Default use standard PB
                             barcodes, lexicographically ordered: bc1001..bc1384
       -o,--outfile OUTFILE  Output BAM file. Default stdout 
 
