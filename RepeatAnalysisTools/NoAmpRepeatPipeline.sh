@@ -89,6 +89,8 @@ echo "${PARALLEL} \
 -j ${nParallel} \
 ${CCS} \
 --numThreads ${nproc} \
+--minPasses 3 \
+--minPredictedAccuracy 0.99 \
 {} '${ccsOut}' \
 ::: ${barcodeDir}/*.subreadset.xml" > "${ccsSh}"
 bash "${ccsSh}"
@@ -115,6 +117,7 @@ ${PBMM2} align \
 -e 4 \
 -E 0 \
 -L 0.2 \
+-c 0 \
 --sample {} \
 $(readlink -f $REFERENCE) \
 ${ccsDir}/*{}.consensusreadset.xml \
