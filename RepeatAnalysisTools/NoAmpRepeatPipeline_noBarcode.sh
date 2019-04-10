@@ -65,7 +65,7 @@ mkdir -p "${alignDir}"
 echo "${PBMM2} align \
 --sort \
 --alignment-threads ${NPROC} \
--r 2k \
+-r 2000 \
 -A 2 \
 -B 5 \
 -z 400 \

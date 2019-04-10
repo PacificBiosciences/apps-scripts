@@ -107,7 +107,7 @@ echo "${PARALLEL} \
 ${PBMM2} align \
 --sort \
 --alignment-threads ${nproc} \
--r 2k \
+-r 2000 \
 -A 2 \
 -B 5 \
 -z 400 \

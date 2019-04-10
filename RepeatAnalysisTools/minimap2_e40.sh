@@ -16,7 +16,7 @@ minimap2 -a \
          --lj-min-ratio 0.2 \
          -B 5 \
          -A 2 \
-         -r 2k \
+         -r 2000 \
          -z 400,50 \
          -Y \
          --secondary=no \
