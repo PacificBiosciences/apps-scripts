@@ -11,7 +11,7 @@ from resources.utils import extractRepeat,\
                             countAlignments,\
                             readBED
 from resources.plotting import waterfallPlot,\
-                               countPlot
+                               countPlot2
 
 ALIGNFILTER=0x900
 #Plotting resolution
@@ -84,15 +84,33 @@ def main(parser):
     summaryDf = pd.concat(summaries).unstack()
     summaryDf.index.name = 'target'
 
-    print 'Plotting Waterfall'
-    g = waterfallPlot(repeatDf.reset_index(),row='target')
-    g.savefig(outfileName('waterfall','png'),dpi=DPI)
+    #print 'Plotting Waterfall'
+    #g = waterfallPlot(repeatDf.reset_index(),row='target')
+    #g.savefig(outfileName('waterfall','png'),dpi=DPI)
 
-    print 'Plotting histogram'
-    g = countPlot(repeatDf.reset_index(),
-                  dict(bed[['name','motifs']].values))
-    g.savefig(outfileName('repeatCount_kde','png'),
-              dpi=DPI)
+    print 'Plotting Figures'
+    #first motif for each tareet is primary
+    primaryMotifs = zip(bed['name'],bed.motifs.str.split(',',expand=True)[0].values)
+    for target,motif in primaryMotifs:
+        try:
+            data   = repeatDf.loc[target]
+            #waterfall
+            g = waterfallPlot(data) #target=target  (for label)
+            g.savefig(outfileName('.'.join([target,'waterfall']),'png'),dpi=DPI)
+            #histograms
+            counts = data.query('motif==@motif')\
+                         .groupby('idx')\
+                         .size().values
+            f = countPlot2(counts,target,motif,binsize=1)
+            f.savefig(outfileName('.'.join([target,'repeatCount_dist']),'png'),
+                      dpi=DPI)
+        except KeyError:
+            print '\tNo data for %s (skipping)' % target
+
+    #g = countPlot(repeatDf.reset_index(),
+    #              dict(bed[['name','motifs']].values))
+    #g.savefig(outfileName('repeatCount_kde','png'),
+    #          dpi=DPI)
 
     print 'Writing summary'
     summaryDf.to_csv(outfileName('summary','csv'))
