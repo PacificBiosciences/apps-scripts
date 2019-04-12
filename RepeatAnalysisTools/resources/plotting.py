@@ -41,14 +41,14 @@ def countPlot(data,targetDict):
 def countPlot2(counts,target,motif,binsize=1):
     f,ax = plt.subplots()
     ax.hist(counts,
-            bins=xrange(min(counts),max(counts)+1,binsize),
+            bins=xrange(min(counts)-1,max(counts)+1,binsize),
             align='left',
-            alpha=0.5)
+            alpha=0.6)
     ax.set_xlabel(' '.join([motif,'Repeat Copies']))
     ax.set_ylabel('CCS Reads')
     ax.set_title(target)
     ax2 = ax.twinx()
-    sns.kdeplot(counts,ax=ax2,color='k')
+    sns.kdeplot(counts,ax=ax2,color='k',bw=1,alpha=0.25)
     ax.spines['right'].set_visible(False)
     ax2.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)

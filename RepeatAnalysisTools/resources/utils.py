@@ -30,18 +30,21 @@ def readBED(bedfile,names=['ctg','start','end','name'],usecols=None):
 
 def getSubSeq(seq,aln):
     pos = sorted([getattr(a,att) for a in aln for att in ['q_st','q_en']])[1:-1]
-    return seq[slice(*pos)]
+    return pos + [seq[slice(*pos)]]
+    #return seq[slice(*pos)]
 
 def extractRepeat(sequence,aligner):
     aln = list(aligner.map(sequence))
     naln = len(aln)
     if naln == 2:
-        seq = getSubSeq(sequence,aln)
+        start,stop,seq = getSubSeq(sequence,aln)
+        #seq = getSubSeq(sequence,aln)
         if aln[0].strand == -1:
             seq = rc(seq)
     else:
         seq = 'One Sided' if naln==1 else 'Poor/no Alignment'
-    return seq
+    return start,stop,seq
+    #return seq
 
 def getPositions(motif):
     def finder(seq):

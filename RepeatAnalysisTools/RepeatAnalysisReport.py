@@ -12,6 +12,7 @@ from resources.utils import extractRepeat,\
                             readBED
 from resources.plotting import waterfallPlot,\
                                countPlot2
+from textwrap import wrap
 
 ALIGNFILTER=0x900
 #Plotting resolution
@@ -38,13 +39,22 @@ def main(parser):
         print 'Processing repeat regions: {n} -- {m}'.format(n=row['name'],m=row.motifs) 
         #cut out flanks from reference and use to identify repeat region
         #keep track of tmp reference file to remove it later
-        aligner,tmp   = getFlankAligner(ref,row.ctg,row.start,row.end,
+        #adjust start/stop for 0-based pysam coords
+        aligner,tmp   = getFlankAligner(ref,row.ctg,row.start-1,row.end,
                                         flanksize=args.flanksize)
         #extract sequence between flanks
-        repeatRegions = pd.DataFrame({'read'       : rec.query_name,
-                                      'subsequence': extractRepeat(rec.query_sequence,aligner)}
+        repeatRegions = pd.DataFrame([(rec.query_name,) + extractRepeat(rec.query_sequence,aligner)
                                       for rec in bam.fetch(row.ctg,row.start,row.end)
-                                      if not (rec.flag & ALIGNFILTER))
+                                      if not (rec.flag & ALIGNFILTER)],
+                                      columns=['read','start','stop','subsequence'])
+        repeatRegions.read = repeatRegions.read + '/' \
+                                                + repeatRegions.start.astype(str) \
+                                                + '_' \
+                                                + repeatRegions.stop.astype(str) 
+        #repeatRegions = pd.DataFrame({'read'       : rec.query_name,
+        #                              'subsequence': extractRepeat(rec.query_sequence,aligner)}
+        #                              for rec in bam.fetch(row.ctg,row.start,row.end)
+        #                              if not (rec.flag & ALIGNFILTER))
         #make empty df for targets with no hits
         if not len(repeatRegions):
             repeatRegions    = pd.DataFrame(columns=['read','subsequence'])
@@ -74,8 +84,14 @@ def main(parser):
         targets[row['name']]   = df
         summaries[row['name']] = summary
         #write extracted regions
-        filtered.to_csv(outfileName('exractedSequence_%s'%row['name'],'csv'),
-                        index=False)
+        with open(outfileName('exractedSequence_%s'%row['name'],'fasta'),'w') as fa:
+            for i,row in filtered.iterrows():
+                seq = '\n'.join(wrap(row['subsequence'],60))
+                fa.write('>{name}\n{seq}\n'.format(name=row['read'],
+                                                   seq=seq))
+        #filtered.to_csv(outfileName('exractedSequence_%s'%row['name'],'csv'),
+        #                index=False)
+
         #remove temp flank ref
         os.remove(tmp.name)
     #concat results
