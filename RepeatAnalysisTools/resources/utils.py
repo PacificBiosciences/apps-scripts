@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import re
+from textwrap import wrap
 
 _RC_MAP = dict(zip('-ACGNTacgt','-TGCNAtgca'))
 
@@ -19,10 +20,12 @@ def getHn(name):
 def readBED(bedfile,names=['ctg','start','end','name'],usecols=None):
     if not usecols:
         usecols = range(len(names))
+    dtypes = {'ctg':np.str,'start':np.int64,'stop':np.int64}
     df = pd.read_table(bedfile,
                        sep='\s+',
                        names=names,
-                       usecols=usecols)
+                       usecols=usecols,
+                       dtype=dtypes)
     missing = df.columns[df.isna().apply(np.all) == True]
     if len(missing):
         raise RepeatAnalysisUtils_Exception('Missing columns in BED file')#: %s' % ','.join(map(str,missing)))
@@ -66,6 +69,13 @@ def countAlignments(repeatRegions,reference=None):
     if reference:
         summary['reference'] = reference
     return summary,repeatRegions.drop(oneSided.append(poorAln))
+
+def writeFasta(fastaName,records,nWrap=60):
+    with open(fastaName,'w') as fa:
+        for name,sequence in records:
+            seq = '\n'.join(wrap(sequence,nWrap))
+            fa.write('>{name}\n{seq}\n'.format(name=name,seq=seq))
+    return fastaName
 
 class RepeatAnalysisUtils_Exception(Exception):
     pass

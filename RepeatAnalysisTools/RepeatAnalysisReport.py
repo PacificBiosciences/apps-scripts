@@ -1,4 +1,4 @@
-#! /home/UNIXHOME/jharting/anaconda2/bin/python
+#! /usr/bin/python
 
 import numpy as np
 import pandas as pd
@@ -9,14 +9,16 @@ from tempfile import NamedTemporaryFile
 from resources.utils import extractRepeat,\
                             getPositions,\
                             countAlignments,\
-                            readBED
+                            readBED,\
+                            writeFasta
 from resources.plotting import waterfallPlot,\
                                countPlot2
-from textwrap import wrap
 
 ALIGNFILTER=0x900
 #Plotting resolution
 DPI=400
+#column name ofr target insert
+SIZECOL='Insert Size (bp)'
 
 def main(parser):
     args = parser.parse_args()
@@ -34,7 +36,7 @@ def main(parser):
     s           = args.sample + '.' if args.sample else ''
     outfileName = lambda name,ext: '{d}/{s}{n}.{e}'.format(d=args.outDir,s=s,n=name,e=ext)
     
-    targets,summaries = {},{}
+    targets,insertLength,summaries = {},{},{}
     for i,row in bed.iterrows():
         print 'Processing repeat regions: {n} -- {m}'.format(n=row['name'],m=row.motifs) 
         #cut out flanks from reference and use to identify repeat region
@@ -51,22 +53,17 @@ def main(parser):
                                                 + repeatRegions.start.astype(str) \
                                                 + '_' \
                                                 + repeatRegions.stop.astype(str) 
-        #repeatRegions = pd.DataFrame({'read'       : rec.query_name,
-        #                              'subsequence': extractRepeat(rec.query_sequence,aligner)}
-        #                              for rec in bam.fetch(row.ctg,row.start,row.end)
-        #                              if not (rec.flag & ALIGNFILTER))
+        repeatRegions[SIZECOL] = repeatRegions.subsequence.str.len()
         #make empty df for targets with no hits
         if not len(repeatRegions):
-            repeatRegions    = pd.DataFrame(columns=['read','subsequence'])
+            repeatRegions    = pd.DataFrame(columns=['read','subsequence',SIZECOL])
         #sort records by length of repeat sequence
-        repeatRegions = repeatRegions.assign(size=repeatRegions.subsequence.map(len))\
-                                     .sort_values('size',ascending=False)\
-                                     .drop(columns='size')\
-                                     .reset_index(drop=True)
+        repeatRegions.sort_values(SIZECOL,ascending=False,inplace=True)
+        repeatRegions.reset_index(drop=True,inplace=True)
         #count alignments and filter for spanning reads
         summary,filtered = countAlignments(repeatRegions)
         #count repeat motifs
-        motifs   = row.motifs.split(',')
+        motifs = row.motifs.split(',')
         try:
             #get repeat positions in sequence for each motif
             motifDfs = [pd.concat(filtered.set_index('read',append=True)\
@@ -83,27 +80,20 @@ def main(parser):
         #add results to containers for concating later
         targets[row['name']]   = df
         summaries[row['name']] = summary
+        insertLength.update(dict(filtered[['read',SIZECOL]].values))
         #write extracted regions
-        with open(outfileName('exractedSequence_%s'%row['name'],'fasta'),'w') as fa:
-            for i,row in filtered.iterrows():
-                seq = '\n'.join(wrap(row['subsequence'],60))
-                fa.write('>{name}\n{seq}\n'.format(name=row['read'],
-                                                   seq=seq))
-        #filtered.to_csv(outfileName('exractedSequence_%s'%row['name'],'csv'),
-        #                index=False)
+        if len(filtered):
+            writeFasta(outfileName('exractedSequence_%s'%row['name'],'fasta'),
+                       filtered[['read','subsequence']].values)
 
-        #remove temp flank ref
+    #remove temp flank ref
         os.remove(tmp.name)
     #concat results
     repeatDf  = pd.concat(targets,names=['target','foo'])\
                   .reset_index('foo',drop=True)
     summaryDf = pd.concat(summaries).unstack()
     summaryDf.index.name = 'target'
-
-    #print 'Plotting Waterfall'
-    #g = waterfallPlot(repeatDf.reset_index(),row='target')
-    #g.savefig(outfileName('waterfall','png'),dpi=DPI)
-
+    
     print 'Plotting Figures'
     #first motif for each tareet is primary
     primaryMotifs = zip(bed['name'],bed.motifs.str.split(',',expand=True)[0].values)
@@ -114,19 +104,22 @@ def main(parser):
             g = waterfallPlot(data) #target=target  (for label)
             g.savefig(outfileName('.'.join([target,'waterfall']),'png'),dpi=DPI)
             #histograms
+            #plot main repeat motif
             counts = data.query('motif==@motif')\
                          .groupby('idx')\
                          .size().values
-            f = countPlot2(counts,target,motif,binsize=1)
-            f.savefig(outfileName('.'.join([target,'repeatCount_dist']),'png'),
+            xlabel = '%s Repeat Copies (exclusive)' % motif
+            f = countPlot2(counts,target,xlabel,binsize=1)
+            f.savefig(outfileName('.'.join([target,'motifCount_dist']),'png'),
+                      dpi=DPI)
+            #plot insert length
+            counts = [insertLength[r] for r in data.readName.unique()]
+            xlabel = 'Target Insert Length (bp)'
+            f = countPlot2(counts,target,xlabel,binsize=1)
+            f.savefig(outfileName('.'.join([target,'insertSize_dist']),'png'),
                       dpi=DPI)
         except KeyError:
             print '\tNo data for %s (skipping)' % target
-
-    #g = countPlot(repeatDf.reset_index(),
-    #              dict(bed[['name','motifs']].values))
-    #g.savefig(outfileName('repeatCount_kde','png'),
-    #          dpi=DPI)
 
     print 'Writing summary'
     summaryDf.to_csv(outfileName('summary','csv'))
@@ -140,13 +133,14 @@ def main(parser):
     writer = pd.ExcelWriter(outfileName('repeatCounts','xlsx'))
     for target,data in table.groupby('target'):
         motifs = [('repeats',m) for m in bed.query('name=="%s"'%target).motifs.iloc[0].split(',')]
-        data[['readName','motif','repeats']].set_index(['motif','readName'])\
-                                            .unstack(0)\
-                                            .fillna(0).astype(int)\
-                                            .reindex(columns=motifs)\
-                                            .dropna(axis=1)\
-                                            .sort_values(motifs[0])\
-                                            .to_excel(writer,target)
+        out = data[['readName','motif','repeats']].set_index(['motif','readName'])\
+                                                  .unstack(0)\
+                                                  .fillna(0).astype(int)\
+                                                  .reindex(columns=motifs)\
+                                                  .dropna(axis=1)
+        #add in total repeat length
+        out[(SIZECOL,'')] = out.index.map(insertLength)
+        out.sort_values([SIZECOL,motifs[0]]).to_excel(writer,target)
 
     return repeatDf,summaryDf
 

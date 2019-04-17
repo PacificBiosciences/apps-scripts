@@ -3,7 +3,6 @@ ADAPTERS=$2
 REFERENCE=$3
 OUTDIR=$4
 
-#Recall tool, not currently available for customers
 NPROC=24
 
 #Check for requires executables
@@ -43,7 +42,7 @@ bash "${refarmSh}"
 #CCS generation
 ccsDir="$(readlink -f ${OUTDIR})/ccs"
 ccsSh="${ccsDir}/runCCS.sh"
-ccsOut="${ccsDir}/${MOVIENAME}.consensusreadset.xml"
+ccsOut="${ccsDir}/${MOVIENAME}.ccs.consensusreadset.xml"
 
 mkdir -p "${ccsDir}"
 
@@ -57,7 +56,7 @@ bash "${ccsSh}"
 
 #Align ccs
 alignDir="$(readlink -f ${OUTDIR})/align"
-alignOut="${alignDir}/${MOVIENAME}.consensusalignmentset.xml"
+alignOut="${alignDir}/${MOVIENAME}.aligned.consensusalignmentset.xml"
 alignSh="${alignDir}/runAlign.sh"
 
 mkdir -p "${alignDir}"
@@ -78,5 +77,5 @@ echo "${PBMM2} align \
 -c 0 \
 $(readlink -f $REFERENCE) \
 ${ccsOut} \
-${alignDir}/${MOVIENAME}.refarm.consensusalignmentset.xml" > "${alignSh}"
+${alignOut}" > "${alignSh}"
 bash "${alignSh}"

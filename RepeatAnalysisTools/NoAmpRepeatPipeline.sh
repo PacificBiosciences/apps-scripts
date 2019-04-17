@@ -4,7 +4,6 @@ BARCODES=$3
 REFERENCE=$4
 OUTDIR=$5
 
-#Recall tool, not currently available for customers
 NPROC=24
 CCSPROC=8
 MINBARCODESCORE=26
@@ -73,7 +72,7 @@ bash "${barcodeSh}"
 #CCS generation, assume gnu parallel in path
 ccsDir="$(readlink -f ${OUTDIR})/ccs"
 ccsSh="${ccsDir}/runCCS.sh"
-ccsOut="${ccsDir}"/'$(basename {} .subreadset.xml).consensusreadset.xml'
+ccsOut="${ccsDir}"/'$(basename {} .subreadset.xml).ccs.consensusreadset.xml'
 
 mkdir -p "${ccsDir}"
 
@@ -120,8 +119,8 @@ ${PBMM2} align \
 -c 0 \
 --sample {} \
 $(readlink -f $REFERENCE) \
-${ccsDir}/*{}.consensusreadset.xml \
-${alignDir}/${MOVIENAME}.refarm.barcoded.{}.consensusalignmentset.xml \
+${ccsDir}/*{}.ccs.consensusreadset.xml \
+${alignDir}/${MOVIENAME}.refarm.barcoded.{}.aligned.consensusalignmentset.xml \
 ::: ${bcList}" > "${alignSh}"
 bash "${alignSh}"
 
