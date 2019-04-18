@@ -145,10 +145,10 @@ __*Columns:*__ **contig**, **start**, **stop**, **name**, **motifs**
 *Coming soon*
 
 # Additional Stand-alone Tools
-The followinf are provided as convenience tools
+The following are provided as convenience tools
 
 ## NoAmpRestrictionDiagnostics.py
-This tool can be used to help diagnose issues in the background-reducing digest.  See example [restriction_enzymes.tsv](resources/restriction_enzymes.tsv) in `resources` folder.  Note that eznymes with degenerate cutsites are listed multiple times.
+This tool can be used to help diagnose issues in the background-reducing digest.  See example [restriction_enzymes.tsv](resources/restriction_enzymes.tsv) in `resources` folder.  Note that enzymes with degenerate cutsites are listed multiple times.
 ### Dependencies
  - [numpy](http://www.numpy.org/)
  - [pandas](https://pandas.pydata.org/)

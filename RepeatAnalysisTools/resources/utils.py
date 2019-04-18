@@ -46,6 +46,7 @@ def extractRepeat(sequence,aligner):
             seq = rc(seq)
     else:
         seq = 'One Sided' if naln==1 else 'Poor/no Alignment'
+        start,stop = None,None
     return start,stop,seq
     #return seq
 
