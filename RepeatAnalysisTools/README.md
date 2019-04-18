@@ -103,7 +103,7 @@ For data without barcodes, please use the python script directly (see below).
 We recommend [IGV v2.5.x](https://software.broadinstitute.org/software/igv/node/294) to visualize the alignments found in the `[output_directory]/align` folder.
 
 ## RepeatAnalysisReport.py
-Generate report scripts, extract repeat regions, plot "waterfall" and repeat count kde plots for aligned CCS reads using BED file with defined repeat regions.
+Generate report scripts, extract repeat regions, plot "waterfall" and repeat count kde plots for aligned CCS reads using BED file with defined repeat region(s).
 ### Usage
     $ python RepeatAnalysisReport.py -h
     usage: RepeatAnalysisReport.py [-h] [-o,--outDir OUTDIR] [-s,--sample SAMPLE]
@@ -140,6 +140,7 @@ Generate report scripts, extract repeat regions, plot "waterfall" and repeat cou
 Note that the **first** motif listed for each target is the primary motif.  All subsequent motifs are potential interruption motifs within the repeat region.  Start/Stop locations are 1-based (as in IGV) and **_do not_** include flanking sequence.  
 
 ### Output
+*Coming soon*
 
 # Additional Stand-alone Tools
 The followinf are provided as convenience tools

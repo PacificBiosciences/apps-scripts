@@ -61,7 +61,9 @@ Basic repeat analysis to characterize the results can be accomplished with the R
            human_hs37d5.targets_repeatonly.bed \
            human_hs37d5.fasta
 
-Inputs include a BED file of target regions. *Columns* contig, start, stop, name, motifs. Motifs should be ordered such that the primary expected motif is first, and any potential interruption repeats follow.  Input BED files can contain a single target region.
+Inputs include a BED file of target regions. Motifs should be ordered such that the primary expected motif is first, and any potential interruption repeats follow.  Input BED files can contain a single target region.
+
+__*Columns:*__ **contig**, **start**, **stop**, **name**, **motifs**
     
     $ head resources/human_hs37d5.targets_repeatonly.bed
     4   3076554     3076717     HTT     CAG,CAA,CCG,CCA,CGG
