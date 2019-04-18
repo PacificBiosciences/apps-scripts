@@ -139,6 +139,8 @@ Generate report scripts, extract repeat regions, plot "waterfall" and repeat cou
 
 Note that the **first** motif listed for each target is the primary motif.  All subsequent motifs are potential interruption motifs within the repeat region.  Start/Stop locations are 1-based (as in IGV) and **_do not_** include flanking sequence.  
 
+__*Columns:*__ **contig**, **start**, **stop**, **name**, **motifs**
+
 ### Output
 *Coming soon*
 
