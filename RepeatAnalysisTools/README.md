@@ -1,7 +1,11 @@
 # Description
 This repo contains tools and wrapper scripts for processing, extracting and reporting sequence data generated with the PacBio No-Amp Targeted Sequencing Protocol (alpha).
 
-Sequence read data generated with the No-Amp protocol on PacBio Sequel instruments makes use of special asymmetric SMRTbell templates with different hairpin adapters on each end of the inserts and must be re-processed prior to analysis.  This page describes the processing steps necessary and provides a set of extra tools for basic extraction and reporting of the results.  Outputs from the analysis scripts include high-accuracy (>=QV20) CCS sequences for target regions so that users can easily analyze the results with other third party tools as necessary.   
+Sequence read data generated with the No-Amp protocol on PacBio Sequel instruments make use of special asymmetric SMRTbell templates with different hairpin adapters on each end of the inserts and must be re-processed prior to analysis.  
+
+This page describes the processing steps necessary and provides a set of extra tools for basic extraction and reporting of the results.  
+
+Outputs from the analysis scripts include high-accuracy (>=QV20) CCS sequences for target regions so that users can easily analyze the results with other third party tools as necessary.   
 
 ## Dependencies
 
@@ -37,6 +41,9 @@ Four steps are required to process sequence movies prior to repeat analysis:
 3. Generate CCS reads and filter for reads >=QV20.
 4. Align CCS reads to reference while allowing for gap extension in highly expanded alleles.
 
+### Reference
+For human samples, we recommend alignment to the reference `hs37d5`.  Example targets listed in the BED file below have `hs37d5` coordinates.  However, any reference will work so long as the BED file coordinates are paired with the reference used.
+
 A wrapper shell script is provided to automate processing datasets prior to analysis.
 
     $ NoAmpRepeatPipeline.sh \
@@ -59,20 +66,22 @@ The NoAmp tetraloop adapter fasta can be found [here](resources/adapters.tetralo
 ### Output
 After running the above wrapper scripts, results will be in four subdirectories under the provided output directory:
  - [output directory]
-   - align   : contains the final aligned CCS reads for repeat analysis
-   - barcode : contains unaligned, demuxed *subreads*, one per barcode used (only for barcoded data)
-   - ccs     : contains unaligned CCS reads
-   - refarm  : contains unaligned *subreads* and *scraps* with recalled adapters
+   - **align**   : contains the final aligned CCS reads for repeat analysis
+   - **barcode** : contains unaligned, demuxed *subreads*, one per barcode used (only for barcoded data)
+   - **ccs**     : contains unaligned CCS reads
+   - **refarm**  : contains unaligned *subreads* and *scraps* with recalled adapters
 
 ## Repeat Analysis of CCS results
-Once the data are processed as above, the aligned BAM files are used as inputs to the `RepeatAnalysisReport.py` script for extraction and reporting of results.  For barcoded data, a bash script `NoAmpRepeatReport.sh` is provided to loop over multiple samples.  The script identifies reads spanning target regions and extracts the target region from each spanning read.  Motif counts per read are based on exact string matches.
+Once the data are processed as above, the aligned BAM files are used as inputs to the `RepeatAnalysisReport.py` script for extraction and reporting of results.  For barcoded data, a bash script `NoAmpRepeatReport.sh` is provided to loop over multiple samples.  
+
+The script identifies reads spanning target regions and extracts the target region from each spanning read.  Motif counts per read are based on exact string matches.
 
     $ NoAmpRepeatReport.sh \
     output_directory \
     human_hs37d5.targets_repeatonly.bed \
     human_hs37d5.fasta
 
-Where *output_directory* is the directory from the previous step. This script will add a subdirectory `reports` to the *output_directory*, and a further subdirectory for each barcoded sample
+Where `output_directory` is the directory from the previous step. This script will add a subdirectory `reports` to the `output_directory`, and a further subdirectory for each barcoded sample
 
  - [output directory]
    - ... (from above)
@@ -84,10 +93,14 @@ Where *output_directory* is the directory from the previous step. This script wi
 Each barcoded directory contains results for one barcode and all targets listed in the BED file, including:
  - **summary.csv** : Table listing counts of reads spanning target regions
  - **repeatCounts.xlsx** : Excel file containing motif counts and total insert lengths, one sheet per target, one row per read.
- - **extractedSequence_[target].fasta** : FASTA file of extracted inserts.  Name format: <movie>/<zmw>/ccs/<start>_<stop>
+ - **extractedSequence\_[target].fasta** : FASTA file of extracted inserts.  Name format: [movie]/[zmw]/ccs/[start]\_[stop]
  - __[target].*.png__ : Figures plotted from data in repeatCounts.xlsx 
 
+### Un-barcoded samples
 For data without barcodes, please use the python script directly (see below).
+
+## Visualizing Repeats
+We recommend [IGV v2.5.x](https://software.broadinstitute.org/software/igv/node/294) to visualize the alignments found in the `[output_directory]/align` folder.
 
 ## RepeatAnalysisReport.py
 Generate report scripts, extract repeat regions, plot "waterfall" and repeat count kde plots for aligned CCS reads using BED file with defined repeat regions.
@@ -123,6 +136,8 @@ Generate report scripts, extract repeat regions, plot "waterfall" and repeat cou
     9   27573435   27573596   C9orf72  GGGGCC
     X   146993569  146993628  FMR1     CGG,AGG
     22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT
+
+Note that the **first** motif listed for each target is the primary motif.  All subsequent motifs are potential interruption motifs within the repeat region.  Start/Stop locations are 1-based (as in IGV) and **_do not_** include flanking sequence.  
 
 ### Output
 
