@@ -1,9 +1,136 @@
 # Description
-This repo contains miscellaneous stand-alone scripts for diagnosing and plotting NoAmp/Repeat Analysis data in CCS format.
+This repo contains tools and wrapper scripts for processing, extracting and reporting sequence data generated with the PacBio No-Amp Targeted Sequencing Protocol (alpha).
 
-UNDER CONSTRUCTION
+Sequence read data generated with the No-Amp protocol on PacBio Sequel instruments makes use of special asymmetric SMRTbell templates with different hairpin adapters on each end of the inserts and must be re-processed prior to analysis.  This page describes the processing steps necessary and provides a set of extra tools for basic extraction and reporting of the results.  Outputs from the analysis scripts include high-accuracy (>=QV20) CCS sequences for target regions so that users can easily analyze the results with other third party tools as necessary.   
+
+## Dependencies
+
+### Sequence Processing requires the following tools, available from [pbbioconda](https://github.com/PacificBiosciences/pbbioconda)
+ - [recalladapters](https://github.com/pacificbiosciences/recalladapters/)
+ - [lima](https://github.com/pacificbiosciences/barcoding)
+ - [ccs](https://github.com/pacificbiosciences/unanimity/)
+ - [pbmm2](https://github.com/PacificBiosciences/pbmm2/)
+
+Additionally, the wrapper script described below makes use of **GNU parallel** to decrease time to results.
+
+#### Notes
+ - `recalladapters` currently only available for CentOS 7.x
+ - `lima` and `ccs` are available in SMRT Link v6.0, but we recommend using `pbccs` from the pbbioconda repository due to significant speed increases in recent versions
+ - `pbmm2` is a minimap2 wrapper for native PacBio datasets (replacement for blasr)
+ - All four tools will be available in SMRT Link v7
+
+### Post-processing analysis tools are written in Python2.7 and require the following packages
+ - [matplotlib](https://matplotlib.org/)
+ - [numpy](http://www.numpy.org/)
+ - [pandas](https://pandas.pydata.org/)
+ - [seaborn](https://seaborn.pydata.org/)
+ - [mappy](https://github.com/lh3/minimap2/tree/master/python)
+ - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
+
+# Basic Repeat Analysis Workflow
+
+## Raw Sequence Processing
+Four steps are required to process sequence movies prior to repeat analysis:
+1. Recall asymmetric SMRTbell adapters to properly separate subreads and allow for demultiplexing barcoded samples.
+2. Demultiplex templates with barcodes on only one end of the insert.
+   - This step can be skipped for samples without barcodes
+3. Generate CCS reads and filter for reads >=QV20.
+4. Align CCS reads to reference while allowing for gap extension in highly expanded alleles.
+
+A wrapper shell script is provided to automate processing datasets prior to analysis.
+
+    $ NoAmpRepeatPipeline.sh \
+    movie.subreadset.xml \
+    adapters.tetraloop.fasta \
+    barcodes.fasta/.xml \
+    reference.fasta/.mmi \
+    output_directory
+
+For datasets without barcodes, use the *no_Barcode* version
+
+    $ NoAmpRepeatPipeline_noBarcode.sh \
+    movie.subreadset.xml \
+    adapters.tetraloop.fasta \
+    reference.fasta/.mmi \
+    output_directory
+
+The NoAmp tetraloop adapter fasta can be found [here](resources/adapters.tetraloop.fasta), and the set of barcodes provided with the tetraloop adapters can be found [here](resources/barcodes_10.fasta) in the [resources subdirectory](resources/). 
+
+### Output
+After running the above wrapper scripts, results will be in four subdirectories under the provided output directory:
+ - [output directory]
+   - align   : contains the final aligned CCS reads for repeat analysis
+   - barcode : contains unaligned, demuxed *subreads*, one per barcode used (only for barcoded data)
+   - ccs     : contains unaligned CCS reads
+   - refarm  : contains unaligned *subreads* and *scraps* with recalled adapters
+
+## Repeat Analysis of CCS results
+Once the data are processed as above, the aligned BAM files are used as inputs to the `RepeatAnalysisReport.py` script for extraction and reporting of results.  For barcoded data, a bash script `NoAmpRepeatReport.sh` is provided to loop over multiple samples.  The script identifies reads spanning target regions and extracts the target region from each spanning read.  Motif counts per read are based on exact string matches.
+
+    $ NoAmpRepeatReport.sh \
+    output_directory \
+    human_hs37d5.targets_repeatonly.bed \
+    human_hs37d5.fasta
+
+Where *output_directory* is the directory from the previous step. This script will add a subdirectory `reports` to the *output_directory*, and a further subdirectory for each barcoded sample
+
+ - [output directory]
+   - ... (from above)
+   - reports
+     - BC1007--BC1007
+     - BC1016--BC1016
+     - ...
+
+Each barcoded directory contains results for one barcode and all targets listed in the BED file, including:
+ - **summary.csv** : Table listing counts of reads spanning target regions
+ - **repeatCounts.xlsx** : Excel file containing motif counts and total insert lengths, one sheet per target, one row per read.
+ - **extractedSequence_[target].fasta** : FASTA file of extracted inserts.  Name format: <movie>/<zmw>/ccs/<start>_<stop>
+ - __[target].*.png__ : Figures plotted from data in repeatCounts.xlsx 
+
+For data without barcodes, please use the python script directly (see below).
+
+## RepeatAnalysisReport.py
+Generate report scripts, extract repeat regions, plot "waterfall" and repeat count kde plots for aligned CCS reads using BED file with defined repeat regions.
+### Usage
+    $ python RepeatAnalysisReport.py -h
+    usage: RepeatAnalysisReport.py [-h] [-o,--outDir OUTDIR] [-s,--sample SAMPLE]
+                                   [-f,--flanksize FLANKSIZE]
+                                   inBAM inBED reference
+
+    generate repeat-kde plot, waterfall plot, and summary for repeat expansions
+
+    positional arguments:
+      inBAM                 input BAM of CCS alignments
+      inBED                 input BED defining location of repeat region. Repeats
+                            ONLY, no flanking sequence. Columns: ctg, start, end,
+                            name, motifs
+      reference             Reference fasta used for mapping BAM. Must have .fai
+                            index.
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -o,--outDir OUTDIR    Output directory. Default
+                            /home/UNIXHOME/jharting/gitrepos/apps-
+                            scripts/RepeatAnalysisTools
+      -s,--sample SAMPLE    Sample name, prepended to output files. Default None
+      -f,--flanksize FLANKSIZE
+                            Size of flanking sequence mapped for extracting repeat
+                            region. Default 100
+
+### Example BED file
+    $ column -t resources/human_hs37d5.targets_repeatonly.bed
+    4   3076604    3076660    HTT      CAG,CAA,CCG,CCA,CGG
+    9   27573435   27573596   C9orf72  GGGGCC
+    X   146993569  146993628  FMR1     CGG,AGG
+    22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT
+
+### Output
+
+# Additional Stand-alone Tools
+The followinf are provided as convenience tools
 
 ## NoAmpRestrictionDiagnostics.py
+This tool can be used to help diagnose issues in the background-reducing digest.  See example [restriction_enzymes.tsv](resources/restriction_enzymes.tsv) in `resources` folder.  Note that eznymes with degenerate cutsites are listed multiple times.
 ### Dependencies
  - [numpy](http://www.numpy.org/)
  - [pandas](https://pandas.pydata.org/)
@@ -173,45 +300,14 @@ Generate "waterfall" and repeat count kde plots for unaligned CCS reads using fl
     poorAlignment  5386
     reference      resources/FMR1_L446_R503.fasta
 
-## RepeatAnalysisReport.py
-Generate "waterfall" and repeat count kde plots for aligned CCS reads using BED file with defined repeat regions.
+## pbmm2_extension.sh
+Map repeat-extension data to targets using pbmm2 (recommended), parameterized to reduce alignment cost for long expansions
+
 ### Dependencies
- - [matplotlib](https://matplotlib.org/)
- - [numpy](http://www.numpy.org/)
- - [pandas](https://pandas.pydata.org/)
- - [seaborn](https://seaborn.pydata.org/)
- - [mappy](https://github.com/lh3/minimap2/tree/master/python)
- - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
+ - [pbmm2](https://github.com/PacificBiosciences/pbmm2) 
+
 ### Usage
-    $ python RepeatAnalysisReport.py -h
-    usage: RepeatAnalysisReport.py [-h] [-o,--outDir OUTDIR] [-s,--sample SAMPLE]
-                                   [-f,--flanksize FLANKSIZE]
-                                   inBAM inBED reference
-    
-    generate repeat-kde plot, waterfall plot, and summary for repeat expansions
-    
-    positional arguments:
-      inBAM                 input BAM of CCS alignments
-      inBED                 input BED defining location of repeat region. Repeats
-                            ONLY, no flanking sequence. 
-                            Columns (ordered): ctg, start, end, name, motifs
-      reference             Reference fasta used for mapping BAM. Must have .fai
-                            index.
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -o,--outDir OUTDIR    Output directory. Default cwd.
-      -s,--sample SAMPLE    Sample name, prepended to output files. Default None
-      -f,--flanksize FLANKSIZE
-                            Size of flanking sequence mapped for extracting repeat
-                            region. Default 100
-### Example BED file
-    $ column -t resources/human_hs37d5.targets_repeatonly.bed
-    4  3076554    3076717    HTT      CAG,CAA,CCG,CCA,CGG
-    9  27573435   27573596   C9orf72  GGGGCC
-    X  146993569  146993629  FMR1     CGG,AGG
-### Output
-_Same as fastxRepeatAnalysisReport.py_
+    pbmm2_extension.sh REFFASTA QUERY OUTFILE [SAMPLE]
 
 ## minimap2_e40.sh
 Map repeat-extension data to targets, parameterized to reduce alignment cost for long expansions
@@ -222,13 +318,4 @@ Map repeat-extension data to targets, parameterized to reduce alignment cost for
 
 ### Usage
     minimap2_e40.sh REFFASTA QUERY OUTBAM [SAMPLE]
-
-## pbmm2_extension.sh
-Map repeat-extension data to targets using pbmm2 (recommended), parameterized to reduce alignment cost for long expansions
-
-### Dependencies
- - [pbmm2](https://github.com/PacificBiosciences/pbmm2) 
-
-### Usage
-    pbmm2_extension.sh REFFASTA QUERY OUTFILE [SAMPLE]
 

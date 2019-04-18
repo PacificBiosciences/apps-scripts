@@ -1,3 +1,5 @@
+#! /usr/bin/bash
+
 SUBREADSET=$1
 ADAPTERS=$2
 BARCODES=$3
@@ -59,7 +61,6 @@ barcodeSh="${barcodeDir}/runLima.sh"
 
 mkdir -p "${barcodeDir}"
 echo "${LIMA} \
---same \
 --min-score ${MINBARCODESCORE} \
 --split-bam-named \
 --single-side \
@@ -120,7 +121,7 @@ ${PBMM2} align \
 --sample {} \
 $(readlink -f $REFERENCE) \
 ${ccsDir}/*{}.ccs.consensusreadset.xml \
-${alignDir}/${MOVIENAME}.refarm.barcoded.{}.aligned.consensusalignmentset.xml \
+${alignDir}/${MOVIENAME}.refarm.barcoded.aligned.{}.consensusalignmentset.xml \
 ::: ${bcList}" > "${alignSh}"
 bash "${alignSh}"
 

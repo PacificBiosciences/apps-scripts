@@ -1,3 +1,5 @@
+#! /usr/bin/bash
+
 SUBREADSET=$1
 ADAPTERS=$2
 REFERENCE=$3
