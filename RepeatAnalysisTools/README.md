@@ -143,6 +143,10 @@ __*Columns:*__ **contig**, **start**, **stop**, **name**, **motifs**
 
 ### Output
 
+[SampleBarcode].extractedSequence\_[Target].fasta
+ - One FASTA file for each target in the BED file.  This is the part of the sequence read that corresponds to the target region for each read.
+ - Naming convention: [movie]/[zmw]/ccs/[start]\_[stop]
+
 [SampleBarcode].[Target].insertSize_dist.png
 
 ![Target Region Size](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/examples/outputs/ExampleBC.FMR1.insertSize_dist.png)
