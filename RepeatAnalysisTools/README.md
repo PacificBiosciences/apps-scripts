@@ -142,7 +142,31 @@ Note that the **first** motif listed for each target is the primary motif.  All 
 __*Columns:*__ **contig**, **start**, **stop**, **name**, **motifs**
 
 ### Output
-*Coming soon*
+
+[SampleBarcode].[Target].insertSize_dist.png
+
+![Target Region Size](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/examples/outputs/ExampleBC.FMR1.insertSize_dist.png)
+
+[SampleBarcode].[Target].motifCount_dist.png
+
+![Target Region Motif Counts](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/examples/outputs/ExampleBC.FMR1.motifCount_dist.png)
+
+[SampleBarcode].[Target].waterfall.png
+
+![Waterfall plot Example](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/examples/outputs/ExampleBC.FMR1.waterfall.png)
+
+[sample].[label].repeatCounts.csv
+
+![Waterfall plot Example](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/examples/outputs/ExampleBC.repeatCounts.xlsx_screenshot.png)
+
+[SampleBarcode].summary.csv
+
+    $ column -ts, ExampleBC.summary.csv  
+    target   totalReads  oneSided  poorAlignment  spanningReads
+    ATXN10   112         0         0              112
+    C9orf72  0           0         0              0
+    FMR1     72          0         0              72
+    HTT      187         0         0              187
 
 # Additional Stand-alone Tools
 The following are provided as convenience tools
