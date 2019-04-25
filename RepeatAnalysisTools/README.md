@@ -21,7 +21,7 @@ Additionally, the wrapper script described below makes use of **GNU parallel** t
  - `recalladapters` currently only available for CentOS 7.x
  - `lima` and `ccs` are available in SMRT Link v6.0, but we recommend using `pbccs` from the pbbioconda repository due to significant speed increases in recent versions
  - `pbmm2` is a minimap2 wrapper for native PacBio datasets (replacement for blasr)
- - All four tools will be available in SMRT Link v7
+ - The latest versions of lima,ccs, and pbmm2 tools will be available in SMRT Link v7
 
 ### Post-processing analysis tools are written in Python2.7 and require the following packages
  - [matplotlib](https://matplotlib.org/)
