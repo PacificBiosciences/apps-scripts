@@ -98,7 +98,7 @@ bash "${ccsSh}"
 #Align ccs
 alignDir="$(readlink -f ${OUTDIR})/align"
 alignSh="${alignDir}/runAlign.sh"
-bcList=$(ls ${ccsDir}/*xml | awk -F. '{print $(NF-2)}' | paste -s)
+bcList=$(ls ${ccsDir}/*xml | awk -F. '{print $(NF-3)}' | paste -s)
 
 mkdir -p "${alignDir}"
 
