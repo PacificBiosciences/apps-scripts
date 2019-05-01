@@ -141,7 +141,11 @@ def main(parser):
         #add in total repeat length
         out[(SIZECOL,'')] = out.index.map(insertLength)
         out.sort_values([SIZECOL,motifs[0]]).to_excel(writer,target)
-    writer.close()
+    try:
+        writer.close()
+    except IndexError:
+        #catch cases where no sheets are created
+        pass
 
     return repeatDf,summaryDf
 
