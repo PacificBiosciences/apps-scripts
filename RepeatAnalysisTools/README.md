@@ -203,7 +203,9 @@ This is a simple tool for extracting a target region from aligned CCS reads.  Th
                             region. Default 100
 
 ### Example
-    $ python ~/gitrepos/apps-scripts/RepeatAnalysisTools/extractRegion.py align/m54006_190117_155211.refarm.barcoded.BC1026--BC1026.bam /pbi/dept/secondary/siv/references/human_hs37d5/sequence/human_hs37d5.fasta 4:3076604-3076660 | head
+    $ python extractRegion.py m54006_190117_155211.refarm.barcoded.BC1026--BC1026.bam \
+                              human_hs37d5.fasta \
+                              4:3076604-3076660 | head
     @m54006_190117_155211/10616973/ccs/2259_2304
     CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
     +
