@@ -3,14 +3,14 @@
 import numpy as np
 import pandas as pd
 import re,os,sys
-import mappy as mp
 import pysam
 from tempfile import NamedTemporaryFile
 from resources.utils import extractRepeat,\
                             getPositions,\
                             countAlignments,\
                             readBED,\
-                            writeFasta
+                            writeFasta, \
+                            getFlankAligner
 from resources.plotting import waterfallPlot2,\
                                countPlot2
 
@@ -148,21 +148,6 @@ def main(parser):
         pass
 
     return repeatDf,summaryDf
-
-def getFlanks(ref,ctg,start,stop,flanksize=100,Lflank=None,Rflank=None):
-    '''Extract flanking sequence from BED regions, given a pysam.FastaFile with .fai'''
-    Lsize    = Lflank if Lflank else flanksize
-    Rsize    = Rflank if Rflank else flanksize
-    sequence = ref.fetch(ctg,start-Lsize,stop+Rsize)
-    return [sequence[:Lsize],sequence[-Rsize:]]
-
-def getFlankAligner(ref,ctg,start,stop,**kwargs):
-    tmpRef = NamedTemporaryFile(mode='wb',delete=False)
-    for side,seq in zip(['L','R'],getFlanks(ref,ctg,start,stop,**kwargs)):
-        tmpRef.write('>{n}\n{s}\n'.format(n='_'.join([str(ctg),side]),s=seq))
-    tmpRef.close()
-    aligner = mp.Aligner(tmpRef.name)
-    return aligner,tmpRef
 
 class RepeatAnalysisReport_Exception(Exception):
     pass

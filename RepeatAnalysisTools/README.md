@@ -175,6 +175,47 @@ __*Columns:*__ **contig**, **start**, **stop**, **name**, **motifs**
 # Additional Stand-alone Tools
 The following are provided as convenience tools
 
+## extractRegion.py
+This is a simple tool for extracting a target region from aligned CCS reads.  The target region is extracted by aligning the sequence immediately flanking the target to each CCS read intersecting the target.
+### Dependencies
+ - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
+ - [mappy](https://github.com/lh3/minimap2/tree/master/python)
+### Usage
+    $ python extractRegion.py -h
+    usage: extractRegion.py [-h] [-o,--outFq OUTFQ] [-f,--flanksize FLANKSIZE]
+                            inBAM reference region
+    
+    extract target region from aligned BAMS using region flank alignments. Output
+    format is fastq
+    
+    positional arguments:
+      inBAM                 input BAM of CCS alignments
+      reference             Reference fasta used for mapping BAM. Must have .fai
+                            index.
+      region                Target region, format '[chr]:[start]-[stop]'. Example
+                            '4:3076604-3076660'
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -o,--outFq OUTFQ      Output fastq file. Default stdout
+      -f,--flanksize FLANKSIZE
+                            Size of flanking sequence mapped for extracting repeat
+                            region. Default 100
+
+### Example
+    $ python ~/gitrepos/apps-scripts/RepeatAnalysisTools/extractRegion.py align/m54006_190117_155211.refarm.barcoded.BC1026--BC1026.bam /pbi/dept/secondary/siv/references/human_hs37d5/sequence/human_hs37d5.fasta 4:3076604-3076660 | head
+    @m54006_190117_155211/10616973/ccs/2259_2304
+    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
+    +
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    @m54006_190117_155211/10879182/ccs/2259_2307
+    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
+    +
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    @m54006_190117_155211/12386712/ccs/2259_2307
+    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
+
+
 ## NoAmpRestrictionDiagnostics.py
 This tool can be used to help diagnose issues in the background-reducing digest.  See example [restriction_enzymes.tsv](resources/restriction_enzymes.tsv) in `resources` folder.  Note that enzymes with degenerate cutsites are listed multiple times.
 ### Dependencies
