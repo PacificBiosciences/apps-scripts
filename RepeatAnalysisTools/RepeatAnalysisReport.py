@@ -11,7 +11,7 @@ from resources.utils import extractRepeat,\
                             countAlignments,\
                             readBED,\
                             writeFasta
-from resources.plotting import waterfallPlot,\
+from resources.plotting import waterfallPlot2,\
                                countPlot2
 
 ALIGNFILTER=0x900
@@ -101,7 +101,7 @@ def main(parser):
         try:
             data   = repeatDf.loc[target]
             #waterfall
-            g = waterfallPlot(data) #target=target  (for label)
+            g = waterfallPlot2(data) #target=target  (for label)
             g.savefig(outfileName('.'.join([target,'waterfall']),'png'),dpi=DPI)
             #histograms
             #plot main repeat motif

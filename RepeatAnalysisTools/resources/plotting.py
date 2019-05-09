@@ -16,6 +16,21 @@ def waterfallPlot(data,row=None,x='position',y='idx',hue='motif'):
     g.set_ylabels('CCS Read')
     return g
 
+def waterfallPlot2(data,row=None,x='position',y='idx',hue='motif'):
+    motifLengths = data.motif.str.len()
+    g = sns.FacetGrid(data=data,
+                      hue=hue,row=row,
+                      aspect=2,height=3,
+                      sharex=False,sharey=False)
+    for n in xrange(motifLengths.min()):
+        g.data = data[motifLengths>=(n+1)].eval('position=position+@n')
+        #g.map(sns.scatterplot,x,y,markers=[','],size=1.5)
+        g.map(plt.scatter,x,y,marker=',',s=1.5)
+    g.add_legend()
+    g.set_xlabels('Position')
+    g.set_ylabels('CCS Read')
+    return g
+
 def countPlot(data,targetDict):
     '''targetdict is a dict of "target":"motif" listing primary motif to count'''
     name   = 'Repeat Copies'
