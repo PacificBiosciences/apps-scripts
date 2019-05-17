@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
+import mappy as mp
 import re
 from textwrap import wrap
+from tempfile import NamedTemporaryFile
 
 _RC_MAP = dict(zip('-ACGNTacgt','-TGCNAtgca'))
 
@@ -77,6 +79,21 @@ def writeFasta(fastaName,records,nWrap=60):
             seq = '\n'.join(wrap(sequence,nWrap))
             fa.write('>{name}\n{seq}\n'.format(name=name,seq=seq))
     return fastaName
+
+def getFlanks(ref,ctg,start,stop,flanksize=100,Lflank=None,Rflank=None):
+    '''Extract flanking sequence from BED regions, given a pysam.FastaFile with .fai'''
+    Lsize    = Lflank if Lflank else flanksize
+    Rsize    = Rflank if Rflank else flanksize
+    sequence = ref.fetch(ctg,start-Lsize,stop+Rsize)
+    return [sequence[:Lsize],sequence[-Rsize:]]
+
+def getFlankAligner(ref,ctg,start,stop,**kwargs):
+    tmpRef = NamedTemporaryFile(mode='wb',delete=False)
+    for side,seq in zip(['L','R'],getFlanks(ref,ctg,start,stop,**kwargs)):
+        tmpRef.write('>{n}\n{s}\n'.format(n='_'.join([str(ctg),side]),s=seq))
+    tmpRef.close()
+    aligner = mp.Aligner(tmpRef.name)
+    return aligner,tmpRef
 
 class RepeatAnalysisUtils_Exception(Exception):
     pass
