@@ -11,7 +11,7 @@ from resources.utils import extractRepeat,\
                             readBED,\
                             writeFasta, \
                             getFlankAligner
-from resources.plotting import waterfallPlot2,\
+from resources.plotting import waterfallPlotRaster,\
                                countPlot2
 
 ALIGNFILTER=0x900
@@ -101,7 +101,9 @@ def main(parser):
         try:
             data   = repeatDf.loc[target]
             #waterfall
-            g = waterfallPlot2(data) #target=target  (for label)
+            g = waterfallPlotRaster(data) #target=target  (for label)
+            if hasattr(g,'tight_layout'):
+                g.tight_layout()
             g.savefig(outfileName('.'.join([target,'waterfall']),'png'),dpi=DPI)
             #histograms
             #plot main repeat motif

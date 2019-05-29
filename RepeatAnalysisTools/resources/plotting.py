@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from collections import OrderedDict
+import matplotlib.patches as mpatches
 
 def waterfallPlot(data,row=None,x='position',y='idx',hue='motif'):
     g = sns.FacetGrid(data=data,
@@ -30,6 +32,31 @@ def waterfallPlot2(data,row=None,x='position',y='idx',hue='motif'):
     g.set_xlabels('Position')
     g.set_ylabels('CCS Read')
     return g
+
+def waterfallPlotRaster(data,x='position',y='idx'):
+    palette = sns.color_palette()
+    motifs  = data.motif.value_counts().index
+    colors = OrderedDict([(m,palette[i]) for i,m in enumerate(motifs)])
+    #all white grid
+    raster = np.ones((int(data[y].max())+1,
+                      int(data[x].max())+data.motif.str.len().max(),
+                      3))
+    #fill in motifs
+    for i,row in data.iterrows():
+        for j in xrange(len(row.motif)):
+            raster[int(row.idx),int(row.position)+j,:] = colors[row.motif]
+    #plot figure
+    f,ax = plt.subplots()
+    ax.imshow(raster,origin='lower',aspect='auto')
+    ax.set_xlabel('Position')
+    ax.set_ylabel('CCS Read')
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+
+    patches = [ mpatches.Patch(color=color, label=motif ) for motif,color in colors.items()]
+    ax.legend(handles=patches,bbox_to_anchor=(1.25, 0.6),loc='best',frameon=False)
+    
+    return f
 
 def countPlot(data,targetDict):
     '''targetdict is a dict of "target":"motif" listing primary motif to count'''
