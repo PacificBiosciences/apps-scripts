@@ -18,8 +18,8 @@ Outputs from the analysis scripts include high-accuracy (>=QV20) CCS sequences f
 Additionally, the wrapper script described below makes use of **GNU parallel** to decrease time to results.
 
 #### Notes
- - `recalladapters` currently only available for CentOS 7.x
- - `lima` and `ccs` are available in SMRT Link v6.0, but we recommend using `pbccs` from the pbbioconda repository due to significant speed increases in recent versions
+ - `recalladapters` 
+ - `lima` and `ccs` are available in SMRT Link v6.0, but we recommend using the latest release, SMRT Link v7 or `pbccs` from the pbbioconda repository due to significant speed increases in recent versions
  - `pbmm2` is a minimap2 wrapper for native PacBio datasets (replacement for blasr)
  - The latest versions of lima,ccs, and pbmm2 tools will be available in SMRT Link v7
 
