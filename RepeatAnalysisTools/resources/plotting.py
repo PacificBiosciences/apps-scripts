@@ -44,7 +44,7 @@ def waterfallPlotRaster(data,x='position',y='idx'):
     #fill in motifs
     for i,row in data.iterrows():
         for j in xrange(len(row.motif)):
-            raster[int(row.idx),int(row.position)+j,:] = colors[row.motif]
+            raster[int(row[x]),int(row[y])+j,:] = colors[row.motif]
     #plot figure
     f,ax = plt.subplots()
     ax.imshow(raster,origin='lower',aspect='auto')
