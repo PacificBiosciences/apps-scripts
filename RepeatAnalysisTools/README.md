@@ -102,6 +102,30 @@ For data without barcodes, please use the python script directly (see below).
 ## Visualizing Repeats
 We recommend [IGV v2.5.x](https://software.broadinstitute.org/software/igv/node/294) to visualize the alignments found in the `[output_directory]/align` folder.
 
+## NEW SIMPLIFIED Repeat Analysis (beta)
+Three new tools are provided to enable simplified reporting of repeat expansion.  
+### Stream fastq records directly to waterfall script
+    $ python extractRegion.py align/BC1026--BC1026.bam \
+                              human_hs37d5.fasta \
+                              'X:146993569-146993628' \
+                              | python waterfall.py -m CGG,AGG -o FMR1.png
+
+### Stream fastq directly to repeat counter
+    $ python extractRegion.py align/BC1026--BC1026.bam \
+                              human_hs37d5.fasta \
+                              'X:146993569-146993628' \
+                              | python countMotifs.py -m CGG,AGG | column -ts, | head
+    readName                                   CGG  AGG  totalLength
+    m54006_190116_193234/56885460/ccs/298_388  28   2    90
+    m54006_190116_193234/17367745/ccs/299_391  29   1    92
+    m54006_190116_193234/20840638/ccs/298_391  29   2    93
+    m54006_190116_193234/9044396/ccs/300_393   29   2    93
+    m54006_190116_193234/18481434/ccs/298_391  29   2    93
+    m54006_190116_193234/18940755/ccs/298_391  29   2    93
+    m54006_190116_193234/19136687/ccs/298_391  29   2    93
+    m54006_190116_193234/20644190/ccs/298_391  29   2    93
+    m54006_190116_193234/16778121/ccs/298_391  29   2    93
+
 ## RepeatAnalysisReport.py
 Generate report scripts, extract repeat regions, plot "waterfall" and repeat count kde plots for aligned CCS reads using BED file with defined repeat region(s).
 ### Usage
