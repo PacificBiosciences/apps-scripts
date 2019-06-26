@@ -126,6 +126,100 @@ Three new tools are provided to enable simplified reporting of repeat expansion.
     m54006_190116_193234/20644190/ccs/298_391  29   2    93
     m54006_190116_193234/16778121/ccs/298_391  29   2    93
 
+## extractRegion.py
+This is a simple tool for extracting a target region from aligned CCS reads.  The target region is extracted by aligning the sequence immediately flanking the target to each CCS read intersecting the target.
+### Dependencies
+ - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
+ - [mappy](https://github.com/lh3/minimap2/tree/master/python)
+### Usage
+    $ python extractRegion.py -h
+    usage: extractRegion.py [-h] [-o,--outFq OUTFQ] [-f,--flanksize FLANKSIZE]
+                            inBAM reference region
+    
+    extract target region from aligned BAMS using region flank alignments. Output
+    format is fastq
+    
+    positional arguments:
+      inBAM                 input BAM of CCS alignments
+      reference             Reference fasta used for mapping BAM. Must have .fai
+                            index.
+      region                Target region, format '[chr]:[start]-[stop]'. Example
+                            '4:3076604-3076660'
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -o,--outFq OUTFQ      Output fastq file. Default stdout
+      -f,--flanksize FLANKSIZE
+                            Size of flanking sequence mapped for extracting repeat
+                            region. Default 100
+
+### Example
+    $ python extractRegion.py m54006_190117_155211.refarm.barcoded.BC1026--BC1026.bam \
+                              human_hs37d5.fasta \
+                              4:3076604-3076660 | head
+    @m54006_190117_155211/10616973/ccs/2259_2304
+    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
+    +
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    @m54006_190117_155211/10879182/ccs/2259_2307
+    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
+    +
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    @m54006_190117_155211/12386712/ccs/2259_2307
+    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
+
+## waterfall.py
+This generates a waterfall-style plot from a fastx file (or stdin) of extracted repeat regions.
+
+    $ python waterfall.py -h
+    usage: waterfall.py [-h] [-i,--inFastx INFASTX] -o,--out OUT -m,--motifs
+                        MOTIFS [-f,--format FORMAT] [-d,--dpi DPI]
+    
+    quick waterfall plot from fastx of extracted repeat sequences
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -i,--inFastx INFASTX  Input Fastx file. Default stdin
+      -o,--out OUT          Output file
+      -m,--motifs MOTIFS    Search motifs, comma separated, most frequent first,
+                            e.g. 'CGG,AGG'
+      -f,--format FORMAT    Image format. Default png
+      -d,--dpi DPI          Image resolution. Default 400
+
+### Example
+    $ python waterfall.py -i extractedSequence_FMR1.fasta -m CGG,AGG -o FMR1.png
+
+## countMofifs.py
+This plot will read a fastx file (or stdin) of extracted repeat regions and generate counts of exact motif string matches.
+
+    $ python countMotifs.py -h
+    usage: countMotifs.py [-h] [-i,--inFastx INFASTX] [-o,--out OUT] -m,--motifs
+                          MOTIFS [-s,--sep SEP] [-r,--reverse]
+    
+    quick count of motifs per read from fastx of extracted repeat sequences
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -i,--inFastx INFASTX  Input Fastx file. Default stdin
+      -o,--out OUT          Output csv. Default stdout
+      -m,--motifs MOTIFS    Search motifs, comma separated, most frequent first,
+                            e.g. 'CGG,AGG'
+      -s,--sep SEP          Field separator. Default ','
+      -r,--reverse          Sort largest first. Default ascending order
+
+### Example
+    $ python countMotifs.py -i extractedSequence_FMR1.fasta -m CGG,AGG | column -ts,
+    readName                                   CGG  AGG  totalLength
+    m54006_190116_193234/56885460/ccs/298_388  28   2    90
+    m54006_190116_193234/17367745/ccs/299_391  29   1    92
+    m54006_190116_193234/20840638/ccs/298_391  29   2    93
+    m54006_190116_193234/9044396/ccs/300_393   29   2    93
+    m54006_190116_193234/18481434/ccs/298_391  29   2    93
+    m54006_190116_193234/18940755/ccs/298_391  29   2    93
+    m54006_190116_193234/19136687/ccs/298_391  29   2    93
+    m54006_190116_193234/20644190/ccs/298_391  29   2    93
+    m54006_190116_193234/16778121/ccs/298_391  29   2    93 
+
 ## RepeatAnalysisReport.py
 Generate report scripts, extract repeat regions, plot "waterfall" and repeat count kde plots for aligned CCS reads using BED file with defined repeat region(s).
 ### Usage
@@ -146,9 +240,7 @@ Generate report scripts, extract repeat regions, plot "waterfall" and repeat cou
 
     optional arguments:
       -h, --help            show this help message and exit
-      -o,--outDir OUTDIR    Output directory. Default
-                            /home/UNIXHOME/jharting/gitrepos/apps-
-                            scripts/RepeatAnalysisTools
+      -o,--outDir OUTDIR    Output directory. Default cwd
       -s,--sample SAMPLE    Sample name, prepended to output files. Default None
       -f,--flanksize FLANKSIZE
                             Size of flanking sequence mapped for extracting repeat
@@ -199,47 +291,6 @@ __*Columns:*__ **contig**, **start**, **stop**, **name**, **motifs**
 # Additional Stand-alone Tools
 The following are provided as convenience tools
 
-## extractRegion.py
-This is a simple tool for extracting a target region from aligned CCS reads.  The target region is extracted by aligning the sequence immediately flanking the target to each CCS read intersecting the target.
-### Dependencies
- - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
- - [mappy](https://github.com/lh3/minimap2/tree/master/python)
-### Usage
-    $ python extractRegion.py -h
-    usage: extractRegion.py [-h] [-o,--outFq OUTFQ] [-f,--flanksize FLANKSIZE]
-                            inBAM reference region
-    
-    extract target region from aligned BAMS using region flank alignments. Output
-    format is fastq
-    
-    positional arguments:
-      inBAM                 input BAM of CCS alignments
-      reference             Reference fasta used for mapping BAM. Must have .fai
-                            index.
-      region                Target region, format '[chr]:[start]-[stop]'. Example
-                            '4:3076604-3076660'
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -o,--outFq OUTFQ      Output fastq file. Default stdout
-      -f,--flanksize FLANKSIZE
-                            Size of flanking sequence mapped for extracting repeat
-                            region. Default 100
-
-### Example
-    $ python extractRegion.py m54006_190117_155211.refarm.barcoded.BC1026--BC1026.bam \
-                              human_hs37d5.fasta \
-                              4:3076604-3076660 | head
-    @m54006_190117_155211/10616973/ccs/2259_2304
-    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
-    +
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    @m54006_190117_155211/10879182/ccs/2259_2307
-    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
-    +
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    @m54006_190117_155211/12386712/ccs/2259_2307
-    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
 
 
 ## NoAmpRestrictionDiagnostics.py
