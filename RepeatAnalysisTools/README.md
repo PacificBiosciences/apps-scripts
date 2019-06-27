@@ -167,6 +167,15 @@ Click here for [Previous Repeat Reporting Tool](https://github.com/PacificBiosci
     m54006_190116_193234/62587597/ccs/294_462  56   0    168
     m54006_190116_193234/56754595/ccs/295_463  56   0    168
 
+### Stream fastq directly to count plotter
+    $ python extractRegion.py align/BC1026--BC1026.bam \
+                              human_hs37d5.fasta \
+                              'X:146993569-146993628' \
+                              | python plotCounts.py -m CGG -n FMR1
+
+![hist.motifCount.png](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/hist.motifCount.png)
+![hist.insertSize.png](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/hist.insertSize.png)
+
 ## extractRegion.py
 This is a simple tool for extracting a target region from aligned CCS reads.  The target region is extracted by aligning the sequence immediately flanking the target to each CCS read intersecting the target.
 ### Dependencies
@@ -267,3 +276,13 @@ This plot will read a fastx file (or stdin) of extracted repeat regions and gene
     m54006_190116_193234/19136687/ccs/298_391  29   2    93
     m54006_190116_193234/20644190/ccs/298_391  29   2    93
     m54006_190116_193234/16778121/ccs/298_391  29   2    93 
+
+## plotCounts.py
+Plot histograms of repeated motif counts and total repeat region
+### Dependencies
+ - [pbcore](https://github.com/PacificBiosciences/pbcore)
+ - [matplotlib](https://matplotlib.org/3.1.0/users/installing.html)
+ - [seaborn](https://seaborn.pydata.org/)
+
+### Example
+    $ python plotCounts.py -m CGG -n FMR1 -i extractedSequence_FMR1.fasta
