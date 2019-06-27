@@ -225,6 +225,7 @@ This generates a waterfall-style plot from a fastx file (or stdin) of extracted 
  - [matplotlib](https://matplotlib.org/3.1.0/users/installing.html)
  - [numpy](https://www.numpy.org/)
 
+### Usage
     $ python waterfall.py -h
     usage: waterfall.py [-h] [-i,--inFastx INFASTX] -o,--out OUT -m,--motifs
                         MOTIFS [-f,--format FORMAT] [-d,--dpi DPI]
@@ -249,6 +250,7 @@ This plot will read a fastx file (or stdin) of extracted repeat regions and gene
  - [pbcore](https://github.com/PacificBiosciences/pbcore)
  - [numpy](https://www.numpy.org/)
 
+### Usage
     $ python countMotifs.py -h
     usage: countMotifs.py [-h] [-i,--inFastx INFASTX] [-o,--out OUT] -m,--motifs
                           MOTIFS [-s,--sep SEP] [-r,--reverse]
