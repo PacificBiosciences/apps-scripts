@@ -16,12 +16,11 @@ def main(parser):
     fx            = args.inFastx if args.inFastx else sys.stdin
     #sortedRecs    = sorted(pysam.FastxFile(fx),key=lambda r:-len(r.sequence))
     try:
-        recs = list(FastqReader(fx))
+        counts = [rec.sequence.count(args.motif) for rec in FastqReader(fx)]
     except ValueError:
         #this will fail if fasta is streamed 
-        recs = list(FastaReader(fx))
+        counts = [rec.sequence.count(args.motif) for rec in FastaReader(fx)]
 
-    counts = [rec.sequence.count(args.motif) for rec in recs] 
     xlabel = '%s Repeat Copies (exclusive)' % args.motif
     f      = countPlot(counts,args.name,xlabel,binsize=BINSIZE)
     f.savefig('{p}.{n}.{e}'.format(p=args.out,

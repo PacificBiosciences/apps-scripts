@@ -286,5 +286,22 @@ Plot histograms of repeated motif counts and total repeat region
  - [matplotlib](https://matplotlib.org/3.1.0/users/installing.html)
  - [seaborn](https://seaborn.pydata.org/)
 
+### Usage
+    $ python plotCounts.py -h
+    usage: plotCounts.py [-h] [-i,--inFastx INFASTX] [-o,--out OUT] -m,--motif
+                         MOTIF [-n,--name NAME] [-f,--format FORMAT]
+                         [-d,--dpi DPI]
+    
+    generate histograms of motif counts and expansion size
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -i,--inFastx INFASTX  Input Fastx file. Default stdin
+      -o,--out OUT          Output prefix. default 'hist'
+      -m,--motif MOTIF      Search motif
+      -n,--name NAME        Title/name for figure
+      -f,--format FORMAT    Image format. Default png
+      -d,--dpi DPI          Image resolution. Default 400
+
 ### Example
     $ python plotCounts.py -m CGG -n FMR1 -i extractedSequence_FMR1.fasta
