@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 import sys,re
-from collections import Counter
+from collections import Counter,OrderedDict
 from pbcore.io import FastaReader,FastqReader
 
 def main(parser):
@@ -16,8 +16,9 @@ def main(parser):
         #this will fail if fasta is streamed 
         sortedRecs = sorted(FastaReader(fx),key=keyfunc)
 
-    motifs    = args.motifs.split(',') 
-    motifCols = args.sep.join(map('{{{}}}'.format,motifs))
+    transform = hpCollapse if args.collapseHP else (lambda x:x)
+    motifs    = OrderedDict([(transform(m),m) for m in args.motifs.split(',')[::-1]]) 
+    motifCols = args.sep.join(map('{{{}}}'.format,motifs.values()))
     outFormat = '{{readName}}{sep}{cols}{sep}{{totalLength}}'.format(sep=args.sep,cols=motifCols)
     getCounts = countMotifs(motifs)
 
@@ -25,9 +26,10 @@ def main(parser):
     #column names
     oFile.write(re.sub('{|}','',outFormat) + '\n')
     for rec in sortedRecs:
-        counts = getCounts(rec.sequence)
+        seq = hpCollapse(rec.sequence) if args.collapseHP else rec.sequence
+        counts = getCounts(seq)
         #fill for motifs not found
-        counts.update({m:0 for m in motifs if not counts.has_key(m)})
+        counts.update({m:0 for m in motifs.values() if not counts.has_key(m)})
         counts['readName']    = rec.name
         counts['totalLength'] = len(rec.sequence)
         oFile.write(outFormat.format(**counts) + '\n')
@@ -37,10 +39,14 @@ def main(parser):
 
 def countMotifs(motifs):
     '''returns a function that takes a sequence and returns a dict of counts'''
-    patt = re.compile('(' + ')|('.join(motifs) + ')')
+    patt = re.compile('(' + ')|('.join(motifs.keys()) + ')')
     def getCounts(seq):
-        return Counter(m.group() for m in patt.finditer(seq))
+        return Counter(motifs[m.group()] for m in patt.finditer(seq))
     return getCounts
+
+_PATT = re.compile(r'([ATGC])\1+')
+def hpCollapse(seq):
+    return _PATT.sub(r'\1',seq)
 
 class CountMotifs_Exception(Exception):
     pass
@@ -59,6 +65,8 @@ if __name__ == '__main__':
                     help='Field separator.  Default \',\'')
     parser.add_argument('-r,--reverse', dest='reverse', action='store_true', default=False,
                     help='Sort largest first.  Default ascending order')
+    parser.add_argument('-c,--collapseHP', dest='collapseHP', action='store_true', default=False,
+                    help='Count motifs after HP collapsing both motif and sequence (experimental)')
 
     try:
         main(parser)

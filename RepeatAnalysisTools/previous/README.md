@@ -1,4 +1,7 @@
 # Description
+
+*DEPRECATED* This document describes data processing for the previous _single-cut_ method that required recalling adapters on the command line.  The _double-cut_ method does not require special pre-processing -- simply demux, CCS, and align, according to instructions on the main page.    
+
 This repo contains tools and wrapper scripts for processing, extracting and reporting sequence data generated with the PacBio No-Amp Targeted Sequencing Protocol (alpha).
 
 Sequence read data generated with the No-Amp protocol on PacBio Sequel instruments make use of special asymmetric SMRTbell templates with different hairpin adapters on each end of the inserts and must be re-processed prior to analysis.  

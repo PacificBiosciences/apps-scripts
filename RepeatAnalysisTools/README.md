@@ -1,29 +1,18 @@
 # Description
-This repo contains tools and wrapper scripts for processing, extracting and reporting sequence data generated with the PacBio No-Amp Targeted Sequencing Protocol (alpha).
-
-Sequence read data generated with the No-Amp protocol on PacBio Sequel instruments make use of special asymmetric SMRTbell templates with different hairpin adapters on each end of the inserts and must be re-processed prior to analysis.  
-
-This page describes the processing steps necessary and provides a set of extra tools for basic extraction and reporting of the results.  
+This repository contains instructions for processing and repeat analysis of sequence data generated with the PacBio No-Amp Targeted Sequencing Protocol with simplified double Cas9 cut.
 
 Outputs from the analysis scripts include high-accuracy (>=QV20) CCS sequences for target regions so that users can easily analyze the results with other third party tools as necessary.   
 
 ## Dependencies
 
-### Sequence Processing requires the following tools, available from [pbbioconda](https://github.com/PacificBiosciences/pbbioconda)
- - [recalladapters](https://github.com/pacificbiosciences/recalladapters/)
+SMRT-Link v7.0+ is required for alignment of expanded allele sequences.  This and later versions make use of pbmm2 (PacBio minimap2 wrapper) for alignment.  Viewing of aligned BAMS is improved via parameter over-rides to accomodate mapping long extended alleles through short reference targets.   
+
+### Sequence Processing can also be accomplished on the CL using the following tools, available from [pbbioconda](https://github.com/PacificBiosciences/pbbioconda)
  - [lima](https://github.com/pacificbiosciences/barcoding)
  - [ccs](https://github.com/pacificbiosciences/unanimity/)
  - [pbmm2](https://github.com/PacificBiosciences/pbmm2/)
 
-Additionally, the wrapper script described below makes use of **GNU parallel** to decrease time to results.
-
-#### Notes
- - `recalladapters` 
- - `lima` and `ccs` are available in SMRT Link v6.0, but we recommend using the latest release, SMRT Link v7 or `pbccs` from the pbbioconda repository due to significant speed increases in recent versions
- - `pbmm2` is a minimap2 wrapper for native PacBio datasets (replacement for blasr)
- - The latest versions of lima,ccs, and pbmm2 tools will be available in SMRT Link v7
-
-### Post-processing analysis tools are written in Python2.7 and require the following packages
+### Repeat analysis tools are written in Python2.7 and require the following packages
  - [matplotlib](https://matplotlib.org/)
  - [numpy](http://www.numpy.org/)
  - [pandas](https://pandas.pydata.org/)
@@ -34,52 +23,46 @@ Additionally, the wrapper script described below makes use of **GNU parallel** t
 # Basic Repeat Analysis Workflow
 
 ## Raw Sequence Processing
-Four steps are required to process sequence movies prior to repeat analysis:
-1. Recall asymmetric SMRTbell adapters to properly separate subreads and allow for demultiplexing barcoded samples.
-2. Demultiplex templates with barcodes on only one end of the insert.
-   - This step can be skipped for samples without barcodes
-3. Generate CCS reads and filter for reads >=QV20.
-4. Align CCS reads to reference while allowing for gap extension in highly expanded alleles.
+Repeat analysis requires 3 basic steps in SMRT-Link
+1. Demultiplex
+2. CCS
+3. Alignment
 
 ### Reference
-For human samples, we recommend alignment to the reference `hs37d5`.  Example targets listed in the BED file below have `hs37d5` coordinates.  However, any reference will work so long as the BED file coordinates are paired with the reference used.
+For human samples, we recommend alignment to the reference `hs37d5`.  Example targets listed in the BED file below have `hs37d5` coordinates.  However, any reference will work so long as the target coordinates are paired with the reference used.
 
-A wrapper shell script is provided to automate processing datasets prior to analysis.
+## Demultiplexing in SMRT-Link
+1. Select 'Create New Analysis'
+2. Select your raw data and give the job a name (Next)
+3. Select 'Demultiplex Barcodes' and the proper barcode set
+4. Accept default parameters (Same on both sides, Infer barcodes)
 
-    $ NoAmpRepeatPipeline.sh \
-    movie.subreadset.xml \
-    adapters.tetraloop.fasta \
-    barcodes.fasta/.xml \
-    reference.fasta/.mmi \
-    output_directory
+![Demultiplex Barcodes](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/demux_jobSetup.png)
 
-For datasets without barcodes, use the *no_Barcode* version
+Check the results once the job is completed.
 
-    $ NoAmpRepeatPipeline_noBarcode.sh \
-    movie.subreadset.xml \
-    adapters.tetraloop.fasta \
-    reference.fasta/.mmi \
-    output_directory
+![Demultiplex Results](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/demuxResults.png)
 
-The NoAmp tetraloop adapter fasta can be found [here](resources/adapters.tetraloop.fasta), and the set of barcodes provided with the tetraloop adapters can be found [here](resources/barcodes_10.fasta) in the [resources subdirectory](resources/). 
+## CCS and Mapping
+1. Select 'Create New Analysis'
+2. Select demuxed data and give the job a name.  
+    * *Note* Select each barcoded sample from the child menu after clicking the number in the field 'Demultiplexed Subsets'.
+![Select Each Demuxed Set](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/ccsDataSelect2.png)
+3. Select the option 'One Analysis per Data Set -- Identical Parameters' (Next)
+4. Select 'CCS with Mapping' and the desired reference for alignment
+5. Select 'Advanced Analysis Parameters'
+    * Turn 'Consolidate BAM' to *ON* to generate a single aligned BAM for output.
+![Consolidate BAM](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/ccsParams1.png)
+    * Set Minimum Concordance to 0
+    * Add override options '-L 0.1 -E 0'
+![Alignment Parameter Change](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/ccsParams2.png)
 
-### Output
-After running the above wrapper scripts, results will be in four subdirectories under the provided output directory:
- - [output directory]
-   - **align**   : contains the final aligned CCS reads for repeat analysis
-   - **barcode** : contains unaligned, demuxed *subreads*, one per barcode used (only for barcoded data)
-   - **ccs**     : contains unaligned CCS reads
-   - **refarm**  : contains unaligned *subreads* and *scraps* with recalled adapters
-
-### Un-barcoded samples
-For data without barcodes, please use the python script directly (see below).
 
 ## Repeat Analysis of CCS results
 Once the data are processed as above, the aligned BAM files are used as inputs to the following scripts for extraction and reporting of results.
 
 ### Visualizing Repeats
-We recommend [IGV v2.5.x](https://software.broadinstitute.org/software/igv/node/294) to visualize the alignments found in the `[output_directory]/align` folder.
-
+We recommend [IGV v2.5.x](https://software.broadinstitute.org/software/igv/node/294) to visualize the alignmented BAM file generated for each CCS Mapping job.
 
 ## countOnTarget.py
 Generate table of ZMW counts per target.
@@ -116,16 +99,12 @@ Generate table of ZMW counts per target.
     X   146993569  146993628  FMR1     CGG,AGG
     22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT
 
-Note that the **first** motif listed for each target is the primary motif.  All subsequent motifs are potential interruption motifs within the repeat region.  Start/Stop locations are 1-based (as in IGV) and **_do not_** include flanking sequence.  
-
-__*Columns:*__ **contig**, **start**, **stop**, **name**, **motifs**
-
-## NEW SIMPLIFIED Repeat Analysis (beta)
-Three new tools are provided to enable simplified reporting of repeat expansion.  
-Click here for [Previous Repeat Reporting Tool](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/previous/).
+##
+The following tools are provided to enable simplified reporting of repeat expansion.  
+Click here for [Previous Repeat Reporting Tools](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/previous/).
 
 ### Extract fastq of repeat regions.
-    $ python extractRegion.py m54006_190117_155211.refarm.barcoded.BC1026--BC1026.bam \
+    $ python extractRegion.py combined.consensusalignmentset.bam \
                               human_hs37d5.fasta \
                               4:3076604-3076660 | head
     @m54006_190117_155211/10616973/ccs/2259_2304
@@ -140,7 +119,7 @@ Click here for [Previous Repeat Reporting Tool](https://github.com/PacificBiosci
     CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
 
 ### Stream fastq records directly to waterfall script
-    $ python extractRegion.py align/BC1026--BC1026.bam \
+    $ python extractRegion.py combined.consensusalignmentset.bam \
                               human_hs37d5.fasta \
                               'X:146993569-146993628' \
                               | python waterfall.py -m CGG,AGG -o FMR1.png
@@ -148,7 +127,7 @@ Click here for [Previous Repeat Reporting Tool](https://github.com/PacificBiosci
 ![WaterFall Plot](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/FMR1.waterfall.png)
 
 ### Stream fastq directly to repeat counter
-    $ python extractRegion.py align/BC1026--BC1026.bam \
+    $ python extractRegion.py combined.consensusalignmentset.bam \
                               human_hs37d5.fasta \
                               'X:146993569-146993628' \
                               | python countMotifs.py -m CGG,AGG | column -ts, 
@@ -168,7 +147,7 @@ Click here for [Previous Repeat Reporting Tool](https://github.com/PacificBiosci
     m54006_190116_193234/56754595/ccs/295_463  56   0    168
 
 ### Stream fastq directly to count plotter
-    $ python extractRegion.py align/BC1026--BC1026.bam \
+    $ python extractRegion.py combined.consensusalignmentset.bam \
                               human_hs37d5.fasta \
                               'X:146993569-146993628' \
                               | python plotCounts.py -m CGG -n FMR1
@@ -204,7 +183,7 @@ This is a simple tool for extracting a target region from aligned CCS reads.  Th
                             region. Default 100
 
 ### Example
-    $ python extractRegion.py m54006_190117_155211.refarm.barcoded.BC1026--BC1026.bam \
+    $ python extractRegion.py combined.consensusalignmentset.bam \
                               human_hs37d5.fasta \
                               4:3076604-3076660 | head
     @m54006_190117_155211/10616973/ccs/2259_2304

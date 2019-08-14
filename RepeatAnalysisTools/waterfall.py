@@ -32,7 +32,7 @@ def main(parser):
                              3))
     motifs        = args.motifs.split(',')
     colors        = OrderedDict([(m,COLORMAP.colors[i]) for i,m in enumerate(motifs)])
-    colors['unk'] = UNKNOWN
+    colors['other'] = UNKNOWN
 
     for i,rec in enumerate(sortedRecs):
         #iter through backwards so any 
@@ -44,7 +44,7 @@ def main(parser):
         #fill in unknown cells
         blank = np.all(raster[i] == BLANK,axis=1)
         blank[len(rec.sequence):] = False
-        raster[i,blank,:] = colors['unk']
+        raster[i,blank,:] = colors['other']
 
     f,ax = plt.subplots()
     ax.imshow(raster,origin='lower',aspect='auto')

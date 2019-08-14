@@ -23,11 +23,11 @@ def readBED(bedfile,names=['ctg','start','end','name'],usecols=None):
     if not usecols:
         usecols = range(len(names))
     dtypes = {'ctg':np.str,'start':np.int64,'stop':np.int64}
-    df = pd.read_table(bedfile,
-                       sep='\s+',
-                       names=names,
-                       usecols=usecols,
-                       dtype=dtypes)
+    df = pd.read_csv(bedfile,
+                     sep='\s+',
+                     names=names,
+                     usecols=usecols,
+                     dtype=dtypes)
     missing = df.columns[df.isna().apply(np.all) == True]
     if len(missing):
         raise RepeatAnalysisUtils_Exception('Missing columns in BED file')#: %s' % ','.join(map(str,missing)))
@@ -92,7 +92,7 @@ def getFlankAligner(ref,ctg,start,stop,**kwargs):
     for side,seq in zip(['L','R'],getFlanks(ref,ctg,start,stop,**kwargs)):
         tmpRef.write('>{n}\n{s}\n'.format(n='_'.join([str(ctg),side]),s=seq))
     tmpRef.close()
-    aligner = mp.Aligner(tmpRef.name)
+    aligner = mp.Aligner(tmpRef.name,preset='sr')
     return aligner,tmpRef
 
 class RepeatAnalysisUtils_Exception(Exception):

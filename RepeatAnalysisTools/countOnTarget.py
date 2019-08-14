@@ -28,13 +28,17 @@ def main(parser):
     #calculate enrichment and build result table
     nZMWs,avgReadLength   = getReadStats(bam)
     genomeSize            = sum(bam.lengths)
-    targets['expected']   = (nZMWs * (avgReadLength - targets.length) / genomeSize).clip_lower(0)
+    targets['expected']   = (nZMWs * (avgReadLength - targets.length) / genomeSize).clip(lower=0)
     results               = targets.join(counts)
     results['enrichment'] = results.eval('onTargetZMWs / expected').fillna(0)
+    s = ''
+    if args.sample:
+        results['sample'] = args.sample
+        s = args.sample + '.'
     #write output
-    s = args.sample + '.' if args.sample else ''
     results.to_csv('{d}/{s}onTargetCounts.csv'.format(d=args.outdir,s=s),
                    float_format=FLOATFORMAT,header=True)
+    #results.to_csv(sys.stdout,float_format=FLOATFORMAT,header=True,sep='\t')
 
     return results
 

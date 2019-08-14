@@ -1,7 +1,8 @@
 #! /usr/bin/python
 
-from resources.utils import getFlankAligner,extractRepeat
 import sys,re,pysam
+import mappy as mp
+from tempfile import NamedTemporaryFile
 
 ALIGNFILTER=0x900
 
@@ -37,6 +38,44 @@ def nameFunction(readname,start,stop):
 
 def fqRec(name,seq,qual):
     return '@{name}\n{seq}\n+\n{qual}\n'.format(**locals())
+
+def getFlanks(ref,ctg,start,stop,flanksize=100,Lflank=None,Rflank=None):
+    '''Extract flanking sequence from BED regions, given a pysam.FastaFile with .fai'''
+    Lsize    = Lflank if Lflank else flanksize
+    Rsize    = Rflank if Rflank else flanksize
+    sequence = ref.fetch(ctg,start-Lsize,stop+Rsize)
+    return [sequence[:Lsize],sequence[-Rsize:]]
+
+def getFlankAligner(ref,ctg,start,stop,**kwargs):
+    tmpRef = NamedTemporaryFile(mode='wb',delete=False)
+    for side,seq in zip(['L','R'],getFlanks(ref,ctg,start,stop,**kwargs)):
+        tmpRef.write('>{n}\n{s}\n'.format(n='_'.join([str(ctg),side]),s=seq))
+    tmpRef.close()
+    aligner = mp.Aligner(tmpRef.name,preset='sr')
+    return aligner,tmpRef
+
+def getSubSeq(seq,aln):
+    pos = sorted([getattr(a,att) for a in aln for att in ['q_st','q_en']])[1:-1]
+    return pos + [seq[slice(*pos)]]
+
+def extractRepeat(sequence,aligner):
+    aln = list(aligner.map(sequence))
+    naln = len(aln)
+    if naln == 2:
+        start,stop,seq = getSubSeq(sequence,aln)
+        #seq = getSubSeq(sequence,aln)
+        if aln[0].strand == -1:
+            seq = rc(seq)
+    else:
+        seq = 'One Sided' if naln==1 else 'Poor/no Alignment'
+        start,stop = None,None
+    return start,stop,seq
+
+_RC_MAP = dict(zip('-ACGNTacgt','-TGCNAtgca'))
+
+def rc(seq):
+    '''revcomp'''
+    return "".join([_RC_MAP[c] for c in seq[::-1]])
 
 class ExtractRegion_Exception(Exception):
     pass
