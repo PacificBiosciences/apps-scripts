@@ -62,7 +62,7 @@ Check the results once the job is completed.
 Once the data are processed as above, the aligned BAM files are used as inputs to the following scripts for extraction and reporting of results.
 
 ### Visualizing Repeats
-We recommend [IGV v2.5.x](https://software.broadinstitute.org/software/igv/node/294) to visualize the alignmented BAM file generated for each CCS Mapping job.
+We recommend [IGV v2.5.x](https://software.broadinstitute.org/software/igv/node/294) to visualize the aligned BAM file generated for each CCS Mapping job.
 
 ## countOnTarget.py
 Generate table of ZMW counts per target.
