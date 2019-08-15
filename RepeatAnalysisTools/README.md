@@ -62,7 +62,11 @@ Check the results once the job is completed.
 Once the data are processed as above, the aligned BAM files are used as inputs to the following scripts for extraction and reporting of results.
 
 ### Visualizing Repeats
-We recommend [IGV v2.5.x](https://software.broadinstitute.org/software/igv/node/294) to visualize the aligned BAM file generated for each CCS Mapping job.
+We recommend [IGV v2.5.x](https://software.broadinstitute.org/software/igv/node/294) (or later) to visualize the aligned BAM file generated for each CCS Mapping job.
+
+![Visualization in IGV](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/c9orf72_IGV_med.png)
+Repeat expansions are clearly labeled in IGV, and reads can be grouped into haplotypes.
+
 
 ## countOnTarget.py
 Generate table of ZMW counts per target.
