@@ -47,6 +47,7 @@ Counts of exact string matches, as well as total length of sequence.
 
 ## Work directory
 Primary contents of working directory (not including indice etc)
+
     tree -P '*bam|*fastq|*csv|*png'
     .
     ├── align
