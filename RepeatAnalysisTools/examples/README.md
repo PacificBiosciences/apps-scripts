@@ -44,3 +44,53 @@ Another useful visualization.
 Counts of exact string matches, as well as total length of sequence.
 
     parallel python countMotifs.py -m CGG,AGG -i {} -o reports/{/.}.counts.csv ::: fastq/*fastq
+
+## Work directory
+Primary contents of working directory (not including indice etc)
+    tree -P '*bam|*fastq|*csv|*png'
+    .
+    ├── align
+    │   ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.bam
+    │   ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.bam
+    │   ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.bam
+    │   ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.bam
+    │   └── m54006_190802_093121.bc1019--bc1019.ccs.aligned.bam
+    ├── ccs
+    │   ├── m54006_190802_093121.bc1015--bc1015.ccs.bam
+    │   ├── m54006_190802_093121.bc1016--bc1016.ccs.bam
+    │   ├── m54006_190802_093121.bc1017--bc1017.ccs.bam
+    │   ├── m54006_190802_093121.bc1018--bc1018.ccs.bam
+    │   └── m54006_190802_093121.bc1019--bc1019.ccs.bam
+    ├── demux
+    │   ├── m54006_190802_093121.bc1015--bc1015.bam
+    │   ├── m54006_190802_093121.bc1016--bc1016.bam
+    │   ├── m54006_190802_093121.bc1017--bc1017.bam
+    │   ├── m54006_190802_093121.bc1018--bc1018.bam
+    │   └── m54006_190802_093121.bc1019--bc1019.bam
+    ├── fastq
+    │   ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.extracted_FMR1.fastq
+    │   ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.extracted_FMR1.fastq
+    │   ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.extracted_FMR1.fastq
+    │   ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.extracted_FMR1.fastq
+    │   └── m54006_190802_093121.bc1019--bc1019.ccs.aligned.extracted_FMR1.fastq
+    └── reports
+        ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.extracted_FMR1.counts.csv
+        ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.extracted_FMR1.insertSize.png
+        ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.extracted_FMR1.motifCount.png
+        ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.extracted_FMR1.waterfall.png
+        ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.extracted_FMR1.counts.csv
+        ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.extracted_FMR1.insertSize.png
+        ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.extracted_FMR1.motifCount.png
+        ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.extracted_FMR1.waterfall.png
+        ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.extracted_FMR1.counts.csv
+        ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.extracted_FMR1.insertSize.png
+        ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.extracted_FMR1.motifCount.png
+        ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.extracted_FMR1.waterfall.png
+        ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.extracted_FMR1.counts.csv
+        ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.extracted_FMR1.insertSize.png
+        ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.extracted_FMR1.motifCount.png
+        ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.extracted_FMR1.waterfall.png
+        ├── m54006_190802_093121.bc1019--bc1019.ccs.aligned.extracted_FMR1.counts.csv
+        ├── m54006_190802_093121.bc1019--bc1019.ccs.aligned.extracted_FMR1.insertSize.png
+        ├── m54006_190802_093121.bc1019--bc1019.ccs.aligned.extracted_FMR1.motifCount.png
+        └── m54006_190802_093121.bc1019--bc1019.ccs.aligned.extracted_FMR1.waterfall.png
