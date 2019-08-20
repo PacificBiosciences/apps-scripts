@@ -67,6 +67,15 @@ We recommend [IGV v2.5.x](https://software.broadinstitute.org/software/igv/node/
 ![Visualization in IGV](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/c9orf72_IGV_med.png)
 Repeat expansions are clearly labeled in IGV, and reads can be grouped into haplotypes.
 
+## Auto-Generate All Reports
+The script `makeReports.sh` is provided to generate all reports in a single command.  Please see below for examples of individual tools as well as target BED format.  This script uses the default `python` instance in the command path -- edit the script to use a different instance as needed.
+
+### Usage
+    $ makeReports.sh -h
+
+    Usage: makeReports.sh targets.BED reference.fasta outputDir aligned1.bam [aligned2.bam aligned3.bam ...] 
+
+The file `[outputDir]/runReportCmds.sh` contains commands used for generating the reports.
 
 ## countOnTarget.py
 Generate table of ZMW counts per target.
