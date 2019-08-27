@@ -111,9 +111,9 @@ Generate table of ZMW counts per target.
     22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT
 
 ## coveragePlot.py
-Generate coverage plot of results.
-### Usage
-    $python coveragePlot.py combined.consensusalignmentset.bam
+Generate coverage plot of results. (Example has 4 multiplexed targets)
+### Example
+    $python coveragePlot.py combined.consensusalignmentset.bam 
 
 ![Coverage Plot](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/4target.coveragePlot.png)
 
