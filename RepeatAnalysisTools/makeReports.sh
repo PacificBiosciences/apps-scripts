@@ -18,7 +18,7 @@ PYTHON=python
 GDIR=$(dirname $0)
 
 #commands file
-CMD="${OUTDIR}/makeReportsCmds.sh"
+CMD="${OUTDIR}/runReportCmds.sh"
 
 #fastq dir
 FQDIR="${OUTDIR}/fastq"
@@ -31,6 +31,11 @@ parallel mkdir -p {} ::: "$FQDIR" "$RPDIR"
 #make read counts
 echo 'echo "Counting Reads"' > $CMD
 echo "parallel ${PYTHON} ${GDIR}/countOnTarget.py {} ${TARGETBED} -s {/.} -o ${OUTDIR}/ ::: ${BAMS}" >> $CMD
+echo -e "\n" >> $CMD
+
+#make coverage plots
+echo 'echo "Coverage Plots"' >> $CMD
+echo "parallel ${PYTHON} ${GDIR}/coveragePlot.py {} -o ${OUTDIR}/{/.} 1>/dev/null ::: ${BAMS}" >> $CMD
 echo -e "\n" >> $CMD
 
 while read -r chr start stop name motifs; do
@@ -56,4 +61,4 @@ while read -r chr start stop name motifs; do
 done < ${TARGETBED}
 
 #Execute
-/bin/bash $CMD
+#/bin/bash $CMD

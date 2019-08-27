@@ -77,11 +77,9 @@ The script `makeReports.sh` is provided to generate all reports in a single comm
 
 The file `[outputDir]/runReportCmds.sh` contains commands used for generating the reports.
 
+
 ## countOnTarget.py
 Generate table of ZMW counts per target.
-### Dependencies
- - [pandas](https://pandas.pydata.org/)
- - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
 ### Usage
     $ python countOnTarget.py -h
     usage: countOnTarget.py [-h] [-o,--outdir OUTDIR] inBAM inBED
@@ -111,6 +109,13 @@ Generate table of ZMW counts per target.
     9   27573435   27573596   C9orf72  GGGGCC
     X   146993569  146993628  FMR1     CGG,AGG
     22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT
+
+## coveragePlot.py
+Generate coverage plot of results.
+### Usage
+    $python coveragePlot.py combined.consensusalignmentset.bam
+
+![Coverage Plot](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/4target.coveragePlot.png)
 
 ##
 The following tools are provided to enable simplified reporting of repeat expansion.  
