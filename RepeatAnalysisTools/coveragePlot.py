@@ -53,7 +53,7 @@ def main(parser):
     nbins     = {chrom : length/args.window + 1
                  for chrom,length in zip(bam.references,bam.lengths)}
     #vector of intervals
-    intervals = pd.cut(cov.pos,xrange(0,cov.pos.max(),args.window))
+    intervals = pd.cut(cov.pos,xrange(0,max(bam.lengths),args.window))
     #average for each window
     print 'Calculating mean values'
     meancov   = cov.groupby(['chr',intervals]).coverage.mean()
