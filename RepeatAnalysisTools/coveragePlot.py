@@ -15,8 +15,9 @@ YLABEL   = 'Reads'
 PALETTE  = 'husl'
 DPI      = 400
 
-#Last chromosome to plot 
-#hackish, but works for ordered human refs
+#Define some human chromosome names
+#add more sets as needed
+#all and only these names will plot
 CHROM    = {'hs37d5': ['1','2','3','4','5','6','7','8','9','10','11','12','13',
                        '14','15','16','17','18','19','20','21','22','X','Y','MT'],
             'hg19'  : ['chr1','chr2','chr3','chr4','chr5','chr6','chr7','chr8','chr9',
