@@ -3,7 +3,7 @@
 OUTDIR=$1
 JOBNOS="${@:2}"
 
-if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then 
+if [ -z $1 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then 
  echo -e "\nUsage: $(basename $0) outputDir jobnumber1 [jobnumber2 jobnumber3 ...]\n"
  exit 0
 fi
