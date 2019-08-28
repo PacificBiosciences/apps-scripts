@@ -61,4 +61,4 @@ while read -r chr start stop name motifs; do
 done < ${TARGETBED}
 
 #Execute
-#/bin/bash $CMD
+/bin/bash $CMD
