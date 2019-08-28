@@ -118,6 +118,7 @@ Generate coverage plot of results. (Example has 4 multiplexed targets)
 ![Coverage Plot](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/4target.coveragePlot.png)
 
 Add target labels:
+
     $python coveragePlot.py combined.consensusalignmentset.bam -t resources/human_hs37d5.targets.bed
 
 ![Coverage Plot](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/4target.coveragePlot_wlabels.png)
