@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import pysam,os
 import pandas as pd
 import seaborn as sns
+from resources.utils import readBED
 
 DWINDOW  = 50000 
 FIGHEIGHT= 4
@@ -58,8 +59,16 @@ def main(parser):
     print 'Calculating mean values'
     meancov   = cov.groupby(['chr',intervals]).coverage.mean()
     #index of intervals for ordering results
-    cats      = meancov[useChroms[0]].index.categories
-    
+    cats      = intervals.cat.categories
+
+    #if targets BED, set index to interval bin number
+    if args.targets:
+        targets = readBED(args.targets)
+        targets.index = pd.cut(targets.eval('(start+end)/2'),cats).cat.codes
+    #else set targets to empty df
+    else:
+        targets = pd.DataFrame(columns=['ctg'])
+
     #plot
     fig,ax = plt.subplots()
     fig.set_figheight(FIGHEIGHT)
@@ -79,10 +88,14 @@ def main(parser):
                 yvals = pd.np.zeros(bins)
             xstop = xstart+len(yvals)
             xvals = xrange(xstart,xstop)
-            ax.plot(xvals,yvals)
+            p     = ax.plot(xvals,yvals)[0]
             if label: #every other chrom
                 ticks.append(xstart + len(yvals)/2)
                 ticklabels.append(chrom)
+            #label any targets in the chrom
+            for pos,target in targets.query('ctg==@chrom').iterrows():
+                xpos = xstart+pos
+                annotateTarget(ax,target['name'],xpos,maxy,p.get_color())
             label^=1  #flip
             xstart = xstop
             ax.vlines(xstart,0,maxy,colors='k',alpha=0.25,linestyles=':')
@@ -101,6 +114,14 @@ def main(parser):
     fig.savefig(name,dpi=DPI)
     print 'Saved %s' % name
 
+def annotateTarget(ax,text,xpos,maxy,color):
+    ax.annotate(text, xy=(xpos,1.01*maxy), xytext=(xpos,1.11*maxy),
+                arrowprops=dict(facecolor=color,edgecolor=color,
+                                width=1,headwidth=7,
+                                headlength=9,shrink=0.001),
+                horizontalalignment='center')
+    return None
+
 class CoveragePlot_Exception(Exception):
     pass
 
@@ -114,6 +135,8 @@ if __name__ == '__main__':
                     help='prefix for output file.  default cwd.')
     parser.add_argument('-w,--window', dest='window', type=int, default=DWINDOW,
                     help='window size for averaging coverage across reference.  default %i' % DWINDOW)
+    parser.add_argument('-t,--targetBED', dest='targets', type=str, default=None,
+                    help='label plot with targets from BED file.  default None')
 
     try:
         main(parser)
