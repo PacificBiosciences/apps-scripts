@@ -97,11 +97,11 @@ Generate table of ZMW counts per target.
 ### Example
     $ python countOnTarget.py combined.consensusalignmentset.bam resources/human_hs37d5.targets.bed
     $ column -ts, onTargetCounts.tsv
-    name     ctg  start      end        length  expected  onTargetZMWs  enrichment
-    HTT      4    3076554    3076717    163     0.0167    1164          69787.1946
-    C9orf72  9    27573435   27573596   161     0.0167    0             0.0000
-    FMR1     X    146993447  146993679  232     0.0161    754           46761.0800
-    ATXN10   22   46189527   46191972   2445    0.0000    0             0.0000
+    name     ctg  start      end        length  expected  onTargetZMWs  enrichment  
+    HTT      4    3076604    3076660    56      0.0018    408           227454.0622 
+    C9orf72  9    27573435   27573596   161     0.0017    210           120320.2169 
+    FMR1     X    146993569  146993628  59      0.0018    242           135015.6210 
+    ATXN10   22   46191235   46191304   69      0.0018    268           149907.1604 
     
 ### Example BED file
     $ column -t resources/human_hs37d5.targets_repeatonly.bed
@@ -130,17 +130,17 @@ Click here for [Previous Repeat Reporting Tools](https://github.com/PacificBiosc
 ### Extract fastq of repeat regions.
     $ python extractRegion.py combined.consensusalignmentset.bam \
                               human_hs37d5.fasta \
-                              4:3076604-3076660 | head
-    @m54006_190117_155211/10616973/ccs/2259_2304
-    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
+                              'X:146993569-146993628' | head
+    @m64012_190806_011308/66977880/ccs/296_380
+    CGGCGGCGGCGGCGGCGGCGGCGGCGGAGGCGGCGGCGGCGGCGGCGGCGGCGGAGGCGGCGGCGGCGGCGGCGGCGGCGGCGG
     +
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    @m54006_190117_155211/10879182/ccs/2259_2307
-    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~}~~~~~~~~~~~~~~~~z~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    @m64012_190806_011308/178717562/ccs/296_383
+    CGGCGGCGGCGGCGGCGGCGGCGGCGGAGGCGGCGGCGGCGGCGGCGGCGGCGGCGGAGGCGGCGGCGGCGGCGGCGGCGGCGGCGG
     +
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    @m54006_190117_155211/12386712/ccs/2259_2307
-    CAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAG
+    ~~~~~~~~~y~~~~~~~~u~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    @m64012_190806_011308/39650860/ccs/295_382
+    CGGCGGCGGCGGCGGCGGCGGCGGCGGAGGCGGCGGCGGCGGCGGCGGCGGCGGCGGAGGCGGCGGCGGCGGCGGCGGCGGCGGCGG
 
 ### Stream fastq records directly to waterfall script
     $ python extractRegion.py combined.consensusalignmentset.bam \
@@ -155,20 +155,19 @@ Click here for [Previous Repeat Reporting Tools](https://github.com/PacificBiosc
                               human_hs37d5.fasta \
                               'X:146993569-146993628' \
                               | python countMotifs.py -m CGG,AGG | column -ts, 
-    readName                                   CGG  AGG  totalLength
-    m54006_190116_193234/56885460/ccs/298_388  28   2    90
-    m54006_190116_193234/17367745/ccs/299_391  29   1    92
-    m54006_190116_193234/20840638/ccs/298_391  29   2    93
-    m54006_190116_193234/9044396/ccs/300_393   29   2    93
-    m54006_190116_193234/18481434/ccs/298_391  29   2    93
-    m54006_190116_193234/16778121/ccs/298_391  29   2    93
+    readName                                     CGG  AGG  totalLength
+    m64012_190806_011308/39650860/ccs/295_382    27   2    87
+    m64012_190806_011308/39651811/ccs/295_382    27   2    87
+    m64012_190806_011308/41092035/ccs/295_382    27   2    87
+    m64012_190806_011308/155584458/ccs/296_383   27   2    87
+    m64012_190806_011308/46597674/ccs/295_382    27   2    87
     ...
-    m54006_190116_193234/21430836/ccs/296_464  56   0    168
-    m54006_190116_193234/19661344/ccs/295_463  56   0    168
-    m54006_190116_193234/14418501/ccs/295_463  56   0    168
-    m54006_190116_193234/42009135/ccs/295_463  56   0    168
-    m54006_190116_193234/62587597/ccs/294_462  56   0    168
-    m54006_190116_193234/56754595/ccs/295_463  56   0    168
+    m64012_190806_011308/169740995/ccs/294_1298  326  1    1004
+    m64012_190806_011308/131729381/ccs/295_1300  333  1    1005
+    m64012_190806_011308/99680942/ccs/294_1299   323  1    1005
+    m64012_190806_011308/134742966/ccs/296_1302  331  1    1006
+    m64012_190806_011308/177735643/ccs/282_1290  328  1    1008
+    m64012_190806_011308/8391101/ccs/295_1304    333  1    1009
 
 ### Stream fastq directly to count plotter
     $ python extractRegion.py combined.consensusalignmentset.bam \
