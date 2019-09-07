@@ -4,6 +4,7 @@ import mappy as mp
 import re
 from textwrap import wrap
 from tempfile import NamedTemporaryFile
+from collections import Counter
 
 _RC_MAP = dict(zip('-ACGNTacgt','-TGCNAtgca'))
 
@@ -94,6 +95,20 @@ def getFlankAligner(ref,ctg,start,stop,**kwargs):
     tmpRef.close()
     aligner = mp.Aligner(tmpRef.name,preset='sr')
     return aligner,tmpRef
+
+def countMotifs(motifs,lengthField=False):
+    ''' takes a dict motif:motifname
+        returns a function that takes a sequence and returns a dict of counts
+        optionally includes length of seq in output'''
+    patt = re.compile('(' + ')|('.join(motifs.keys()) + ')')
+    def getCounts(seq):
+        counts = Counter(motifs[m.group()] for m in patt.finditer(seq))
+        #fill for motifs not found 
+        counts.update({m:0 for m in motifs.values() if not counts.has_key(m)})
+        if lengthField:
+            counts[lengthField] = len(seq)
+        return counts
+    return getCounts
 
 class RepeatAnalysisUtils_Exception(Exception):
     pass

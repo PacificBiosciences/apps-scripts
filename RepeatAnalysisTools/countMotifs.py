@@ -3,6 +3,7 @@
 import sys,re
 from collections import Counter,OrderedDict
 from pbcore.io import FastaReader,FastqReader
+from resources.utils import countMotifs
 
 def main(parser):
     args = parser.parse_args()
@@ -14,6 +15,9 @@ def main(parser):
         sortedRecs = sorted(FastqReader(fx),key=keyfunc)
     except ValueError:
         #this will fail if fasta is streamed 
+        sortedRecs = sorted(FastaReader(fx),key=keyfunc)
+    if len(sortedRecs) == 0:
+        #weird single fx rec with three lines fails
         sortedRecs = sorted(FastaReader(fx),key=keyfunc)
 
     transform = hpCollapse if args.collapseHP else (lambda x:x)
@@ -28,21 +32,12 @@ def main(parser):
     for rec in sortedRecs:
         seq = hpCollapse(rec.sequence) if args.collapseHP else rec.sequence
         counts = getCounts(seq)
-        #fill for motifs not found
-        counts.update({m:0 for m in motifs.values() if not counts.has_key(m)})
         counts['readName']    = rec.name
         counts['totalLength'] = len(rec.sequence)
         oFile.write(outFormat.format(**counts) + '\n')
     oFile.close()
         
     return None
-
-def countMotifs(motifs):
-    '''returns a function that takes a sequence and returns a dict of counts'''
-    patt = re.compile('(' + ')|('.join(motifs.keys()) + ')')
-    def getCounts(seq):
-        return Counter(motifs[m.group()] for m in patt.finditer(seq))
-    return getCounts
 
 _PATT = re.compile(r'([ATGC])\1+')
 def hpCollapse(seq):
