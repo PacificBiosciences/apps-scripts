@@ -79,7 +79,7 @@ The script `makeReports.sh` is provided to generate all reports in a single comm
 The file `[outputDir]/runReportCmds.sh` contains commands used for generating the reports.
 
 ## clusterByRegion.py
-NEW! Cluster reads based on repeat region.  K-means clustering based on kmer counts over the region of interest provides a reliable way to phase alleles.  Output includes Haplotagged BAM (tag="HP") and summary stats for target motifs.
+NEW! K-means clustering of reads based on kmer counts over the repeat region of interest provides a reliable way to phase alleles.  Output includes haplotagged BAM (tag="HP") and summary stats for target motifs.
 ### Usage
     $ python clusterByRegion.py -h
     usage: clusterByRegion.py [-h] -m,--motifs MOTIFS [-k,--kmer KMER]
@@ -117,7 +117,7 @@ NEW! Cluster reads based on repeat region.  K-means clustering based on kmer cou
                                 combined.consensusalignmentset.bam \
                                 human_hs37d5.fasta \
                                 'X:146993569-146993628'
-    $ column -ts, sequelII/cluster/bc1019--bc1019.mapped.FMR1.summary.csv 
+    $ column -ts, cluster/bc1019--bc1019.mapped.FMR1.summary.csv 
                           CGG     CGG    CGG          AGG     AGG   AGG      totalBp  totalBp  totalBp       Read
                           median  mean   ci95         median  mean  ci95     median   mean     ci95          count
     cluster0_numreads86   320.5   320.1  (266 - 384)  1       1.1   (0 - 3)  985.5    988.0    (857 - 1168)  86
