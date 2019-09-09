@@ -117,11 +117,20 @@ NEW! K-means clustering of reads based on kmer counts over the repeat region of 
                                 combined.consensusalignmentset.bam \
                                 human_hs37d5.fasta \
                                 'X:146993569-146993628'
-    $ column -ts, cluster/bc1019--bc1019.mapped.FMR1.summary.csv 
+
+    $ column -ts, cluster/FMR1.summary.csv 
                           CGG     CGG    CGG          AGG     AGG   AGG      totalBp  totalBp  totalBp       Read
                           median  mean   ci95         median  mean  ci95     median   mean     ci95          count
     cluster0_numreads86   320.5   320.1  (266 - 384)  1       1.1   (0 - 3)  985.5    988.0    (857 - 1168)  86
     cluster1_numreads151  27.0    27.0   (26 - 28)    2       2.0   (2 - 2)  87.0     87.2     (84 - 90)     151
+    
+    $ head cluster/FMR1.readnames.txt
+    >cluster0_numreads86
+    m64012_190806_011308/22087479/ccs/295_1272
+    m64012_190806_011308/172818496/ccs/294_1254
+    m64012_190806_011308/48760706/ccs/296_1331
+    m64012_190806_011308/180027489/ccs/289_1286
+    m64012_190806_011308/43582972/ccs/295_1228
 
 
 ![Haplotagged Bam](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1019.FMR1_haptagged.png)
