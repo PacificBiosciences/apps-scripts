@@ -19,6 +19,7 @@ SMRT-Link v7.0+ is required for alignment of expanded allele sequences.  This an
  - [seaborn](https://seaborn.pydata.org/)
  - [mappy](https://github.com/lh3/minimap2/tree/master/python)
  - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
+ - [scikit-learn](https://scikit-learn.org/stable/index.html)
 
 # Basic Repeat Analysis Workflow
 
@@ -76,6 +77,54 @@ The script `makeReports.sh` is provided to generate all reports in a single comm
     Usage: makeReports.sh targets.BED reference.fasta outputDir aligned1.bam [aligned2.bam aligned3.bam ...] 
 
 The file `[outputDir]/runReportCmds.sh` contains commands used for generating the reports.
+
+## clusterByRegion.py
+NEW! Cluster reads based on repeat region.  K-means clustering based on kmer counts over the region of interest provides a reliable way to phase alleles.  Output includes Haplotagged BAM (tag="HP") and summary stats for target motifs.
+### Usage
+    $ python clusterByRegion.py -h
+    usage: clusterByRegion.py [-h] -m,--motifs MOTIFS [-k,--kmer KMER]
+                              [-c,--clusters CLUSTERS] [-p, --prefix PREFIX]
+                              [-f,--flanksize FLANKSIZE] [-x,--noBam] [-d,--drop]
+                              inBAM reference region
+    
+    kmer clustering by target region
+    
+    positional arguments:
+      inBAM                 input BAM of CCS alignments
+      reference             Reference fasta used for mapping BAM. Must have .fai
+                            index.
+      region                Target region, format '[chr]:[start]-[stop]'. Example
+                            '4:3076604-3076660'
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -m,--motifs MOTIFS    comma-separated list of motifs to count
+      -k,--kmer KMER        kmer size for clustering. Default 3
+      -c,--clusters CLUSTERS
+                            clusters/ploidy count. Default 2
+      -p, --prefix PREFIX   Output fastq file. Default ./cluster
+      -f,--flanksize FLANKSIZE
+                            Size of flanking sequence mapped for extracting repeat
+                            region. Default 100
+      -x,--noBam            Do not export HP-tagged bam of clustered reads
+      -d,--drop             Drop reads with no cluster in output bam. Default keep
+                            all reads.
+
+### Example
+    $ python clusterByRegion.py -m CGG,AGG \
+                                -p cluster/FMR1 \
+                                -d \
+                                combined.consensusalignmentset.bam \
+                                human_hs37d5.fasta \
+                                'X:146993569-146993628'
+    $ column -ts, sequelII/cluster/bc1019--bc1019.mapped.FMR1.summary.csv 
+                          CGG     CGG    CGG          AGG     AGG   AGG      totalBp  totalBp  totalBp       Read
+                          median  mean   ci95         median  mean  ci95     median   mean     ci95          count
+    cluster0_numreads86   320.5   320.1  (266 - 384)  1       1.1   (0 - 3)  985.5    988.0    (857 - 1168)  86
+    cluster1_numreads151  27.0    27.0   (26 - 28)    2       2.0   (2 - 2)  87.0     87.2     (84 - 90)     151
+
+
+![Haplotagged Bam](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1019.FMR1_haptagged.png)
 
 
 ## countOnTarget.py

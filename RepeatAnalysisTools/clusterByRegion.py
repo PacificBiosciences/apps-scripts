@@ -14,8 +14,9 @@ DEFAULTKMER  = 3
 DEFAULTPREFIX= './cluster'
 LENGTHFIELD  = 'totalBp'
 DEFAULTCI    = [0.025,0.975] #95%
-AGGFUNCS     = [np.median] #np.mean?
+AGGFUNCS     = [np.median,np.mean]
 CLUSTNAMES   = 'cluster{0[0]}_numreads{0[1]}'.format
+FLOATFMT     = '%.1f'
 
 def main(parser):
     args = parser.parse_args()
@@ -41,7 +42,7 @@ def main(parser):
     columns     = motifs + [LENGTHFIELD]
     clusterSize = clusters.size().rename(('Read','count'))
     
-    results = clusters[columns].agg(AGGFUNCS+[resampleCI])\
+    results = clusters[columns].agg(AGGFUNCS+[ci95])\
                                .join(clusterSize)
     #rename clusters
     names = clusterSize.reset_index().apply(CLUSTNAMES,axis=1)
@@ -49,7 +50,8 @@ def main(parser):
 
     #write results
     print "Writing Results"
-    results.to_excel('%s.summary.xlsx' % args.prefix)
+    #results.to_excel('%s.summary.xlsx' % args.prefix)
+    results.to_csv('%s.summary.csv' % args.prefix, float_format=FLOATFMT)
 
     with open('%s.readnames.txt' % args.prefix, 'w') as namefile:
         for cluster,reads in motifCounts.groupby(names.reindex(clusterIdx).values):
@@ -79,9 +81,9 @@ def getCounts(seqGen,kmerSize,motifCounter):
 def getKmerCounts(seq,k=3):
     return Counter(seq[i:i+k] for i in xrange(0,len(seq)-k))
 
-def resampleCI(data,nboot=10000):
+def ci95(data,nboot=10000):
     resamp = np.random.choice(data,size=nboot,replace=True)
-    return '({:0.0f} - {:0.0f})'.format(*np.quantile(resamp,DEFAULTCI))
+    return '({} - {})'.format(*map(int,np.quantile(resamp,DEFAULTCI)))
    
 class ClusterByRegion_Exception(Exception):
     pass

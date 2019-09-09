@@ -24,9 +24,11 @@ CMD="${OUTDIR}/runReportCmds.sh"
 FQDIR="${OUTDIR}/fastq"
 #reports dir
 RPDIR="${OUTDIR}/reports"
+#cluster output dir
+CLDIR="${OUTDIR}/cluster"
 
 #make output dirs
-parallel mkdir -p {} ::: "$FQDIR" "$RPDIR"
+parallel mkdir -p {} ::: "$FQDIR" "$RPDIR" "$CLDIR"
 
 #make read counts
 echo 'echo "Counting Reads"' > $CMD
@@ -57,7 +59,11 @@ while read -r chr start stop name motifs; do
  echo 'echo "'"${name} Count Tables\"" >> $CMD
  echo "parallel ${PYTHON} ${GDIR}/countMotifs.py -m ${motifs} -i {} -o ${RPDIR}/{/.}.counts.csv ::: ${FQDIR}/*${name}*fastq" >> $CMD 
  echo -e "\n" >> $CMD
-  
+
+ echo 'echo "'"${name} Cluster Reads\"" >> $CMD
+ echo "parallel ${PYTHON} ${GDIR}/clusterByRegion.py -m ${motifs} -d -p ${CLDIR}/{/.}.${name} {} ${REFERENCE} \'${chr}:${start}-${stop}\' 1>/dev/null ::: ${BAMS}" >> $CMD
+ echo -e "\n" >> $CMD
+ 
 done < ${TARGETBED}
 
 #Execute
