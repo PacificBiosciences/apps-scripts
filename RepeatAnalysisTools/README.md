@@ -78,6 +78,56 @@ The script `makeReports.sh` is provided to generate all reports in a single comm
 
 The file `[outputDir]/runReportCmds.sh` contains commands used for generating the reports.
 
+
+## countOnTarget.py
+Generate table of ZMW counts per target.
+### Usage
+    $ python countOnTarget.py -h
+    usage: countOnTarget.py [-h] [-o,--outdir OUTDIR] inBAM inBED
+    
+    Generate table of ZMW counts per target
+    
+    positional arguments:
+      inBAM               BAM file of aligned reads. Must have .bai index
+      inBED               BED file with targets
+    
+    optional arguments:
+      -h, --help          show this help message and exit
+      -o,--outdir OUTDIR  directory to save output file. default cwd.
+
+### Example
+    $ python countOnTarget.py combined.consensusalignmentset.bam resources/human_hs37d5.targets.bed
+    $ column -ts, onTargetCounts.tsv
+    name     ctg  start      end        length  expected  onTargetZMWs  enrichment  
+    HTT      4    3076604    3076660    56      0.0018    408           227454.0622 
+    C9orf72  9    27573435   27573596   161     0.0017    210           120320.2169 
+    FMR1     X    146993569  146993628  59      0.0018    242           135015.6210 
+    ATXN10   22   46191235   46191304   69      0.0018    268           149907.1604 
+    
+### Example BED file
+    $ column -t resources/human_hs37d5.targets_repeatonly.bed
+    4   3076604    3076660    HTT      CAG,CAA,CCG,CCA,CGG
+    9   27573435   27573596   C9orf72  GGGGCC
+    X   146993569  146993628  FMR1     CGG,AGG
+    22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT
+
+## coveragePlot.py
+Generate coverage plot of results. (Example has 4 multiplexed targets)
+### Example
+    $python coveragePlot.py combined.consensusalignmentset.bam 
+
+![Coverage Plot](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/4target.coveragePlot.png)
+
+Add target labels:
+
+    $python coveragePlot.py combined.consensusalignmentset.bam -t resources/human_hs37d5.targets.bed
+
+![Coverage Plot](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/4target.coveragePlot_wlabels.png)
+
+##
+The following tools are provided to enable simplified reporting of repeat expansion.  
+Click here for [Previous Repeat Reporting Tools](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/previous/).
+
 ## clusterByRegion.py
 NEW! K-means clustering of reads based on kmer counts over the repeat region of interest provides a reliable way to phase alleles.  Output includes haplotagged BAM (tag="HP") and summary stats for target motifs.
 ### Usage
@@ -134,56 +184,6 @@ NEW! K-means clustering of reads based on kmer counts over the repeat region of 
 
 
 ![Haplotagged Bam](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/bc1019.FMR1_haptagged.png)
-
-
-## countOnTarget.py
-Generate table of ZMW counts per target.
-### Usage
-    $ python countOnTarget.py -h
-    usage: countOnTarget.py [-h] [-o,--outdir OUTDIR] inBAM inBED
-    
-    Generate table of ZMW counts per target
-    
-    positional arguments:
-      inBAM               BAM file of aligned reads. Must have .bai index
-      inBED               BED file with targets
-    
-    optional arguments:
-      -h, --help          show this help message and exit
-      -o,--outdir OUTDIR  directory to save output file. default cwd.
-
-### Example
-    $ python countOnTarget.py combined.consensusalignmentset.bam resources/human_hs37d5.targets.bed
-    $ column -ts, onTargetCounts.tsv
-    name     ctg  start      end        length  expected  onTargetZMWs  enrichment  
-    HTT      4    3076604    3076660    56      0.0018    408           227454.0622 
-    C9orf72  9    27573435   27573596   161     0.0017    210           120320.2169 
-    FMR1     X    146993569  146993628  59      0.0018    242           135015.6210 
-    ATXN10   22   46191235   46191304   69      0.0018    268           149907.1604 
-    
-### Example BED file
-    $ column -t resources/human_hs37d5.targets_repeatonly.bed
-    4   3076604    3076660    HTT      CAG,CAA,CCG,CCA,CGG
-    9   27573435   27573596   C9orf72  GGGGCC
-    X   146993569  146993628  FMR1     CGG,AGG
-    22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT
-
-## coveragePlot.py
-Generate coverage plot of results. (Example has 4 multiplexed targets)
-### Example
-    $python coveragePlot.py combined.consensusalignmentset.bam 
-
-![Coverage Plot](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/4target.coveragePlot.png)
-
-Add target labels:
-
-    $python coveragePlot.py combined.consensusalignmentset.bam -t resources/human_hs37d5.targets.bed
-
-![Coverage Plot](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/4target.coveragePlot_wlabels.png)
-
-##
-The following tools are provided to enable simplified reporting of repeat expansion.  
-Click here for [Previous Repeat Reporting Tools](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/previous/).
 
 ### Extract fastq of repeat regions.
     $ python extractRegion.py combined.consensusalignmentset.bam \
