@@ -152,7 +152,7 @@ NEW! K-means clustering of reads based on kmer counts over the repeat region of 
       -k,--kmer KMER        kmer size for clustering. Default 3
       -c,--clusters CLUSTERS
                             clusters/ploidy count. Default 2
-      -p, --prefix PREFIX   Output fastq file. Default ./cluster
+      -p, --prefix PREFIX   Output prefix. Default ./cluster
       -f,--flanksize FLANKSIZE
                             Size of flanking sequence mapped for extracting repeat
                             region. Default 100

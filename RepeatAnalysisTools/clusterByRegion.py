@@ -105,7 +105,7 @@ if __name__ == '__main__':
     parser.add_argument('-c,--clusters', dest='clusters', type=int, default=2,
                     help='clusters/ploidy count. Default 2')
     parser.add_argument('-p, --prefix', dest='prefix', type=str, default=DEFAULTPREFIX,
-                    help='Output fastq file.  Default %s'%DEFAULTPREFIX)
+                    help='Output prefix. Default %s'%DEFAULTPREFIX)
     parser.add_argument('-f,--flanksize', dest='flanksize', type=int, default=100,
                     help='Size of flanking sequence mapped for extracting repeat region.  Default 100')
     parser.add_argument('-x,--noBam', dest='noBam', action='store_true',
