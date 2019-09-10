@@ -24,7 +24,7 @@ def countMotifs(motifs,lengthField=False,collapseHP=False):
         optionally hpcollapse motifs and reads before counting
         **length is always original sequence, not hpcollapsed**'''
     transform =  hpCollapse if collapseHP else (lambda x:x)
-    mm       = OrderedDict(zip(transform(motifs),motifs))
+    mm       = OrderedDict(zip(map(transform,motifs),motifs))
     patt = re.compile('(' + ')|('.join(mm.keys()) + ')')
     def getCounts(seq):
         counts = Counter(mm[m.group()] for m in patt.finditer(transform(seq)))
