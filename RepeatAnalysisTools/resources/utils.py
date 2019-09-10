@@ -25,6 +25,10 @@ def countMotifs(motifs,lengthField=False,collapseHP=False):
         **length is always original sequence, not hpcollapsed**'''
     transform =  hpCollapse if collapseHP else (lambda x:x)
     mm       = OrderedDict(zip(map(transform,motifs),motifs))
+    if len(mm) < len(motifs): 
+        vals = motifs.__repr__(),map(hpCollapse,motifs).__repr__()
+        e    = 'Degenerate collapsed motifs\noriginal {}\ncollapsed {}\n'.format(*vals)
+        raise RepeatAnalysisUtils_Exception(e)
     patt = re.compile('(' + ')|('.join(mm.keys()) + ')')
     def getCounts(seq):
         counts = Counter(mm[m.group()] for m in patt.finditer(transform(seq)))

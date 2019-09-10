@@ -134,7 +134,8 @@ NEW! K-means clustering of reads based on kmer counts over the repeat region of 
     $ python clusterByRegion.py -h
     usage: clusterByRegion.py [-h] -m,--motifs MOTIFS [-k,--kmer KMER]
                               [-c,--clusters CLUSTERS] [-p, --prefix PREFIX]
-                              [-f,--flanksize FLANKSIZE] [-x,--noBam] [-d,--drop]
+                              [-f,--flanksize FLANKSIZE] [-s,--seed SEED]
+                              [-x,--noBam] [-d,--drop] [-u,--collapseHP]
                               inBAM reference region
     
     kmer clustering by target region
@@ -156,9 +157,12 @@ NEW! K-means clustering of reads based on kmer counts over the repeat region of 
       -f,--flanksize FLANKSIZE
                             Size of flanking sequence mapped for extracting repeat
                             region. Default 100
+      -s,--seed SEED        Seed for resampling ci95. Default 42
       -x,--noBam            Do not export HP-tagged bam of clustered reads
       -d,--drop             Drop reads with no cluster in output bam. Default keep
                             all reads.
+      -u,--collapseHP       Collapse homopolymers before analysis. Default use
+                            original sequence.
 
 ### Example
     $ python clusterByRegion.py -m CGG,AGG \

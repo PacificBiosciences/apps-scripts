@@ -43,7 +43,9 @@ def main(parser):
     clusters    = motifCounts.groupby(clusterIdx)
     columns     = motifs + [LENGTHFIELD]
     clusterSize = clusters.size().rename(('Read','count'))
-    
+
+    #set random seed
+    np.random.seed(args.seed)    
     results = clusters[columns].agg(AGGFUNCS+[ci95])\
                                .join(clusterSize)
     #rename clusters
@@ -111,11 +113,13 @@ if __name__ == '__main__':
                     help='Output prefix. Default %s'%DEFAULTPREFIX)
     parser.add_argument('-f,--flanksize', dest='flanksize', type=int, default=100,
                     help='Size of flanking sequence mapped for extracting repeat region.  Default 100')
+    parser.add_argument('-s,--seed', dest='seed', type=int, default=42,
+                    help='Seed for resampling ci95.  Default 42')
     parser.add_argument('-x,--noBam', dest='noBam', action='store_true',
                     help='Do not export HP-tagged bam of clustered reads')
     parser.add_argument('-d,--drop', dest='drop', action='store_true',
                     help='Drop reads with no cluster in output bam.  Default keep all reads.')
-    parser.add_argument('-h,--collapseHP', dest='collapseHP', action='store_true',
+    parser.add_argument('-u,--collapseHP', dest='collapseHP', action='store_true',
                     help='Collapse homopolymers before analysis.  Default use original sequence.')
 
     try:
