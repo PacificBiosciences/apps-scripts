@@ -37,7 +37,7 @@ echo -e "\n" >> $CMD
 
 #make coverage plots
 echo 'echo "Coverage Plots"' >> $CMD
-echo "parallel ${PYTHON} ${GDIR}/coveragePlot.py {} -o ${OUTDIR}/{/.} 1>/dev/null ::: ${BAMS}" >> $CMD
+echo "parallel ${PYTHON} ${GDIR}/coveragePlot.py {} -o ${OUTDIR}/{/.} -t ${TARGETBED} 1>/dev/null ::: ${BAMS}" >> $CMD
 echo -e "\n" >> $CMD
 
 while read -r chr start stop name motifs; do

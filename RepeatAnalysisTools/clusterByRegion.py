@@ -22,7 +22,9 @@ def main(parser):
     args = parser.parse_args()
     
     motifs       = args.motifs.split(',')
-    motifCounter = countMotifs({m:m for m in motifs},lengthField=LENGTHFIELD)    
+    motifCounter = countMotifs(motifs,
+                               lengthField=LENGTHFIELD,
+                               collapseHP=args.collapseHP)    
     seqGen       = extractRegion(args.inBAM,
                                  args.reference,
                                  region=args.region,
@@ -82,7 +84,8 @@ def getKmerCounts(seq,k=3):
     return Counter(seq[i:i+k] for i in xrange(0,len(seq)-k))
 
 def ci95(data,nboot=10000):
-    resamp = np.random.choice(data,size=nboot,replace=True)
+    n = max(nboot,len(data))
+    resamp = np.random.choice(data,size=n,replace=True)
     return '({} - {})'.format(*map(int,np.quantile(resamp,DEFAULTCI)))
    
 class ClusterByRegion_Exception(Exception):
@@ -112,6 +115,8 @@ if __name__ == '__main__':
                     help='Do not export HP-tagged bam of clustered reads')
     parser.add_argument('-d,--drop', dest='drop', action='store_true',
                     help='Drop reads with no cluster in output bam.  Default keep all reads.')
+    parser.add_argument('-h,--collapseHP', dest='collapseHP', action='store_true',
+                    help='Collapse homopolymers before analysis.  Default use original sequence.')
 
     try:
         main(parser)

@@ -20,20 +20,17 @@ def main(parser):
         #weird single fx rec with three lines fails
         sortedRecs = sorted(FastaReader(fx),key=keyfunc)
 
-    transform = hpCollapse if args.collapseHP else (lambda x:x)
-    motifs    = OrderedDict([(transform(m),m) for m in args.motifs.split(',')[::-1]]) 
-    motifCols = args.sep.join(map('{{{}}}'.format,motifs.values()))
+    motifs    = args.motifs.split(',')
+    motifCols = args.sep.join(map('{{{}}}'.format,motifs))
     outFormat = '{{readName}}{sep}{cols}{sep}{{totalLength}}'.format(sep=args.sep,cols=motifCols)
-    getCounts = countMotifs(motifs)
+    getCounts = countMotifs(motifs,lengthField='totalLength',collapseHP=args.collapseHP)
 
     oFile = open(args.out,'w') if args.out else sys.stdout
     #column names
     oFile.write(re.sub('{|}','',outFormat) + '\n')
     for rec in sortedRecs:
-        seq = hpCollapse(rec.sequence) if args.collapseHP else rec.sequence
-        counts = getCounts(seq)
+        counts = getCounts(rec.sequence)
         counts['readName']    = rec.name
-        counts['totalLength'] = len(rec.sequence)
         oFile.write(outFormat.format(**counts) + '\n')
     oFile.close()
         
