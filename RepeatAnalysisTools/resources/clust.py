@@ -12,6 +12,7 @@ def addHPtag(inBAM,outBAM,clusterMap,noCluster=NOCLUST,dropNoClust=False):
                 clust = int(clusterMap.get(rec.query_name,noCluster))
                 rec.set_tag('HP',clust)
                 outbam.write(rec)
+    pysam.index(outBAM)
     return None
 
 def readClusterFile(clustfile):
