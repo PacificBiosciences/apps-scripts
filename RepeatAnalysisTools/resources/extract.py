@@ -1,4 +1,4 @@
-import sys,re,pysam
+import os,re,pysam
 import mappy as mp
 from tempfile import NamedTemporaryFile
 
@@ -19,14 +19,17 @@ def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flan
 
     aligner,tmp = getFlankAligner(ref,ctg,start-1,stop,flanksize=flanksize) 
     
-    for rec in bam.fetch(ctg,start,stop):
-        if (rec.flag & ALIGNFILTER):
-            continue
-        rStart,rStop,subseq = extractRepeat(rec.query_sequence,aligner)
-        if rStart:
-            name = nameFunction(rec.query_name,rStart,rStop)
-            qual = ''.join([chr(q+33) for q in rec.query_qualities[rStart:rStop]])
-            yield name,subseq,qual
+    try:
+        for rec in bam.fetch(ctg,start,stop):
+            if (rec.flag & ALIGNFILTER):
+                continue
+            rStart,rStop,subseq = extractRepeat(rec.query_sequence,aligner)
+            if rStart:
+                name = nameFunction(rec.query_name,rStart,rStop)
+                qual = ''.join([chr(q+33) for q in rec.query_qualities[rStart:rStop]])
+                yield name,subseq,qual
+    finally:
+        os.remove(tmp.name)
 
 def getCoordinates(regionString):
     ctg,start,stop = re.search('(.*):(\d+)-(\d+)',regionString).groups()

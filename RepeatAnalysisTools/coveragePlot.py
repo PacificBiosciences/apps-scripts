@@ -8,7 +8,7 @@ import pandas as pd
 import seaborn as sns
 from resources.utils import readBED
 
-DWINDOW  = 50000 
+DWINDOW  = 2500 
 FIGHEIGHT= 4
 FIGWIDTH = 16
 XLABEL   = 'Chromosome'
