@@ -1,6 +1,11 @@
-import pysam,sys
+import pysam,sys,re
+import numpy as np
+import pandas as pd
+from collections import Counter
+from operator import itemgetter
 
-NOCLUST = 999
+NOCLUST  = 999
+DEFAULTCI= [0.025,0.975] #95%
 
 def addHPtag(inBAM,outBAM,clusterMap,noCluster=NOCLUST,dropNoClust=False):
     '''clusterMap is map of {readname:cluster::int}'''
@@ -15,17 +20,74 @@ def addHPtag(inBAM,outBAM,clusterMap,noCluster=NOCLUST,dropNoClust=False):
     pysam.index(outBAM)
     return None
 
-def readClusterFile(clustfile):
+def clusterName(vals):
+    'vals: (clusterInt,numreads)'
+    return 'cluster{0[0]}_numreads{0[1]}'.format(vals)
+
+def getCluster(name):
+    return int(re.search('cluster(\d+)',name).group(1))
+
+def readClusterFile(clustfile,nFields=3):
+    '''
+    nFields: use n /-separated fields from input read names in result.
+             nFields = 0 -> all fields
+    '''
     res  = {}
-    name = None
-    cluster = 0
+    name,cluster = None,None
     with open(clustfile) as f:
         for line in f:
             if line.startswith('>'):
-                name = line[1:]
-                cluster+=1
+                cluster = getCluster(line[1:])
             else:
-                #split off any extra fields
-                read = '/'.join(line.split('/')[:3]) 
-                res[read] = int(cluster)
+                read = '/'.join(line.split('/')[:nFields]) if nFields else line.strip()
+                res[read] = cluster
     return res
+
+def getCounts(seqGen,kmerSize,motifCounter):
+    counts = {name:[pd.Series(getKmerCounts(seq,k=kmerSize)),
+                    pd.Series(motifCounter(seq))]
+              for name,seq,qual in seqGen}
+    kmer,motif = [pd.DataFrame(map(itemgetter(i),counts.values()),
+                               index=counts.keys()).fillna(0)
+                  for i in [0,1]]
+    return kmer,motif
+
+def getKmerCounts(seq,k=3):
+    return Counter(seq[i:i+k] for i in xrange(0,len(seq)-k))
+
+def resampleCI(data,nboot=10000,ci=DEFAULTCI):
+    n = max(nboot,len(data))
+    resamp = np.random.choice(data,size=n,replace=True)
+    return '({} - {})'.format(*map(int,np.quantile(resamp,ci)))
+
+def clusterStats(motifCounts,clusterIdx,outColumns,
+                 aggFuncs=[np.median,np.mean],
+                 randomSeed=None,ci=DEFAULTCI):
+    '''
+    motifCounts: df with cols =  motif (+length), index = readnames
+    clusterIdx: vector of cluster indices, same order as motifCounts.index
+    outColumns: list of column names to describe in output
+    aggFuncs: list of functions to apply to each column
+    randomSeed: random seed for resampling ci
+    '''
+    clusters    = motifCounts.groupby(clusterIdx)
+    clusterSize = clusters.size().rename(('Read','count'))
+
+    #set random seed
+    np.random.seed(randomSeed)
+    results = clusters[outColumns].agg(aggFuncs+[resampleCI])\
+                                  .join(clusterSize)
+    #rename clusters
+    names = clusterSize.reset_index().apply(clusterName,axis=1)
+    results.index = names.values
+    return names,results
+
+
+
+
+
+
+
+
+
+

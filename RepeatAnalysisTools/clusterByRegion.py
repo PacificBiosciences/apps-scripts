@@ -2,20 +2,18 @@
 
 import sys
 import numpy as np
-import pandas as pd
-from collections import Counter
 from sklearn.cluster import KMeans
 from resources.extract import extractRegion
 from resources.utils import countMotifs
-from resources.clust import addHPtag
-from operator import itemgetter
+from resources.clust import getCounts, \
+                            clusterStats, \
+                            addHPtag
 
 DEFAULTKMER  = 3
 DEFAULTPREFIX= './cluster'
 LENGTHFIELD  = 'totalBp'
 DEFAULTCI    = [0.025,0.975] #95%
 AGGFUNCS     = [np.median,np.mean]
-CLUSTNAMES   = 'cluster{0[0]}_numreads{0[1]}'.format
 FLOATFMT     = '%.1f'
 
 def main(parser):
@@ -40,17 +38,10 @@ def main(parser):
     clusterIdx = kmeans.predict(kmerCounts)
 
     #get cluster stats
-    clusters    = motifCounts.groupby(clusterIdx)
-    columns     = motifs + [LENGTHFIELD]
-    clusterSize = clusters.size().rename(('Read','count'))
-
-    #set random seed
-    np.random.seed(args.seed)    
-    results = clusters[columns].agg(AGGFUNCS+[ci95])\
-                               .join(clusterSize)
-    #rename clusters
-    names = clusterSize.reset_index().apply(CLUSTNAMES,axis=1)
-    results.index = names.values
+    columns       = motifs + [LENGTHFIELD]
+    names,results = clusterStats(motifCounts,clusterIdx,columns,
+                                 aggFuncs=AGGFUNCS,randomSeed=args.seed,
+                                 ci=DEFAULTCI)
 
     #write results
     print "Writing Results"
@@ -71,25 +62,8 @@ def main(parser):
 
     print "Done"
 
-    return None
+    return kmerCounts,motifCounts
 
-def getCounts(seqGen,kmerSize,motifCounter):
-    counts = {name:[pd.Series(getKmerCounts(seq,k=kmerSize)),
-                    pd.Series(motifCounter(seq))]
-              for name,seq,qual in seqGen}
-    kmer,motif = [pd.DataFrame(map(itemgetter(i),counts.values()),
-                               index=counts.keys()).fillna(0)
-                  for i in [0,1]] 
-    return kmer,motif
-
-def getKmerCounts(seq,k=3):
-    return Counter(seq[i:i+k] for i in xrange(0,len(seq)-k))
-
-def ci95(data,nboot=10000):
-    n = max(nboot,len(data))
-    resamp = np.random.choice(data,size=n,replace=True)
-    return '({} - {})'.format(*map(int,np.quantile(resamp,DEFAULTCI)))
-   
 class ClusterByRegion_Exception(Exception):
     pass
 
