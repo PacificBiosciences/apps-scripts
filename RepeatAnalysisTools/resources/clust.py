@@ -1,4 +1,4 @@
-import pysam,sys,re
+import pysam,re
 import numpy as np
 import pandas as pd
 from collections import Counter

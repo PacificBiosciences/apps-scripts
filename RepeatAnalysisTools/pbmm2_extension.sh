@@ -21,7 +21,7 @@ pbmm2 align --sort \
             -e 4 \
             -E 0 \
             -L 0.2 \
-            -c 0 \
+            -c 10 \
             --sample ${SAMPLE} \
             $REF \
             $QUERY \
