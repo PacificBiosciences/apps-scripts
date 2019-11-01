@@ -54,7 +54,7 @@ Check the results once the job is completed.
 5. Select 'Advanced Analysis Parameters'
     * Turn 'Consolidate BAM' to *ON* to generate a single aligned BAM for output.
 ![Consolidate BAM](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/ccsParams1.png)
-    * Set Minimum Concordance to 0
+    * Set Minimum Concordance to 20
     * Add override options '-L 0.1 -E 0'
 ![Alignment Parameter Change](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/ccsParams2.png)
 
