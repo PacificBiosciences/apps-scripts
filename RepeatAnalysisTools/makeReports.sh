@@ -40,12 +40,18 @@ echo 'echo "Coverage Plots"' >> $CMD
 echo "parallel ${PYTHON} ${GDIR}/coveragePlot.py {} -o ${OUTDIR}/{/.} -t ${TARGETBED} 1>/dev/null ::: ${BAMS}" >> $CMD
 echo -e "\n" >> $CMD
 
-while read -r chr start stop name motifs; do
+while read -r chr start stop name motifs revcomp; do
  #use first motif for histograms
  pMotif=$(echo ${motifs} | cut -d, -f1)
+ #revcomp flag
+ if [ "$revcomp" == 1 ]; then
+  rc="-r"
+ else
+  rc=""
+ fi
 
  echo 'echo "'"${name} Extract Region\"" >> $CMD
- echo "parallel ${PYTHON} ${GDIR}/extractRegion.py {} ${REFERENCE} \'${chr}:${start}-${stop}\' -o ${FQDIR}/{/.}.extracted_${name}.fastq ::: ${BAMS}" >> $CMD
+ echo "parallel ${PYTHON} ${GDIR}/extractRegion.py ${rc} {} ${REFERENCE} \'${chr}:${start}-${stop}\' -o ${FQDIR}/{/.}.extracted_${name}.fastq ::: ${BAMS}" >> $CMD
  echo -e "\n" >> $CMD
 
  echo 'echo "'"${name} Waterfall Plots\"" >> $CMD
@@ -61,7 +67,7 @@ while read -r chr start stop name motifs; do
  echo -e "\n" >> $CMD
 
  echo 'echo "'"${name} Cluster Reads\"" >> $CMD
- echo "parallel ${PYTHON} ${GDIR}/clusterByRegion.py -m ${motifs} -d -p ${CLDIR}/{/.}.${name} {} ${REFERENCE} \'${chr}:${start}-${stop}\' 1>/dev/null ::: ${BAMS}" >> $CMD
+ echo "parallel ${PYTHON} ${GDIR}/clusterByRegion.py ${rc} -m ${motifs} -d -p ${CLDIR}/{/.}.${name} {} ${REFERENCE} \'${chr}:${start}-${stop}\' 1>/dev/null ::: ${BAMS}" >> $CMD
  echo -e "\n" >> $CMD
  
 done < ${TARGETBED}

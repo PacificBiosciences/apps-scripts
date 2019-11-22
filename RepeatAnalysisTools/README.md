@@ -106,10 +106,14 @@ Generate table of ZMW counts per target.
     
 ### Example BED file
     $ column -t resources/human_hs37d5.targets_repeatonly.bed
-    4   3076604    3076660    HTT      CAG,CAA,CCG,CCA,CGG
-    9   27573435   27573596   C9orf72  GGGGCC
-    X   146993569  146993628  FMR1     CGG,AGG
-    22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT
+    4   3076604    3076660    HTT      CAG,CAA,CCG,CCA,CGG  0
+    9   27573435   27573596   C9orf72  CCGGGG   1
+    X   146993569  146993628  FMR1     CGG,AGG  0
+    22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT    0
+
+Columns are: {chr} {start} {stop} {name} {motifs} {revcomp}
+
+The final column `revcomp` is optional and indicates whether the reference sequence should be reverse complemente (1) or not (0) before exporting extracted sequence.  This is useful in cases where the reference sequence used is the opposite strand compared to the typical orientation.  
 
 ## coveragePlot.py
 Generate coverage plot of results. (Example has 4 multiplexed targets)
@@ -129,14 +133,15 @@ The following tools are provided to enable simplified reporting of repeat expans
 Click here for [Previous Repeat Reporting Tools](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/previous/).
 
 ## clusterByRegion.py
-NEW! K-means clustering of reads based on kmer counts over the repeat region of interest provides a reliable way to phase alleles.  Output includes haplotagged BAM (tag="HP") and summary stats for target motifs.
+K-means clustering of reads based on kmer counts over the repeat region of interest provides a reliable way to phase alleles.  Output includes haplotagged BAM (tag="HP") and summary stats for target motifs.
 ### Usage
     $ python clusterByRegion.py -h
     usage: clusterByRegion.py [-h] -m,--motifs MOTIFS [-k,--kmer KMER]
-                              [-c,--clusters CLUSTERS] [-p, --prefix PREFIX]
-                              [-f,--flanksize FLANKSIZE] [-s,--seed SEED]
-                              [-x,--noBam] [-d,--drop] [-u,--collapseHP]
-                              inBAM reference region
+                          [-c,--clusters CLUSTERS] [-r,--revcomp]
+                          [-p,--prefix PREFIX] [-f,--flanksize FLANKSIZE]
+                          [-s,--seed SEED] [-x,--noBam] [-d,--drop]
+                          [-u,--collapseHP]
+                          inBAM reference region
     
     kmer clustering by target region
     
@@ -153,7 +158,8 @@ NEW! K-means clustering of reads based on kmer counts over the repeat region of 
       -k,--kmer KMER        kmer size for clustering. Default 3
       -c,--clusters CLUSTERS
                             clusters/ploidy count. Default 2
-      -p, --prefix PREFIX   Output prefix. Default ./cluster
+      -r,--revcomp          Reverse complement extracted sequence
+      -p,--prefix PREFIX    Output prefix. Default ./cluster
       -f,--flanksize FLANKSIZE
                             Size of flanking sequence mapped for extracting repeat
                             region. Default 100
@@ -248,6 +254,7 @@ This is a simple tool for extracting a target region from aligned CCS reads.  Th
 ### Usage
     $ python extractRegion.py -h
     usage: extractRegion.py [-h] [-o,--outFq OUTFQ] [-f,--flanksize FLANKSIZE]
+                            [-r,--revcomp]
                             inBAM reference region
     
     extract target region from aligned BAMS using region flank alignments. Output
@@ -266,6 +273,7 @@ This is a simple tool for extracting a target region from aligned CCS reads.  Th
       -f,--flanksize FLANKSIZE
                             Size of flanking sequence mapped for extracting repeat
                             region. Default 100
+      -r,--revcomp          Rev-comp extracted region. Default Reference Direction
 
 ### Example
     $ python extractRegion.py combined.consensusalignmentset.bam \

@@ -10,7 +10,8 @@ def main(parser):
         for name,seq,qual in extractRegion(args.inBAM,
                                            args.reference,
                                            region=args.region,
-                                           flanksize=args.flanksize):
+                                           flanksize=args.flanksize,
+                                           revcomp=args.revcomp):
             oFile.write(fqRec(name,seq,qual))
     
     return None
@@ -32,6 +33,8 @@ if __name__ == '__main__':
                     help='Output fastq file.  Default stdout')
     parser.add_argument('-f,--flanksize', dest='flanksize', type=int, default=100,
                     help='Size of flanking sequence mapped for extracting repeat region.  Default 100')
+    parser.add_argument('-r,--revcomp', dest='revcomp', action='store_true', default=False,
+                    help='Rev-comp extracted region.  Default Reference Direction')
 
     try:
         main(parser)

@@ -4,7 +4,7 @@ from tempfile import NamedTemporaryFile
 
 ALIGNFILTER=0x900
 
-def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flanksize=100):
+def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flanksize=100,revcomp=False):
     ref = pysam.FastaFile(reference)
     bam = pysam.AlignmentFile(inBAM)
     if region:
@@ -27,6 +27,9 @@ def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flan
             if rStart:
                 name = nameFunction(rec.query_name,rStart,rStop)
                 qual = ''.join([chr(q+33) for q in rec.query_qualities[rStart:rStop]])
+                if revcomp:
+                    subseq = rc(subseq)
+                    qual   = qual[::-1]
                 yield name,subseq,qual
     finally:
         os.remove(tmp.name)

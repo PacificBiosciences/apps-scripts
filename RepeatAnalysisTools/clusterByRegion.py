@@ -26,7 +26,8 @@ def main(parser):
     seqGen       = extractRegion(args.inBAM,
                                  args.reference,
                                  region=args.region,
-                                 flanksize=args.flanksize)
+                                 flanksize=args.flanksize,
+                                 revcomp=args.revcomp)
 
     print "Reading sequence"
     kmerCounts,motifCounts = getCounts(seqGen,args.kmer,motifCounter) 
@@ -83,7 +84,9 @@ if __name__ == '__main__':
                     help='kmer size for clustering. Default %i'%DEFAULTKMER)
     parser.add_argument('-c,--clusters', dest='clusters', type=int, default=2,
                     help='clusters/ploidy count. Default 2')
-    parser.add_argument('-p, --prefix', dest='prefix', type=str, default=DEFAULTPREFIX,
+    parser.add_argument('-r,--revcomp', dest='revcomp', action='store_true',
+                    help='Reverse complement extracted sequence')
+    parser.add_argument('-p,--prefix', dest='prefix', type=str, default=DEFAULTPREFIX,
                     help='Output prefix. Default %s'%DEFAULTPREFIX)
     parser.add_argument('-f,--flanksize', dest='flanksize', type=int, default=100,
                     help='Size of flanking sequence mapped for extracting repeat region.  Default 100')
