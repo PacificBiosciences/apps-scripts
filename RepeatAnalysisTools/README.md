@@ -106,9 +106,9 @@ Generate table of ZMW counts per target.
     
 ### Example BED file
     $ column -t resources/human_hs37d5.targets_repeatonly.bed
-    4   3076604    3076660    HTT      CAG,CAA,CCG,CCA,CGG  0
-    9   27573435   27573596   C9orf72  CCGGGG   1
-    X   146993569  146993628  FMR1     CGG,AGG  0
+    4   3076604    3076660    HTT      CAG,CAA,CCG,CCA,CGG          0
+    9   27573435   27573596   C9orf72  CCGGGG                       1
+    X   146993569  146993628  FMR1     CGG,AGG                      0
     22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT    0
 
 Columns are: {chr} {start} {stop} {name} {motifs} {revcomp}
