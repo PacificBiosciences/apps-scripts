@@ -113,7 +113,7 @@ Generate table of ZMW counts per target.
 
 Columns are: {chr} {start} {stop} {name} {motifs} {revcomp}
 
-The final column `revcomp` is optional and indicates whether the reference sequence should be reverse complemente (1) or not (0) before exporting extracted sequence.  This is useful in cases where the reference sequence used is the opposite strand compared to the typical orientation.  
+The final column `revcomp` is optional and indicates whether the aligned sequence should be reverse complemented (1) or not (0) before exporting extracted sequence.  This is useful in cases where the reference sequence used is the opposite strand compared to the typical orientation.  
 
 ## coveragePlot.py
 Generate coverage plot of results. (Example has 4 multiplexed targets)
