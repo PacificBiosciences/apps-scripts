@@ -55,7 +55,7 @@ while read -r chr start stop name motifs revcomp; do
  echo -e "\n" >> $CMD
 
  echo 'echo "'"${name} Waterfall Plots\"" >> $CMD
- echo "parallel ${PYTHON} ${GDIR}/waterfall.py -m ${motifs} -i {} -o ${RPDIR}/{/.}.waterfall.png 1>/dev/null ::: ${FQDIR}/*${name}*fastq" >> $CMD
+ echo "parallel ${PYTHON} ${GDIR}/waterfall.py -f pdf -m ${motifs} -i {} -o ${RPDIR}/{/.}.waterfall.pdf 1>/dev/null ::: ${FQDIR}/*${name}*fastq" >> $CMD
  echo -e "\n" >> $CMD
 
  echo 'echo "'"${name} Histograms\"" >> $CMD
