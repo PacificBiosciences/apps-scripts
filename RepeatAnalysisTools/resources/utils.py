@@ -12,7 +12,7 @@ def readBED(bedfile,names=['ctg','start','end','name'],usecols=None):
                      names=names,
                      usecols=usecols,
                      dtype=dtypes)
-    missing = df.columns[df.isna().apply(np.all) == True]
+    missing = df.columns[df.isna().all()]
     if len(missing):
         raise RepeatAnalysisUtils_Exception('Missing columns in BED file')#: %s' % ','.join(map(str,missing)))
     return df

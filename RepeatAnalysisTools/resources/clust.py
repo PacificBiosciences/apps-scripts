@@ -80,14 +80,9 @@ def clusterStats(motifCounts,clusterIdx,outColumns,
     #rename clusters
     names = clusterSize.reset_index().apply(clusterName,axis=1)
     results.index = names.values
+
+    #rename column
+    name = 'ci%i' % int(100*(ci[1]-ci[0]))
+    results.rename(columns={'resampleCI':name},level=1,inplace=True)    
+
     return names,results
-
-
-
-
-
-
-
-
-
-
