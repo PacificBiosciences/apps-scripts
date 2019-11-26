@@ -31,10 +31,10 @@ def main(parser):
                              len(sortedRecs[0].sequence),
                              3))
     motifs        = args.motifs.split(',')
+    patt          = re.compile('|'.join(['(%s)'%m for m in motifs]))
     colors        = OrderedDict([(m,COLORMAP.colors[i]) for i,m in enumerate(motifs)])
     colors['other'] = UNKNOWN
 
-    patt = re.compile('(%s)' % (')|('.join(motifs)))
     for i,rec in enumerate(sortedRecs):
         for j in patt.finditer(rec.sequence):
             raster[i,j.start():j.end(),:] = colors[j.group()]
