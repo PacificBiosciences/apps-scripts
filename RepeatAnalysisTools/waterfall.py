@@ -34,15 +34,8 @@ def main(parser):
     colors        = OrderedDict([(m,COLORMAP.colors[i]) for i,m in enumerate(motifs)])
     colors['other'] = UNKNOWN
 
+    patt = re.compile('(%s)' % (')|('.join(motifs)))
     for i,rec in enumerate(sortedRecs):
-        ##iter through backwards so any 
-        ##greedy match over-writes end up 
-        ##as the first listed motif 
-        #for motif in motifs[::-1]:
-        #    for j in re.finditer(motif,rec.sequence):
-        #        raster[i,j.start():j.end(),:] = colors[motif]
-        #better, search for all at same time
-        patt = re.compile('(%s)' % (')|('.join(motifs)))
         for j in patt.finditer(rec.sequence):
             raster[i,j.start():j.end(),:] = colors[j.group()]
 
