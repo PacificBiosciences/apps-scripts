@@ -47,7 +47,7 @@ def main(parser):
     f,ax = plt.subplots()
     ax.imshow(raster,origin='lower',aspect='auto')
     ax.set_xlabel(XLABEL)
-    ax.set_ylabel(YLABEL)
+    ax.set_ylabel(args.ylabel)
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
 
@@ -73,6 +73,8 @@ if __name__ == '__main__':
                     help='Output file')
     parser.add_argument('-m,--motifs', dest='motifs', type=str, default=None, required=True,
                     help='Search motifs, comma separated, most frequent first, e.g. \'CGG,AGG\'')
+    parser.add_argument('-y,--ylabel', dest='ylabel', type=str, default=YLABEL, required=False,
+                    help='Y-axis label for plot. Default %s'%YLABEL)
     parser.add_argument('-f,--format', dest='format', type=str, default='png',
                     help='Image format.  Default png')
     parser.add_argument('-d,--dpi', dest='dpi', type=int, default=400,

@@ -34,6 +34,9 @@ def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flan
     finally:
         os.remove(tmp.name)
 
+def fqRec(name,seq,qual):
+    return '@{name}\n{seq}\n+\n{qual}\n'.format(**locals())
+
 def getCoordinates(regionString):
     ctg,start,stop = re.search('(.*):(\d+)-(\d+)',regionString).groups()
     return ctg.strip(),int(start),int(stop)

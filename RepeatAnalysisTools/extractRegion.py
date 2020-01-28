@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 import sys
-from resources.extract import extractRegion,Extract_Exception
+from resources.extract import extractRegion,fqRec,Extract_Exception
 
 def main(parser):
     args = parser.parse_args()
@@ -15,9 +15,6 @@ def main(parser):
             oFile.write(fqRec(name,seq,qual))
     
     return None
-
-def fqRec(name,seq,qual):
-    return '@{name}\n{seq}\n+\n{qual}\n'.format(**locals())
 
 if __name__ == '__main__':
     import argparse

@@ -99,17 +99,17 @@ Generate table of ZMW counts per target.
     $ python countOnTarget.py combined.consensusalignmentset.bam resources/human_hs37d5.targets.bed
     $ column -ts, onTargetCounts.tsv
     name     ctg  start      end        length  expected  onTargetZMWs  enrichment  
-    HTT      4    3076604    3076660    56      0.0018    408           227454.0622 
+    HTT      4    3076604    3076693    89      0.0018    408           227454.0622 
     C9orf72  9    27573435   27573596   161     0.0017    210           120320.2169 
     FMR1     X    146993569  146993628  59      0.0018    242           135015.6210 
     ATXN10   22   46191235   46191304   69      0.0018    268           149907.1604 
     
 ### Example BED file
     $ column -t resources/human_hs37d5.targets_repeatonly.bed
-    4   3076604    3076660    HTT      CAG,CAA,CCG,CCA,CGG          0
-    9   27573435   27573596   C9orf72  CCGGGG                       1
+    4   3076604    3076693    HTT      CAG,CAA,CCG,CCA,CGG          0
+    9   27573435   27573596   C9orf72  GGGGCC,GGGGCG                1
     X   146993569  146993628  FMR1     CGG,AGG                      0
-    22  46191235   46191304   ATXN10   ATTCT,ATTCC,ATTTCT,ATTCCT    0
+    22  46191235   46191304   ATXN10   ATTCT,ATTCCT,ATTTCT,ATTCC    0
 
 Columns are: {chr} {start} {stop} {name} {motifs} {revcomp}
 

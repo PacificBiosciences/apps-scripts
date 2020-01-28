@@ -53,7 +53,7 @@ def getCounts(seqGen,kmerSize,motifCounter):
     return kmer,motif
 
 def getKmerCounts(seq,k=3):
-    return Counter(seq[i:i+k] for i in xrange(0,len(seq)-k))
+    return Counter(seq[i:i+k] for i in xrange(0,len(seq)-k+1))
 
 def resampleCI(data,nboot=10000,ci=DEFAULTCI):
     n = max(nboot,len(data))
