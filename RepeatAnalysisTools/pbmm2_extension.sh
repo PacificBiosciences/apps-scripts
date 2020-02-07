@@ -11,7 +11,7 @@ fi
 
 pbmm2 align --sort \
             -j ${nPROC} \
-            -r 2000 \
+            -r 10000 \
             -A 2 \
             -B 5 \
             -z 400 \
@@ -20,7 +20,7 @@ pbmm2 align --sort \
             -O 56 \
             -e 4 \
             -E 0 \
-            -L 0.2 \
+            -L 0.1 \
             -c 10 \
             --sample ${SAMPLE} \
             $REF \
