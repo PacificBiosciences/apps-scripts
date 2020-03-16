@@ -20,6 +20,7 @@ SMRT-Link v7.0+ is required for alignment of expanded allele sequences.  This an
  - [mappy](https://github.com/lh3/minimap2/tree/master/python)
  - [pysam](https://pysam.readthedocs.io/en/latest/index.html)
  - [scikit-learn](https://scikit-learn.org/stable/index.html)
+ - [pbcore](https://github.com/pacificbiosciences/pbcore/)
 
 # Basic Repeat Analysis Workflow
 
