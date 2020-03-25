@@ -25,7 +25,7 @@ cluster_cmd() {
 get_count() {
     cnt=$(ls ${BNAME}.chunk*bam 2>>/dev/null | wc -l)
     if [ -z $cnt ]; then
-        echo 0z
+        echo 0
     else
         echo $cnt
     fi
