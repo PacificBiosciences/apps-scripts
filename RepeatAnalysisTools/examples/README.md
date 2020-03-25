@@ -12,7 +12,7 @@ The program *lima* is provided for demultiplexing.
          --split-bam-named     \
          --peek-guess          \
          -j 8                  \
-         ccs/outCCS.bam             \
+         ccs/outCCS.bam        \
          pacbio.barcodeset.xml \
          demux/outDemuxed.bam
 

@@ -52,9 +52,9 @@ This command will start 4 ccs jobs with 4 threads each on the local machine
 ### Demultiplex
 Demultiplexing of the CCS reads is done with the program `lima`.
 
-   $ lima --ccs --same                   \
-         --split-bam-named --peek-guess  \
-         inCCS.bam barcodes.fasta demuxCCS.bam
+    $ lima --ccs --same                   \
+           --split-bam-named --peek-guess  \
+           inCCS.bam barcodes.fasta demuxCCS.bam
 
 A summary of the demultiplexing outputs can be found in the `lima` output directory with the suffix \*summary. 
 
