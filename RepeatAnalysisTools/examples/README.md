@@ -1,26 +1,27 @@
 # Example Walkthrough for No-Amp Data Prep and Repeat Analysis (manual)
 
+## Call CCS Reads
+We recommend calling CCS consensus with heuristics disabled, full draft mode, and filtering to >=QV20 (default) for further analysis.  Please note that disabling the heuristics produces more very long expanded reads but is considerably slower.  Chunking the raw subread data and processing on a cluster is recommended.
+
+    $ ccs inSubreads.bam ccs/outCCS.bam -j 32 --disable-heuristics --draft-mode full
+
 ## Demultiplex Subreads
 The program *lima* is provided for demultiplexing.
 
-    lima --same \
-         --min-score 26 \
-         --split-bam-named \
-         --peek-guess \
-         -j 20 \
-         m54006_190802_093121.subreadset.xml \
+    lima --same                \
+         --split-bam-named     \
+         --peek-guess          \
+         -j 8                  \
+         ccs/outCCS.bam             \
          pacbio.barcodeset.xml \
-         demux/m54006_190802_093121.subreadset.xml
+         demux/outDemuxed.bam
 
-## Call CCS Reads
-We recommend calling CCS consensus and filtering to >=QV20 for further analysis.   
-
-    parallel -j 2 ccs -j 12 --minPredictedAccuracy 0.99 {} ccs/{/.}.ccs.bam ::: demux/*bam
+Note that bams will be split by barcode and barcode names will be infixed before the extension `.bam`.
 
 ## Alignment to Reference
 We provide two bash scripts to parameterize alignment of CCS reads to the reference.  Both scripts use minimap2 as the aligner and have parameters set such that reads with extended repeat motifs are correctly mapped to the reference.
     
-    parallel -j 6 pbmm2_extension.sh human_hs37d5.fasta {} align/{/.}.aligned.bam {/.} ::: ccs/*bam
+    parallel -j 6 pbmm2_extension.sh human_hs37d5.fasta {} align/{/.}.aligned.bam ::: demux/*bam
 
 ## Extract Target Region
 Target regions are identified and clipped out by mapping sequence *flanking* the target coordinates used to each read and excising the sequence between.
@@ -51,47 +52,43 @@ Primary contents of working directory (not including indice etc)
     tree -P '*bam|*fastq|*csv|*png'
     .
     ├── align
-    │   ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.bam
-    │   ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.bam
-    │   ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.bam
-    │   ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.bam
-    │   └── m54006_190802_093121.bc1019--bc1019.ccs.aligned.bam
+    │   ├── outDemuxed.bc1015--bc1015.aligned.bam
+    │   ├── outDemuxed.bc1016--bc1016.aligned.bam
+    │   ├── outDemuxed.bc1017--bc1017.aligned.bam
+    │   ├── outDemuxed.bc1018--bc1018.aligned.bam
+    │   └── outDemuxed.bc1019--bc1019.aligned.bam
     ├── ccs
-    │   ├── m54006_190802_093121.bc1015--bc1015.ccs.bam
-    │   ├── m54006_190802_093121.bc1016--bc1016.ccs.bam
-    │   ├── m54006_190802_093121.bc1017--bc1017.ccs.bam
-    │   ├── m54006_190802_093121.bc1018--bc1018.ccs.bam
-    │   └── m54006_190802_093121.bc1019--bc1019.ccs.bam
+    │   └── outCCS.bam
     ├── demux
-    │   ├── m54006_190802_093121.bc1015--bc1015.bam
-    │   ├── m54006_190802_093121.bc1016--bc1016.bam
-    │   ├── m54006_190802_093121.bc1017--bc1017.bam
-    │   ├── m54006_190802_093121.bc1018--bc1018.bam
-    │   └── m54006_190802_093121.bc1019--bc1019.bam
+    │   ├── outDemuxed.bc1015--bc1015.bam
+    │   ├── outDemuxed.bc1016--bc1016.bam
+    │   ├── outDemuxed.bc1017--bc1017.bam
+    │   ├── outDemuxed.bc1018--bc1018.bam
+    │   └── outDemuxed.bc1019--bc1019.bam
     ├── fastq
-    │   ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.extracted_FMR1.fastq
-    │   ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.extracted_FMR1.fastq
-    │   ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.extracted_FMR1.fastq
-    │   ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.extracted_FMR1.fastq
-    │   └── m54006_190802_093121.bc1019--bc1019.ccs.aligned.extracted_FMR1.fastq
+    │   ├── outDemuxed.bc1015--bc1015.aligned.extracted_FMR1.fastq
+    │   ├── outDemuxed.bc1016--bc1016.aligned.extracted_FMR1.fastq
+    │   ├── outDemuxed.bc1017--bc1017.aligned.extracted_FMR1.fastq
+    │   ├── outDemuxed.bc1018--bc1018.aligned.extracted_FMR1.fastq
+    │   └── outDemuxed.bc1019--bc1019.aligned.extracted_FMR1.fastq
     └── reports
-        ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.extracted_FMR1.counts.csv
-        ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.extracted_FMR1.insertSize.png
-        ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.extracted_FMR1.motifCount.png
-        ├── m54006_190802_093121.bc1015--bc1015.ccs.aligned.extracted_FMR1.waterfall.png
-        ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.extracted_FMR1.counts.csv
-        ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.extracted_FMR1.insertSize.png
-        ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.extracted_FMR1.motifCount.png
-        ├── m54006_190802_093121.bc1016--bc1016.ccs.aligned.extracted_FMR1.waterfall.png
-        ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.extracted_FMR1.counts.csv
-        ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.extracted_FMR1.insertSize.png
-        ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.extracted_FMR1.motifCount.png
-        ├── m54006_190802_093121.bc1017--bc1017.ccs.aligned.extracted_FMR1.waterfall.png
-        ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.extracted_FMR1.counts.csv
-        ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.extracted_FMR1.insertSize.png
-        ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.extracted_FMR1.motifCount.png
-        ├── m54006_190802_093121.bc1018--bc1018.ccs.aligned.extracted_FMR1.waterfall.png
-        ├── m54006_190802_093121.bc1019--bc1019.ccs.aligned.extracted_FMR1.counts.csv
-        ├── m54006_190802_093121.bc1019--bc1019.ccs.aligned.extracted_FMR1.insertSize.png
-        ├── m54006_190802_093121.bc1019--bc1019.ccs.aligned.extracted_FMR1.motifCount.png
-        └── m54006_190802_093121.bc1019--bc1019.ccs.aligned.extracted_FMR1.waterfall.png
+        ├── outDemuxed.bc1015--bc1015.aligned.extracted_FMR1.counts.csv
+        ├── outDemuxed.bc1015--bc1015.aligned.extracted_FMR1.insertSize.png
+        ├── outDemuxed.bc1015--bc1015.aligned.extracted_FMR1.motifCount.png
+        ├── outDemuxed.bc1015--bc1015.aligned.extracted_FMR1.waterfall.png
+        ├── outDemuxed.bc1016--bc1016.aligned.extracted_FMR1.counts.csv
+        ├── outDemuxed.bc1016--bc1016.aligned.extracted_FMR1.insertSize.png
+        ├── outDemuxed.bc1016--bc1016.aligned.extracted_FMR1.motifCount.png
+        ├── outDemuxed.bc1016--bc1016.aligned.extracted_FMR1.waterfall.png
+        ├── outDemuxed.bc1017--bc1017.aligned.extracted_FMR1.counts.csv
+        ├── outDemuxed.bc1017--bc1017.aligned.extracted_FMR1.insertSize.png
+        ├── outDemuxed.bc1017--bc1017.aligned.extracted_FMR1.motifCount.png
+        ├── outDemuxed.bc1017--bc1017.aligned.extracted_FMR1.waterfall.png
+        ├── outDemuxed.bc1018--bc1018.aligned.extracted_FMR1.counts.csv
+        ├── outDemuxed.bc1018--bc1018.aligned.extracted_FMR1.insertSize.png
+        ├── outDemuxed.bc1018--bc1018.aligned.extracted_FMR1.motifCount.png
+        ├── outDemuxed.bc1018--bc1018.aligned.extracted_FMR1.waterfall.png
+        ├── outDemuxed.bc1019--bc1019.aligned.extracted_FMR1.counts.csv
+        ├── outDemuxed.bc1019--bc1019.aligned.extracted_FMR1.insertSize.png
+        ├── outDemuxed.bc1019--bc1019.aligned.extracted_FMR1.motifCount.png
+        └── outDemuxed.bc1019--bc1019.aligned.extracted_FMR1.waterfall.png

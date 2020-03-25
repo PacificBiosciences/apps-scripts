@@ -1,17 +1,15 @@
 # Description
-This repository contains instructions for processing and repeat analysis of sequence data generated with the PacBio No-Amp Targeted Sequencing Protocol with simplified double Cas9 cut.  The set of directions here is intended for use with SMRT Analysis version 8 and current sequencing chemistry. 
-
-Due to a reduction in CCS yield in the longest of expansion alleles using the latest CCS algorithm on default parameters, customers are recommended to follow these command-line instructions for maximum output.  For customers interested in instructions for older versions of SMRT Analysis, please refer to previous instruction sets [here](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/previous).
+This repository contains instructions for processing and repeat analysis of sequence data generated with the PacBio No-Amp Targeted Sequencing Protocol with simplified double Cas9 cut.
 
 Outputs from the analysis scripts include high-accuracy (>=QV20) CCS sequences for target regions so that users can easily analyze the results with other third party tools as necessary.   
 
 ## Dependencies
 
-This version of data preparation requires the use of the latest *ccs* algorithm available from pbbioconda, as well as the demultiplexing tool *lima* and the *pbmm2* alignment program.
+SMRT-Link v7.0+ is required for alignment of expanded allele sequences.  This and later versions make use of pbmm2 (PacBio minimap2 wrapper) for alignment.  Viewing of aligned BAMS is improved via parameter over-rides to accomodate mapping long extended alleles through short reference targets.   
 
-### Sequence Processing on the CL requires the following tools, available from [pbbioconda](https://github.com/PacificBiosciences/pbbioconda)
- - [ccs](https://github.com/PacificBiosciences/ccs)
+### Sequence Processing can also be accomplished on the CL using the following tools, available from [pbbioconda](https://github.com/PacificBiosciences/pbbioconda)
  - [lima](https://github.com/pacificbiosciences/barcoding)
+ - [ccs](https://github.com/pacificbiosciences/unanimity/)
  - [pbmm2](https://github.com/PacificBiosciences/pbmm2/)
 
 ### Repeat analysis tools are written in Python2.7 and require the following packages
@@ -27,53 +25,40 @@ This version of data preparation requires the use of the latest *ccs* algorithm 
 # Basic Repeat Analysis Workflow
 
 ## Raw Sequence Processing
-Repeat analysis requires 3 basic steps
-1. CCS
-2. Demultiplexing
+Repeat analysis requires 3 basic steps in SMRT-Link
+1. Demultiplex
+2. CCS
 3. Alignment
-
-The wrapper script `preprocess.sh` is provided below as a single-command for running all three preprocessing steps.
-
-### CCS
-In order to get the maximum yield for the longest expansion alleles, we need to run ccs with heuristics turned off and full-length draft mode:
-
-    $ ccs in.subreads.bam out.ccs.bam --disable-heuristics --draft-mode full
-
-Running ccs in this mode will be considerably slower than running on default, so it is recommended to chunk the ccs calls if you have access to a cluster. The ccs program has built-in chunking capabilities. See the script `chunkCCS.sh` for an example of chunking ccs on the command line.
-
-This command will start 16 chunked jobs with 9 threads each using qsub: 
-
-    $ ./chunkCCS.sh 16 9 cluster ccs in.subreads.bam out.ccs.bam --disable-heuristics --draft-mode full
-
-This command will start 4 ccs jobs with 4 threads each on the local machine
-
-    $ ./chunkCCS.sh 4 4 local ccs in.subreads.bam out.ccs.bam --disable-heuristics --draft-mode full
-
-### Demultiplex
-Demultiplexing of the CCS reads is done with the program `lima`.
-
-   $ lima --ccs --same                   \
-         --split-bam-named --peek-guess  \
-         inCCS.bam barcodes.fasta demuxCCS.bam
-
-A summary of the demultiplexing outputs can be found in the `lima` output directory with the suffix \*summary. 
-
-### Align to Reference
-In order to align long expansion repeats through short reference seqeunce, we provide a set of modified parameters to the program `pbmm2` for alignment.
-
-    $ pbmm2_extention.sh human_hs37d5.fasta ccs.bam mapped.ccs.bam
 
 ### Reference
 For human samples, we recommend alignment to the reference `hs37d5`.  Example targets listed in the BED file below have `hs37d5` coordinates.  However, any reference will work so long as the target coordinates are paired with the reference used.
 
-### Preprocess Script
-A wrapper script `preprocess.sh` is provided for one-step preprocessing from subreads -> ccs -> demux -> align.  This script can run "local" on the executing machine or will submit to a cluster using qsub.
+## Demultiplexing in SMRT-Link
+1. Select 'Create New Analysis'
+2. Select your raw data and give the job a name (Next)
+3. Select 'Demultiplex Barcodes' and the proper barcode set
+4. Accept default parameters (Same on both sides, Infer barcodes)
 
-To run preproccesing on the cluster with 32 chunks and 8 procs per chunk:
+![Demultiplex Barcodes](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/demux_jobSetup.png)
 
-    $ preprocess.sh subreads.bam|xml barcodes.fasta|xml reference.fasta outdir 32 8 cluster
+Check the results once the job is completed.
 
-Following completion of the script, three folders will be created in the output directory `ccs`, `demux`, and `align`.  BAM files in the `align` subdirectory are ready for analysis in the repeat analysis reporting scripts below.
+![Demultiplex Results](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/demuxResults.png)
+
+## CCS and Mapping
+1. Select 'Create New Analysis'
+2. Select demuxed data and give the job a name.  
+    * *Note* Select each barcoded sample from the child menu after clicking the number in the field 'Demultiplexed Subsets'.
+![Select Each Demuxed Set](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/ccsDataSelect2.png)
+3. Select the option 'One Analysis per Data Set -- Identical Parameters' (Next)
+4. Select 'CCS with Mapping' and the desired reference for alignment
+5. Select 'Advanced Analysis Parameters'
+    * Turn 'Consolidate BAM' to *ON* to generate a single aligned BAM for output.
+![Consolidate BAM](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/ccsParams1.png)
+    * Set Minimum Concordance to 20
+    * Add override options '-L 0.1 -E 0'
+![Alignment Parameter Change](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/images/ccsParams2.png)
+
 
 ## Repeat Analysis of CCS results
 Once the data are processed as above, the aligned BAM files are used as inputs to the following scripts for extraction and reporting of results.
