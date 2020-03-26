@@ -39,7 +39,7 @@ case $RESOURCE in
         cmd=cluster_cmd        
         ;;
     *)
-        echo -n "Unknow resource; must be local or cluster"
+        echo -n "Unknown resource; must be local or cluster"
         exit 0
 esac
 

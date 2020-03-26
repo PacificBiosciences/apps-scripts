@@ -24,7 +24,7 @@ if [ ! -e $CHUNKCCS ]; then
 fi
 
 #check for executables
-for prog in ccs lima pbmm2 parallel; do
+for prog in ccs lima pbmm2 parallel samtools; do
     if [ ! $(type -P $prog) ]; then
         echo "Missing program $prog in command path"
         exit 1
