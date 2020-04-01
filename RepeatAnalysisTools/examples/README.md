@@ -9,6 +9,7 @@ We recommend calling CCS consensus with heuristics disabled, full draft mode, an
 The program *lima* is provided for demultiplexing.
 
     lima --same                \
+         --ccs                 \
          --split-bam-named     \
          --peek-guess          \
          -j 8                  \
