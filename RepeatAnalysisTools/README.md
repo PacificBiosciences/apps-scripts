@@ -61,7 +61,7 @@ A summary of the demultiplexing outputs can be found in the `lima` output direct
 ### Align to Reference
 In order to align long expansion repeats through short reference seqeunce, we provide a set of modified parameters to the program `pbmm2` for alignment.
 
-    $ pbmm2_extention.sh human_hs37d5.fasta ccs.bam mapped.ccs.bam
+    $ pbmm2_extention.sh human_hs37d5.fasta ccs.bam mapped.ccs.bam sampleName
 
 ### Reference
 For human samples, we recommend alignment to the reference `hs37d5`.  Example targets listed in the BED file below have `hs37d5` coordinates.  However, any reference will work so long as the target coordinates are paired with the reference used.
