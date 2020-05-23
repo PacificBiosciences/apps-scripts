@@ -6,7 +6,7 @@ SAMPLE=$4
 nPROC=4
 
 if [ -z $SAMPLE ]; then
- SAMPLE=""
+ SAMPLE='""'
 fi
 
 pbmm2 align --sort \
