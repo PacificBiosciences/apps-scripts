@@ -1,5 +1,5 @@
 # Description
-This repository contains instructions for processing and repeat analysis of sequence data generated with the PacBio No-Amp Targeted Sequencing Protocol with simplified double Cas9 cut.  The set of directions here is intended for use with SMRT Analysis version 8 and current sequencing chemistry. 
+This repository contains instructions for processing and repeat analysis of sequence data generated with the PacBio No-Amp Targeted Sequencing Protocol with simplified double Cas9 cut.
 
 Due to a reduction in CCS yield in the longest of expansion alleles using the latest CCS algorithm on default parameters, customers are recommended to follow these command-line instructions for maximum output.  For customers interested in instructions for older versions of SMRT Analysis, please refer to previous instruction sets [here](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/previous).
 
