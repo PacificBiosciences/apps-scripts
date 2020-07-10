@@ -24,6 +24,9 @@ This version of data preparation requires the use of the latest *ccs* algorithm 
  - [scikit-learn](https://scikit-learn.org/stable/index.html)
  - [pbcore](https://github.com/pacificbiosciences/pbcore/)
 
+# Example Dataset
+An example dataset with repeat-expansion genotypes for HTT and FMR1 can be found [here](https://downloads.pacbcloud.com/public/dataset/RepeatExpansionDisorders_NoAmp/)
+
 # Basic Repeat Analysis Workflow
 
 ## Raw Sequence Processing

@@ -5,7 +5,17 @@ PROCPERJOB=$2
 
 MERGETHREADS=8
 
+if [ -z $1 ] || [ -z $2 ] || [ -z $3 ] || [ -z $4 ] || [ "$1" == "--help" ]; then
+    echo -e "\nUsage: $(basename $0) <nchunks> <procperchunk> <local|cluster> ccs <inbam> <outbam> [options]"
+    exit 1 
+fi
+
 read ccs ibam obam opts <<< $CCSCMD
+
+if [ ! $(type -P $ccs) ]; then
+    echo -e "The \'ccs\' program must be in your command path"
+    exit 1
+fi
 CCSprog=$(which $ccs)
 BNAME=${obam%.*}
 
