@@ -47,6 +47,11 @@ Counts of exact string matches, as well as total length of sequence.
 
     parallel python countMotifs.py -m CGG,AGG -i {} -o reports/{/.}.counts.csv ::: fastq/*fastq
 
+## Cluster reads by repeat region
+Separate reads into two sets using k-means clustering of kmers for just the repeat region.
+
+    parallel python clusterByRegion.py -m CGG,AGG -d -p cluster/{/.} {} human_hs37d5.fasta X:146993569-146993629 ::: align/*bam
+
 ## Work directory
 Primary contents of working directory (not including indice etc)
 
@@ -72,6 +77,22 @@ Primary contents of working directory (not including indice etc)
     │   ├── outDemuxed.bc1017--bc1017.aligned.extracted_FMR1.fastq
     │   ├── outDemuxed.bc1018--bc1018.aligned.extracted_FMR1.fastq
     │   └── outDemuxed.bc1019--bc1019.aligned.extracted_FMR1.fastq
+    ├── cluster
+    │   ├── outDemuxed.bc1015--bc1015.aligned.hptagged.bam
+    │   ├── outDemuxed.bc1015--bc1015.aligned.readnames.txt
+    │   ├── outDemuxed.bc1015--bc1015.aligned.summary.csv
+    │   ├── outDemuxed.bc1016--bc1016.aligned.hptagged.bam
+    │   ├── outDemuxed.bc1016--bc1016.aligned.readnames.txt
+    │   ├── outDemuxed.bc1016--bc1016.aligned.summary.csv
+    │   ├── outDemuxed.bc1017--bc1017.aligned.hptagged.bam
+    │   ├── outDemuxed.bc1017--bc1017.aligned.readnames.txt
+    │   ├── outDemuxed.bc1017--bc1017.aligned.summary.csv
+    │   ├── outDemuxed.bc1018--bc1018.aligned.hptagged.bam
+    │   ├── outDemuxed.bc1018--bc1018.aligned.readnames.txt
+    │   ├── outDemuxed.bc1018--bc1018.aligned.summary.csv
+    │   └── outDemuxed.bc1019--bc1019.aligned.hptagged.bam
+    │   └── outDemuxed.bc1019--bc1019.aligned.readnames.txt
+    │   └── outDemuxed.bc1019--bc1019.aligned.summary.csv
     └── reports
         ├── outDemuxed.bc1015--bc1015.aligned.extracted_FMR1.counts.csv
         ├── outDemuxed.bc1015--bc1015.aligned.extracted_FMR1.insertSize.png
