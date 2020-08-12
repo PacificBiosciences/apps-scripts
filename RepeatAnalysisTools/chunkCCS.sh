@@ -68,8 +68,13 @@ main() {
             sleep 5
         fi
     done
-    
-    samtools merge -@${MERGETHREADS} ${obam} ${BNAME}.chunk*bam
+
+    if [ $(type -P pbmerge) ]; then
+        pbmerge -o ${obam} ${BNAME}.chunk*bam
+    else
+        samtools merge -c -@${MERGETHREADS} ${obam} ${BNAME}.chunk*bam
+    fi
+
     if [ -e "$obam" ]; then
         rm ${BNAME}.chunk*bam*
         samtools index ${obam}
