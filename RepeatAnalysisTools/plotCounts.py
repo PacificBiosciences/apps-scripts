@@ -24,7 +24,7 @@ def main(parser):
 
     counts = [rec.sequence.count(args.motif) for rec in recs]
     xlabel = '%s Repeat Copies (exclusive)' % args.motif
-    labelMotif = map(eval,args.labelMotif.split(',')) if args.labelMotif else None
+    labelMotif = list(map(eval,args.labelMotif.split(','))) if args.labelMotif else None
     f,c,b  = countPlot(counts,
                        args.name,
                        xlabel,
@@ -37,9 +37,9 @@ def main(parser):
                                    e=args.format),
               format=args.format,
               dpi=args.dpi)
-    counts = map(len,recs)
+    counts = list(map(len,recs))
     xlabel = 'Target Insert Length (bp)'
-    labelLength = map(eval,args.labelLength.split(',')) if args.labelLength else None
+    labelLength = list(map(eval,args.labelLength.split(','))) if args.labelLength else None
     f,c,b  = countPlot(counts,
                        args.name,
                        xlabel,
@@ -60,7 +60,7 @@ def main(parser):
             for bn,cnt in zip(b,c):
                 ofile.write('%i,%i\n' % (bn,cnt))
 
-    print 'Done'
+    print('Done')
     return f
 
 def countPlot(counts,title,xlabel,ylabel,labelValues=None,
@@ -69,7 +69,7 @@ def countPlot(counts,title,xlabel,ylabel,labelValues=None,
     ax2 = ax.twinx()
     sns.kdeplot(counts,ax=ax2,color='k',bw=bandwidth,alpha=0.25)
     bincnts,bins,patches = ax.hist(counts,
-                                   bins=xrange(min(counts)-1,
+                                   bins=range(min(counts)-1,
                                                max(counts)+1,
                                                binsize),
                                    align='left',
@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
     try:
         main(parser)
-    except CountPlot_Exception,e:
-        print 'ERROR: %s' % e
+    except CountPlot_Exception as e:
+        print('ERROR: %s' % e)
         sys.exit(1) 
 

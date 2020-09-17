@@ -5,7 +5,7 @@ from collections import Counter,OrderedDict
 
 def readBED(bedfile,names=['ctg','start','end','name'],usecols=None):
     if not usecols:
-        usecols = range(len(names))
+        usecols = list(range(len(names)))
     dtypes = {'ctg':np.str,'start':np.int64,'stop':np.int64}
     df = pd.read_csv(bedfile,
                      sep='\s+',
@@ -24,16 +24,16 @@ def countMotifs(motifs,lengthField=False,collapseHP=False):
         optionally hpcollapse motifs and reads before counting
         **length is always original sequence, not hpcollapsed**'''
     transform =  hpCollapse if collapseHP else (lambda x:x)
-    mm       = OrderedDict(zip(map(transform,motifs),motifs))
+    mm       = OrderedDict(list(zip(list(map(transform,motifs)),motifs)))
     if len(mm) < len(motifs): 
-        vals = motifs.__repr__(),map(hpCollapse,motifs).__repr__()
+        vals = motifs.__repr__(),list(map(hpCollapse,motifs)).__repr__()
         e    = 'Degenerate collapsed motifs\noriginal {}\ncollapsed {}\n'.format(*vals)
         raise RepeatAnalysisUtils_Exception(e)
-    patt = re.compile('(' + ')|('.join(mm.keys()) + ')')
+    patt = re.compile('(' + ')|('.join(list(mm.keys())) + ')')
     def getCounts(seq):
         counts = Counter(mm[m.group()] for m in patt.finditer(transform(seq)))
         #fill for motifs not found 
-        counts.update({m:0 for m in mm.values() if not counts.has_key(m)})
+        counts.update({m:0 for m in list(mm.values()) if m not in counts})
         if lengthField:
             counts[lengthField] = len(seq)
         return counts

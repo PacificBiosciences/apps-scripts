@@ -22,7 +22,7 @@ def main(parser):
 
     motifs    = args.motifs.split(',')
     motifCols = args.sep.join(map('{{{}}}'.format,motifs))
-    outFormat = '{{readName}}{sep}{cols}{sep}{{totalLength}}'.format(sep=args.sep,cols=motifCols)
+    outFormat = f'{{readName}}{args.sep}{motifCols}{args.sep}{{totalLength}}'
     getCounts = countMotifs(motifs,lengthField='totalLength',collapseHP=args.collapseHP)
 
     oFile = open(args.out,'w') if args.out else sys.stdout
@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
     try:
         main(parser)
-    except CountMotifs_Exception,e:
-        print 'ERROR: %s' % e
+    except CountMotifs_Exception as e:
+        print(f'ERROR: {e}')
         sys.exit(1) 
 

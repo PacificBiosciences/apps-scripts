@@ -22,7 +22,7 @@ def main(parser):
         counts = pd.Series({ target : counter(row.ctg,row.start,row.end)
                             for target,row in targets.iterrows()})\
                    .rename('onTargetZMWs')
-    except ValueError,e:
+    except ValueError as e:
         #try to catch input bams without .bai
         raise countOnTarget_Exception(e)
     #calculate enrichment and build result table
@@ -84,6 +84,6 @@ if __name__ == '__main__':
     
     try:
         result = main(parser)
-    except countOnTarget_Exception,e:
-        print 'ERROR: %s' % e
+    except countOnTarget_Exception as e:
+        print('ERROR: %s' % e)
         sys.exit(1)

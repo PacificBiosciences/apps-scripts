@@ -7,35 +7,69 @@ import numpy as np
 from collections import OrderedDict
 import matplotlib.patches as mpatches
 from matplotlib import cm
-import sys,re
-from pbcore.io import FastaReader,FastqReader
+from matplotlib.colors import TwoSlopeNorm
+import sys,re,pysam
+from operator import attrgetter
 
 COLORMAP = cm.get_cmap('tab10')
 UNKNOWN  = (0.75,)*3
 BLANK    = (1,)*3
 XLABEL   = 'Position'
 YLABEL   = 'CCS Read'
+MAXQV    = 93
+MINQV    = 0
+CENTERQV = 20
+QVCOLOR  = cm.get_cmap('RdYlBu')
 
 def main(parser):
     args = parser.parse_args()
     
-    fx            = args.inFastx if args.inFastx else sys.stdin
-    #sortedRecs    = sorted(pysam.FastxFile(fx),key=lambda r:-len(r.sequence))
-    try:
-        sortedRecs = sorted(FastqReader(fx),key=len,reverse=True)
-    except ValueError:
-        #this will fail if fasta is streamed 
-        sortedRecs = sorted(FastaReader(fx),key=len,reverse=True)
+    infastx    = args.inFastx if args.inFastx else "-"
+    keyfunc    = lambda rec: -len(rec.sequence)
+    sortedRecs = sorted(pysam.FastxFile(infastx,'r'),key=keyfunc)
 
-    raster        = np.ones((len(sortedRecs),
-                             len(sortedRecs[0].sequence),
+    motifs  = args.motifs.split(',')
+    colors  = OrderedDict([(m,COLORMAP.colors[i]) for i,m in enumerate(motifs)])
+    raster  = motifRaster(sortedRecs,motifs,colors)
+    patches = [ mpatches.Patch(color=color, label=motif ) for motif,color in list(colors.items())]
+    f,ax    = plotWaterfall(raster,XLABEL,args.ylabel,labels=patches)
+
+    out = args.out if args.out.endswith(args.format) else '%s.%s' % (args.out,args.format) 
+    plt.tight_layout()
+    f.savefig(out,dpi=args.dpi,format=args.format)
+
+    if args.plotQV:
+        qvraster = qvRaster(sortedRecs,'Base QV')
+        norm     = TwoSlopeNorm(CENTERQV,vmin=MINQV,vmax=MAXQV)
+        f,ax     = plotWaterfall(qvraster,XLABEL,args.ylabel,norm=norm,cmap=QVCOLOR,colorbar='QV')
+        name,ext = out.rsplit('.',1)
+        f.savefig(f'{name}.QV.{ext}',format=args.format)
+    
+    print('Done')
+    return raster
+
+def plotWaterfall(array,xlabel,ylabel,labels=None,colorbar=False,**kwargs):
+    f,ax  = plt.subplots()
+    image = ax.imshow(array,origin='lower',aspect='auto',**kwargs)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+
+    if labels:
+        ax.legend(handles=labels,bbox_to_anchor=(1.25, 0.6),loc='best',frameon=False)
+    if colorbar:
+        f.colorbar(image,shrink=0.6, label=colorbar)
+    return f,ax
+    
+def motifRaster(recs,motifs,colors):
+    raster        = np.ones((len(recs),
+                             len(recs[0].sequence),
                              3))
-    motifs        = args.motifs.split(',')
     patt          = re.compile('|'.join(['(%s)'%m for m in motifs]))
-    colors        = OrderedDict([(m,COLORMAP.colors[i]) for i,m in enumerate(motifs)])
     colors['other'] = UNKNOWN
 
-    for i,rec in enumerate(sortedRecs):
+    for i,rec in enumerate(recs):
         for j in patt.finditer(rec.sequence):
             raster[i,j.start():j.end(),:] = colors[j.group()]
 
@@ -43,22 +77,16 @@ def main(parser):
         blank = np.all(raster[i] == BLANK,axis=1)
         blank[len(rec.sequence):] = False
         raster[i,blank,:] = colors['other']
+    return raster
 
-    f,ax = plt.subplots()
-    ax.imshow(raster,origin='lower',aspect='auto')
-    ax.set_xlabel(XLABEL)
-    ax.set_ylabel(args.ylabel)
-    ax.spines['right'].set_visible(False)
-    ax.spines['top'].set_visible(False)
+def qvRaster(recs,title):
+    raster  = -np.ones((len(recs),len(recs[0].sequence)))
+    for i,rec in enumerate(recs):
+        raster[i,:len(rec.sequence)] = phred2QV(rec)
+    return np.ma.masked_where(raster == -1,raster)
 
-    patches = [ mpatches.Patch(color=color, label=motif ) for motif,color in colors.items()]
-    ax.legend(handles=patches,bbox_to_anchor=(1.25, 0.6),loc='best',frameon=False)
-
-    out = args.out if args.out.endswith(args.format) else '%s.%s' % (args.out,args.format) 
-    plt.tight_layout()
-    f.savefig(out,dpi=args.dpi,format=args.format)
-    print 'Done'
-    return f
+def phred2QV(rec):
+    return np.array([ord(q)-33 for q in rec.quality])
 
 class Waterfall_Exception(Exception):
     pass
@@ -79,10 +107,12 @@ if __name__ == '__main__':
                     help='Image format.  Default png')
     parser.add_argument('-d,--dpi', dest='dpi', type=int, default=400,
                     help='Image resolution.  Default 400')
+    parser.add_argument('-q,--plotQV', dest='plotQV', action='store_true', default=False,
+                    help='Plot additional QV waterfall.  Default False')
 
     try:
         main(parser)
-    except Waterfall_Exception,e:
-        print 'ERROR: %s' % e
+    except Waterfall_Exception as e:
+        print(f'ERROR:{e}')
         sys.exit(1) 
 

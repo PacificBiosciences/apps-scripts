@@ -29,11 +29,11 @@ def main(parser):
                                  flanksize=args.flanksize,
                                  revcomp=args.revcomp)
 
-    print "Reading sequence"
+    print("Reading sequence")
     kmerCounts,motifCounts = getCounts(seqGen,args.kmer,motifCounter) 
     
     #kmeans clustering
-    print "Clustering"
+    print("Clustering")
     kmeans = KMeans(n_clusters=args.clusters)
     kmeans.fit(kmerCounts)
     clusterIdx = kmeans.predict(kmerCounts)
@@ -45,23 +45,23 @@ def main(parser):
                                  ci=DEFAULTCI)
 
     #write results
-    print "Writing Results"
+    print("Writing Results")
     #results.to_excel('%s.summary.xlsx' % args.prefix)
-    results.to_csv('%s.summary.csv' % args.prefix, float_format=FLOATFMT)
+    results.to_csv(f'{args.prefix}.summary.csv', float_format=FLOATFMT)
 
-    with open('%s.readnames.txt' % args.prefix, 'w') as namefile:
+    with open(f'{args.prefix}.readnames.txt', 'w') as namefile:
         for cluster,reads in motifCounts.groupby(names.reindex(clusterIdx).values):
-            namefile.write('>%s\n' % cluster)
+            namefile.write(f'>{cluster}\n')
             namefile.write('\n'.join(reads.index) + '\n')
 
     if not args.noBam:
         #strip extra fields from names
         readNames  = motifCounts.index.str.split('/').str[:3].str.join('/')
-        clusterMap = dict(zip(readNames,clusterIdx))
-        outBam     = '%s.hptagged.bam' % args.prefix
+        clusterMap = dict(list(zip(readNames,clusterIdx)))
+        outBam     = f'{args.prefix}.hptagged.bam'
         addHPtag(args.inBAM,outBam,clusterMap,dropNoClust=args.drop)
 
-    print "Done"
+    print("Done")
 
     return kmerCounts,motifCounts
 
@@ -81,13 +81,13 @@ if __name__ == '__main__':
     parser.add_argument('-m,--motifs', dest='motifs', type=str, default=None,required=True,
                     help='comma-separated list of motifs to count')
     parser.add_argument('-k,--kmer', dest='kmer', type=int, default=DEFAULTKMER,
-                    help='kmer size for clustering. Default %i'%DEFAULTKMER)
+                    help=f'kmer size for clustering. Default {DEFAULTKMER}')
     parser.add_argument('-c,--clusters', dest='clusters', type=int, default=2,
                     help='clusters/ploidy count. Default 2')
     parser.add_argument('-r,--revcomp', dest='revcomp', action='store_true',
                     help='Reverse complement extracted sequence')
     parser.add_argument('-p,--prefix', dest='prefix', type=str, default=DEFAULTPREFIX,
-                    help='Output prefix. Default %s'%DEFAULTPREFIX)
+                    help=f'Output prefix. Default {DEFAULTPREFIX}')
     parser.add_argument('-f,--flanksize', dest='flanksize', type=int, default=100,
                     help='Size of flanking sequence mapped for extracting repeat region.  Default 100')
     parser.add_argument('-s,--seed', dest='seed', type=int, default=42,
@@ -101,6 +101,6 @@ if __name__ == '__main__':
 
     try:
         main(parser)
-    except ClusterByRegion_Exception,e:
-        print 'ERROR: %s' % e
+    except ClusterByRegion_Exception as e:
+        print(f'ERROR: {e}')
         sys.exit(1)

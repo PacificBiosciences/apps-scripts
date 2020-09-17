@@ -12,7 +12,7 @@ def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flan
             ctg,start,stop = getCoordinates(region)
         except AttributeError:
             #catch when the region format doesn't match
-            raise Extract_Exception('Invalid region format %s. Correct \'[chr]:[start]-[stop]\'' % region)
+            raise Extract_Exception(f'Invalid region format {region}. Correct \'[chr]:[start]-[stop]\'')
     elif ctg==None or start==None or stop==None:
             #catch when missing coord and no region passed
             raise Extract_Exception('Must pass either valid region string or all of ctg,start,stop')
@@ -35,14 +35,14 @@ def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flan
         os.remove(tmp.name)
 
 def fqRec(name,seq,qual):
-    return '@{name}\n{seq}\n+\n{qual}\n'.format(**locals())
+    return f'@{name}\n{seq}\n+\n{qual}\n'
 
 def getCoordinates(regionString):
     ctg,start,stop = re.search('(.*):(\d+)-(\d+)',regionString).groups()
     return ctg.strip(),int(start),int(stop)
 
 def nameFunction(readname,start,stop):
-    return '{readname}/{start}_{stop}'.format(**locals())
+    return f'{readname}/{start}_{stop}'
 
 def getFlanks(ref,ctg,start,stop,flanksize=100,Lflank=None,Rflank=None):
     '''Extract flanking sequence from BED regions, given a pysam.FastaFile with .fai'''
@@ -52,9 +52,9 @@ def getFlanks(ref,ctg,start,stop,flanksize=100,Lflank=None,Rflank=None):
     return [sequence[:Lsize],sequence[-Rsize:]]
 
 def getFlankAligner(ref,ctg,start,stop,**kwargs):
-    tmpRef = NamedTemporaryFile(mode='wb',delete=False)
+    tmpRef = NamedTemporaryFile(mode='w',delete=False)
     for side,seq in zip(['L','R'],getFlanks(ref,ctg,start,stop,**kwargs)):
-        tmpRef.write('>{n}\n{s}\n'.format(n='_'.join([str(ctg),side]),s=seq))
+        tmpRef.write(f'>{"_".join([str(ctg),side])}\n{seq}\n')
     tmpRef.close()
     aligner = mp.Aligner(tmpRef.name,preset='sr')
     return aligner,tmpRef
@@ -76,7 +76,7 @@ def extractRepeat(sequence,aligner):
         start,stop = None,None
     return start,stop,seq
 
-_RC_MAP = dict(zip('-ACGNTacgt','-TGCNAtgca'))
+_RC_MAP = dict(list(zip('-ACGNTacgt','-TGCNAtgca')))
 
 def rc(seq):
     '''revcomp'''

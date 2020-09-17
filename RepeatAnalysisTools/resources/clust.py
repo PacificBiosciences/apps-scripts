@@ -47,18 +47,18 @@ def getCounts(seqGen,kmerSize,motifCounter):
     counts = {name:[pd.Series(getKmerCounts(seq,k=kmerSize)),
                     pd.Series(motifCounter(seq))]
               for name,seq,qual in seqGen}
-    kmer,motif = [pd.DataFrame(map(itemgetter(i),counts.values()),
-                               index=counts.keys()).fillna(0)
+    kmer,motif = [pd.DataFrame(list(map(itemgetter(i),list(counts.values()))),
+                               index=list(counts.keys())).fillna(0)
                   for i in [0,1]]
     return kmer,motif
 
 def getKmerCounts(seq,k=3):
-    return Counter(seq[i:i+k] for i in xrange(0,len(seq)-k+1))
+    return Counter(seq[i:i+k] for i in range(0,len(seq)-k+1))
 
 def resampleCI(data,nboot=10000,ci=DEFAULTCI):
     n = max(nboot,len(data))
     resamp = np.random.choice(data,size=n,replace=True)
-    return '({} - {})'.format(*map(int,np.quantile(resamp,ci)))
+    return '({} - {})'.format(*list(map(int,np.quantile(resamp,ci))))
 
 def clusterStats(motifCounts,clusterIdx,outColumns,
                  aggFuncs=[np.median,np.mean],

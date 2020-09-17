@@ -5,6 +5,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import pysam,os
 import pandas as pd
+import numpy as np
 import seaborn as sns
 from resources.utils import readBED
 
@@ -33,17 +34,17 @@ def main(parser):
     #try to identify ref chroms
     #kind of a hack for now
     useChroms = None
-    for name,chroms in CHROM.items():
+    for name,chroms in list(CHROM.items()):
         if chroms[0] in bam.references:
             useChroms = chroms
-            print 'Using %s chromosome names' % name
+            print(f'Using {name} chromosome names')
             break
     if not useChroms:
         raise CoveragePlot_Exception('Chromosome set not found. Check CHROM definition in script')
 
     #get all covered positions in a df
     #recommended only for sparse (targeted) coverage!
-    print 'Reading coverage'
+    print('Reading coverage')
     cov = pd.DataFrame([(chrom,pile.pos,pile.nsegments)
                         for chrom in bam.references
                         for pile in bam.pileup(chrom,stepper='all')
@@ -51,12 +52,12 @@ def main(parser):
                        columns=['chr','pos','coverage'])
 
     #map to get nbins given window size and contig length
-    nbins     = {chrom : length/args.window + 1
+    nbins     = {chrom : length//args.window + 1
                  for chrom,length in zip(bam.references,bam.lengths)}
     #vector of intervals
-    intervals = pd.cut(cov.pos,xrange(0,max(bam.lengths),args.window))
+    intervals = pd.cut(cov.pos,range(0,max(bam.lengths),args.window))
     #average for each window
-    print 'Calculating mean values'
+    print('Calculating mean values')
     meancov   = cov.groupby(['chr',intervals]).coverage.mean()
     #index of intervals for ordering results
     cats      = intervals.cat.categories
@@ -79,15 +80,15 @@ def main(parser):
     ticks,ticklabels = [],[]
     with sns.color_palette(PALETTE, bam.nreferences):
         for chrom in useChroms:
-            print 'Plotting coverage: %s' % chrom
+            print(f'Plotting coverage: {chrom}')
             bins = nbins[chrom]
             if chrom in meancov:
                 #order values and fill where no coverage
-                yvals = meancov[chrom].reindex(cats[:bins],fill_value=0)
+                yvals = meancov[chrom].reindex(cats[:bins],fill_value=0).fillna(0)
             else: #no coverage at all
-                yvals = pd.np.zeros(bins)
+                yvals = np.zeros(bins)
             xstop = xstart+len(yvals)
-            xvals = xrange(xstart,xstop)
+            xvals = range(xstart,xstop)
             p     = ax.plot(xvals,yvals)[0]
             if label: #every other chrom
                 ticks.append(xstart + len(yvals)/2)
@@ -109,10 +110,9 @@ def main(parser):
     ax.set_ylabel(YLABEL)
 
     #save figure
-    name = '{p}{s}coveragePlot.png'.format(p=args.prefix,
-                                           s='/' if os.path.isdir(args.prefix) else '.')
+    name = f'{args.prefix}{"/" if os.path.isdir(args.prefix) else "."}coveragePlot.png'
     fig.savefig(name,dpi=DPI)
-    print 'Saved %s' % name
+    print(f'Saved {name}')
 
 def annotateTarget(ax,text,xpos,maxy,color):
     ax.annotate(text, xy=(xpos,1.01*maxy), xytext=(xpos,1.11*maxy),
@@ -134,14 +134,14 @@ if __name__ == '__main__':
     parser.add_argument('-o,--outprefix', dest='prefix', type=str, default=os.getcwd(),
                     help='prefix for output file.  default cwd.')
     parser.add_argument('-w,--window', dest='window', type=int, default=DWINDOW,
-                    help='window size for averaging coverage across reference.  default %i' % DWINDOW)
+                    help=f'window size for averaging coverage across reference.  default {DWINDOW}')
     parser.add_argument('-t,--targetBED', dest='targets', type=str, default=None,
                     help='label plot with targets from BED file.  default None')
 
     try:
         main(parser)
-    except CoveragePlot_Exception,e:
-        print 'ERROR: %s' % e
+    except CoveragePlot_Exception as e:
+        print(f'ERROR: {e}')
         sys.exit(1) 
 
 

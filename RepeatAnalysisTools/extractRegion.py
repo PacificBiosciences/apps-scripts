@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     try:
         main(parser)
-    except Extract_Exception,e:
-        print 'ERROR: %s' % e
+    except Extract_Exception as e:
+        print(f'ERROR: {e}')
         sys.exit(1) 
 
