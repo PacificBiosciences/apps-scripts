@@ -1,6 +1,8 @@
 # Description
 This repository contains instructions for processing and repeat analysis of sequence data generated with the PacBio No-Amp Targeted Sequencing Protocol with simplified double Cas9 cut.
 
+UPDATE: RepeatAnalysis Tools in this repository now use Python 3. 
+
 Due to a reduction in CCS yield in the longest of expansion alleles using the latest CCS algorithm on default parameters, customers are recommended to follow these command-line instructions for maximum output.  For customers interested in instructions for older versions of SMRT Analysis, please refer to previous instruction sets [here](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/previous).
 
 Outputs from the analysis scripts include high-accuracy (>=QV20) CCS sequences for target regions so that users can easily analyze the results with other third party tools as necessary.   
@@ -14,7 +16,7 @@ This version of data preparation requires the use of the latest *ccs* algorithm 
  - [lima](https://github.com/pacificbiosciences/barcoding)
  - [pbmm2](https://github.com/PacificBiosciences/pbmm2/)
 
-### Repeat analysis tools are written in Python2.7 and require the following packages
+### UPDATE Repeat analysis tools are written in Python 3 and require the following packages
  - [matplotlib](https://matplotlib.org/)
  - [numpy](http://www.numpy.org/)
  - [pandas](https://pandas.pydata.org/)
