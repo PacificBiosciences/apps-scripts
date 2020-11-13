@@ -24,6 +24,8 @@ def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flan
             if (rec.flag & ALIGNFILTER):
                 continue
             rStart,rStop,subseq = extractRepeat(rec.query_sequence,aligner)
+            if len(subseq) <= 0:
+                continue
             if rStart:
                 name = nameFunction(rec.query_name,rStart,rStop)
                 qual = ''.join([chr(q+33) for q in rec.query_qualities[rStart:rStop]])
@@ -66,7 +68,7 @@ def getSubSeq(seq,aln):
 def extractRepeat(sequence,aligner):
     aln = list(aligner.map(sequence))
     naln = len(aln)
-    if naln == 2:
+    if naln == 2 and len(set(a.ctg for a in aln)) == 2:
         start,stop,seq = getSubSeq(sequence,aln)
         #seq = getSubSeq(sequence,aln)
         if aln[0].strand == -1:

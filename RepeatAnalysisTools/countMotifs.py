@@ -22,8 +22,14 @@ def main(parser):
 
     motifs    = args.motifs.split(',')
     motifCols = args.sep.join(map('{{{}}}'.format,motifs))
-    outFormat = f'{{readName}}{args.sep}{motifCols}{args.sep}{{totalLength}}'
-    getCounts = countMotifs(motifs,lengthField='totalLength',collapseHP=args.collapseHP)
+    if args.blockCounts:
+        outFormat = f'{{readName}}{args.sep}{motifCols}{args.sep}{{blockCount}}{args.sep}{{totalLength}}'
+    else:
+        outFormat = f'{{readName}}{args.sep}{motifCols}{args.sep}{{totalLength}}'
+    getCounts = countMotifs(motifs,
+                            lengthField='totalLength',
+                            blocks='blockCount' if args.blockCounts else False,
+                            collapseHP=args.collapseHP)
 
     oFile = open(args.out,'w') if args.out else sys.stdout
     #column names
@@ -55,6 +61,8 @@ if __name__ == '__main__':
                     help='Search motifs, comma separated, most frequent first, e.g. \'CGG,AGG\'')
     parser.add_argument('-s,--sep', dest='sep', type=str, default=',',
                     help='Field separator.  Default \',\'')
+    parser.add_argument('-b,--blockCounts', dest='blockCounts', action='store_true', default=False,
+                    help='Count primary motif blocks with secondary as interruption.  Default false')
     parser.add_argument('-r,--reverse', dest='reverse', action='store_true', default=False,
                     help='Sort largest first.  Default ascending order')
     parser.add_argument('-c,--collapseHP', dest='collapseHP', action='store_true', default=False,

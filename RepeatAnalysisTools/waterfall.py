@@ -25,10 +25,9 @@ def main(parser):
     args = parser.parse_args()
     
     infastx    = args.inFastx if args.inFastx else "-"
-    keyfunc    = lambda rec: -len(rec.sequence)
-    sortedRecs = sorted(pysam.FastxFile(infastx,'r'),key=keyfunc)
+    motifs     = args.motifs.split(',')
+    sortedRecs = sorted(list(pysam.FastxFile(infastx,'r')),key=sortFunc(args.sortCluster))
 
-    motifs  = args.motifs.split(',')
     colors  = OrderedDict([(m,COLORMAP.colors[i]) for i,m in enumerate(motifs)])
     raster  = motifRaster(sortedRecs,motifs,colors)
     patches = [ mpatches.Patch(color=color, label=motif ) for motif,color in list(colors.items())]
@@ -47,6 +46,19 @@ def main(parser):
     
     print('Done')
     return raster
+
+def sortFunc(csvMap):
+    if csvMap:
+        clusterMap = dict(s.split(',') for s in open(csvMap).read().split())
+        def getVal(rec):
+            name = '/'.join(rec.name.split('/')[:3])
+            try:
+                return int(clusterMap.get(name,-1)),-len(rec.sequence)
+            except ValueError:
+                raise Waterfall_Exception('Clusters must be numeric') 
+        return getVal
+    else:
+        return lambda rec: -len(rec.sequence)
 
 def plotWaterfall(array,xlabel,ylabel,labels=None,colorbar=False,**kwargs):
     f,ax  = plt.subplots()
@@ -101,6 +113,8 @@ if __name__ == '__main__':
                     help='Output file')
     parser.add_argument('-m,--motifs', dest='motifs', type=str, default=None, required=True,
                     help='Search motifs, comma separated, most frequent first, e.g. \'CGG,AGG\'')
+    parser.add_argument('-s,--sortCluster', dest='sortCluster', type=str, default=None,
+                    help='Sort reads by cluster, determined by file of <readname>,<cluster>. Default sort by length only')
     parser.add_argument('-y,--ylabel', dest='ylabel', type=str, default=YLABEL, required=False,
                     help='Y-axis label for plot. Default %s'%YLABEL)
     parser.add_argument('-f,--format', dest='format', type=str, default='png',
