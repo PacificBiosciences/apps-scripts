@@ -55,15 +55,15 @@ while read -r chr start stop name motifs revcomp; do
  echo -e "\n" >> $CMD
 
  echo 'echo "'"${name} Waterfall Plots\"" >> $CMD
- echo "parallel ${PYTHON} ${GDIR}/waterfall.py -f pdf -m ${motifs} -i {} -o ${RPDIR}/{/.}.waterfall.pdf 1>/dev/null ::: ${FQDIR}/*${name}*fastq" >> $CMD
+ echo "parallel ${PYTHON} ${GDIR}/waterfall.py -f pdf -m ${motifs} -i {} -o ${RPDIR}/{/.}.waterfall.pdf 1>/dev/null ::: ${FQDIR}/*_${name}.fastq" >> $CMD
  echo -e "\n" >> $CMD
 
  echo 'echo "'"${name} Histograms\"" >> $CMD
- echo "parallel ${PYTHON} ${GDIR}/plotCounts.py -m ${pMotif} -i {} -o ${RPDIR}/{/.} 1>/dev/null ::: ${FQDIR}/*${name}*fastq" >> $CMD
+ echo "parallel ${PYTHON} ${GDIR}/plotCounts.py -m ${pMotif} -i {} -o ${RPDIR}/{/.} 1>/dev/null ::: ${FQDIR}/*_${name}.fastq" >> $CMD
  echo -e "\n" >> $CMD
 
  echo 'echo "'"${name} Count Tables\"" >> $CMD
- echo "parallel ${PYTHON} ${GDIR}/countMotifs.py -b -m ${motifs} -i {} -o ${RPDIR}/{/.}.counts.csv ::: ${FQDIR}/*${name}*fastq" >> $CMD 
+ echo "parallel ${PYTHON} ${GDIR}/countMotifs.py -b -m ${motifs} -i {} -o ${RPDIR}/{/.}.counts.csv ::: ${FQDIR}/*_${name}.fastq" >> $CMD 
  echo -e "\n" >> $CMD
 
  echo 'echo "'"${name} Cluster Reads\"" >> $CMD
