@@ -63,7 +63,7 @@ while read -r chr start stop name motifs revcomp; do
  echo -e "\n" >> $CMD
 
  echo 'echo "'"${name} Count Tables\"" >> $CMD
- echo "parallel ${PYTHON} ${GDIR}/countMotifs.py -m ${motifs} -i {} -o ${RPDIR}/{/.}.counts.csv ::: ${FQDIR}/*${name}*fastq" >> $CMD 
+ echo "parallel ${PYTHON} ${GDIR}/countMotifs.py -b -m ${motifs} -i {} -o ${RPDIR}/{/.}.counts.csv ::: ${FQDIR}/*${name}*fastq" >> $CMD 
  echo -e "\n" >> $CMD
 
  echo 'echo "'"${name} Cluster Reads\"" >> $CMD

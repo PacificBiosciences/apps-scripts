@@ -23,7 +23,7 @@ def main(parser):
         recs = list(FastaReader(fx))
 
     counts = [rec.sequence.count(args.motif) for rec in recs]
-    xlabel = '%s Repeat Copies (exclusive)' % args.motif
+    xlabel = f'{args.motif} Repeat Copies (exclusive)'
     labelMotif = list(map(eval,args.labelMotif.split(','))) if args.labelMotif else None
     f,c,b  = countPlot(counts,
                        args.name,
@@ -32,9 +32,7 @@ def main(parser):
                        labelValues=labelMotif,
                        binsize=args.binsize,
                        bandwidth=args.bandwidth)
-    f.savefig('{p}.{n}.{e}'.format(p=args.out,
-                                   n='motifCount',
-                                   e=args.format),
+    f.savefig(f'{args.out}.motifcount.{args.format}',
               format=args.format,
               dpi=args.dpi)
     counts = list(map(len,recs))
@@ -45,20 +43,17 @@ def main(parser):
                        xlabel,
                        args.ylabel,
                        labelValues=labelLength,
-                       binsize=args.binsize,
-                       bandwidth=args.bandwidth)
-    f.savefig('{p}.{n}.{e}'.format(p=args.out,
-                                   n='insertSize',
-                                   e=args.format),
+                       binsize=len(args.motif)*args.binsize,
+                       bandwidth=len(args.motif)*args.bandwidth)
+    f.savefig(f'{args.out}.insertSize.{args.format}',
               format=args.format,
               dpi=args.dpi)
     if args.exportBincounts:
-        oname = '{p}.{n}.csv'.format(p=args.out,
-                                n='histogramBins')
+        oname = f'{prgs.out}.histogramBins.csv'
         with open(oname,'w') as ofile:
             ofile.write('Length,Reads\n')
             for bn,cnt in zip(b,c):
-                ofile.write('%i,%i\n' % (bn,cnt))
+                ofile.write(f'{bn},{cnt}\n')
 
     print('Done')
     return f
