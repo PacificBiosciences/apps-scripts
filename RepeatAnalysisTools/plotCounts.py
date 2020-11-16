@@ -21,6 +21,9 @@ def main(parser):
     except ValueError:
         #this will fail if fasta is streamed 
         recs = list(FastaReader(fx))
+    if not len(recs):
+        print(f'No records in {fx}')
+        return None
 
     counts = [rec.sequence.count(args.motif) for rec in recs]
     xlabel = f'{args.motif} Repeat Copies (exclusive)'

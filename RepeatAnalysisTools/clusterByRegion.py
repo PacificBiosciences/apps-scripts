@@ -31,6 +31,9 @@ def main(parser):
 
     print("Reading sequence")
     kmerCounts,motifCounts = getCounts(seqGen,args.kmer,motifCounter) 
+    if not len(kmerCounts) > 1:
+        print(f'No Records in {args.inBAM}. Must have > 1 records to cluster')
+        return None
     
     #kmeans clustering
     print("Clustering")

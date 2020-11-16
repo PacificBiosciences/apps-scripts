@@ -27,6 +27,9 @@ def main(parser):
     infastx    = args.inFastx if args.inFastx else "-"
     motifs     = args.motifs.split(',')
     sortedRecs = sorted(list(pysam.FastxFile(infastx,'r')),key=sortFunc(args.sortCluster))
+    if not len(sortedRecs):
+        print(f'No records in {infastx}')
+        return None
 
     colors  = OrderedDict([(m,COLORMAP.colors[i]) for i,m in enumerate(motifs)])
     raster  = motifRaster(sortedRecs,motifs,colors)

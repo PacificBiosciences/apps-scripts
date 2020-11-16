@@ -3,6 +3,7 @@ import mappy as mp
 from tempfile import NamedTemporaryFile
 
 ALIGNFILTER=0x900
+MINOUTPUTLEN=6
 
 def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flanksize=100,revcomp=False):
     ref = pysam.FastaFile(reference)
@@ -24,7 +25,7 @@ def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flan
             if (rec.flag & ALIGNFILTER):
                 continue
             rStart,rStop,subseq = extractRepeat(rec.query_sequence,aligner)
-            if len(subseq) <= 0:
+            if len(subseq) <= MINOUTPUTLEN:
                 continue
             if rStart:
                 name = nameFunction(rec.query_name,rStart,rStop)
