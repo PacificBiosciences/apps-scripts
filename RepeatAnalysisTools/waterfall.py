@@ -65,7 +65,7 @@ def sortFunc(csvMap):
 
 def plotWaterfall(array,xlabel,ylabel,labels=None,colorbar=False,**kwargs):
     f,ax  = plt.subplots()
-    image = ax.imshow(array,origin='lower',aspect='auto',**kwargs)
+    image = ax.imshow(array,origin='lower',aspect='auto',interpolation='nearest',**kwargs)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.spines['right'].set_visible(False)
