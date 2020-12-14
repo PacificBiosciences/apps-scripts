@@ -34,7 +34,8 @@ def main(parser):
                        args.ylabel,
                        labelValues=labelMotif,
                        binsize=args.binsize,
-                       bandwidth=args.bandwidth)
+                       bandwidth=args.bandwidth,
+                       plotKde=args.plotKde)
     f.savefig(f'{args.out}.motifcount.{args.format}',
               format=args.format,
               dpi=args.dpi)
@@ -47,12 +48,13 @@ def main(parser):
                        args.ylabel,
                        labelValues=labelLength,
                        binsize=len(args.motif)*args.binsize,
-                       bandwidth=len(args.motif)*args.bandwidth)
+                       bandwidth=len(args.motif)*args.bandwidth,
+                       plotKde=args.plotKde)
     f.savefig(f'{args.out}.insertSize.{args.format}',
               format=args.format,
               dpi=args.dpi)
     if args.exportBincounts:
-        oname = f'{prgs.out}.histogramBins.csv'
+        oname = f'{args.out}.histogramBins.csv'
         with open(oname,'w') as ofile:
             ofile.write('Length,Reads\n')
             for bn,cnt in zip(b,c):
@@ -62,10 +64,11 @@ def main(parser):
     return f
 
 def countPlot(counts,title,xlabel,ylabel,labelValues=None,
-              binsize=1,bandwidth=1):
+              binsize=1,bandwidth=1,plotKde=True):
     f,ax = plt.subplots()
     ax2 = ax.twinx()
-    sns.kdeplot(counts,ax=ax2,color='k',bw=bandwidth,alpha=0.25)
+    if plotKde:
+        sns.kdeplot(counts,ax=ax2,color='k',bw=bandwidth,alpha=0.25)
     bincnts,bins,patches = ax.hist(counts,
                                    bins=range(min(counts)-1,
                                                max(counts)+1,
@@ -121,6 +124,8 @@ if __name__ == '__main__':
                     help='Image resolution.  Default 400')
     parser.add_argument('-e','--exportBins', dest='exportBincounts', action='store_true', default=False,
                     help='Export CSV of bin counts.  Default False')
+    parser.add_argument('-k','--plotKde', dest='plotKde', action='store_true', default=False,
+                    help='Plot kde on top of histogram.  Default False')
 
     try:
         main(parser)

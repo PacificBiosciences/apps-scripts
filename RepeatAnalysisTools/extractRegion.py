@@ -11,7 +11,8 @@ def main(parser):
                                            args.reference,
                                            region=args.region,
                                            flanksize=args.flanksize,
-                                           revcomp=args.revcomp):
+                                           revcomp=args.revcomp,
+                                           minRQ=args.minRQ):
             oFile.write(fqRec(name,seq,qual))
     
     return None
@@ -32,6 +33,8 @@ if __name__ == '__main__':
                     help='Size of flanking sequence mapped for extracting repeat region.  Default 100')
     parser.add_argument('-r,--revcomp', dest='revcomp', action='store_true', default=False,
                     help='Rev-comp extracted region.  Default Reference Direction')
+    parser.add_argument('-q,--minRQ', dest='minRQ', type=float, default=None,
+                    help='Minimum RQ of extracted region [0.0 - 1.0].  Default no filter')
 
     try:
         main(parser)

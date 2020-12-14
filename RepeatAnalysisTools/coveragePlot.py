@@ -20,27 +20,33 @@ DPI      = 400
 #Define some human chromosome names
 #add more sets as needed
 #all and only these names will plot
+withCH = ['chr1','chr2','chr3','chr4','chr5','chr6','chr7','chr8','chr9',
+          'chr10','chr11','chr12','chr13','chr14','chr15','chr16','chr17',
+          'chr18','chr19','chr20','chr21','chr22','chrX','chrY','chrM']
 CHROM    = {'hs37d5': ['1','2','3','4','5','6','7','8','9','10','11','12','13',
                        '14','15','16','17','18','19','20','21','22','X','Y','MT'],
-            'hg19'  : ['chr1','chr2','chr3','chr4','chr5','chr6','chr7','chr8','chr9',
-                       'chr10','chr11','chr12','chr13','chr14','chr15','chr16','chr17',
-                       'chr18','chr19','chr20','chr21','chr22','chrX','chrY','chrM']}
-            
+            'hg19'  : withCH,
+            'hg38'  : withCH 
+           }            
 def main(parser):
     args = parser.parse_args()
 
     bam = pysam.AlignmentFile(args.inBAM)
 
-    #try to identify ref chroms
-    #kind of a hack for now
-    useChroms = None
-    for name,chroms in list(CHROM.items()):
-        if chroms[0] in bam.references:
-            useChroms = chroms
-            print(f'Using {name} chromosome names')
-            break
+    if args.nameFormat == 'all':
+        useChroms = bam.references
+    elif args.nameFormat is None:
+        useChroms = None
+        print(f'Guessing chromosome name format')
+        for name,chroms in list(CHROM.items()):
+            if chroms[0] in bam.references:
+                useChroms = chroms
+                break
+    else:
+        useChroms = CHROM[args.nameFormat]
     if not useChroms:
         raise CoveragePlot_Exception('Chromosome set not found. Check CHROM definition in script')
+    print(f'Using {args.nameFormat if args.nameFormat else name} chromosome name format')
 
     #get all covered positions in a df
     #recommended only for sparse (targeted) coverage!
@@ -58,7 +64,10 @@ def main(parser):
     intervals = pd.cut(cov.pos,range(0,max(bam.lengths),args.window))
     #average for each window
     print('Calculating mean values')
-    meancov   = cov.groupby(['chr',intervals]).coverage.mean()
+    try:
+        meancov   = cov.groupby(['chr',intervals]).coverage.mean()
+    except:
+        raise CoveragePlot_Exception(f'No coverage found for any of contigs {useChroms}')
     #index of intervals for ordering results
     cats      = intervals.cat.categories
 
@@ -78,10 +87,14 @@ def main(parser):
     xstart = 0 
     label  = 1
     ticks,ticklabels = [],[]
-    with sns.color_palette(PALETTE, bam.nreferences):
+    with sns.color_palette(PALETTE, len(useChroms)):
         for chrom in useChroms:
-            print(f'Plotting coverage: {chrom}')
-            bins = nbins[chrom]
+            try:
+                bins = nbins[chrom]
+                print(f'Plotting coverage: {chrom}')
+            except KeyError as e:
+                print(f'Contig {chrom} not found, skipping')
+                continue
             if chrom in meancov:
                 #order values and fill where no coverage
                 yvals = meancov[chrom].reindex(cats[:bins],fill_value=0).fillna(0)
@@ -126,7 +139,7 @@ class CoveragePlot_Exception(Exception):
     pass
 
 if __name__ == '__main__':
-    import argparse
+    import argparse,sys
 
     parser = argparse.ArgumentParser(prog='coveragePlot.py', description='Plot coverage across reference')
     parser.add_argument('inBAM', metavar='inBAM', type=str,
@@ -137,6 +150,12 @@ if __name__ == '__main__':
                     help=f'window size for averaging coverage across reference.  default {DWINDOW}')
     parser.add_argument('-t,--targetBED', dest='targets', type=str, default=None,
                     help='label plot with targets from BED file.  default None')
+    parser.add_argument('-n,--nameFormat', dest='nameFormat', choices=list(CHROM.keys()) + ['all'], default=None,
+                    help='''Chromosome name format. 
+                          Limits plotted set to 23 chrom and mito.
+                          hg19/hg38: "chr1", "chr2",...
+                          hs37d5: 1,2,...
+                          Use "all" to use all mapped references. default guess''')
 
     try:
         main(parser)

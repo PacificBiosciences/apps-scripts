@@ -1,11 +1,12 @@
 import os,re,pysam
 import mappy as mp
+import numpy as np
 from tempfile import NamedTemporaryFile
 
 ALIGNFILTER=0x900
 MINOUTPUTLEN=6
 
-def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flanksize=100,revcomp=False):
+def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flanksize=100,revcomp=False,minRQ=None):
     ref = pysam.FastaFile(reference)
     bam = pysam.AlignmentFile(inBAM)
     if region:
@@ -28,8 +29,13 @@ def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flan
             if len(subseq) <= MINOUTPUTLEN:
                 continue
             if rStart:
-                name = nameFunction(rec.query_name,rStart,rStop)
-                qual = ''.join([chr(q+33) for q in rec.query_qualities[rStart:rStop]])
+                name   = nameFunction(rec.query_name,rStart,rStop)
+                qvVals = rec.query_qualities[rStart:rStop] 
+                if minRQ:
+                    meanrq = meanRQ(qvVals)
+                    if meanrq < minRQ:
+                        continue
+                qual = ''.join([chr(q+33) for q in qvVals])
                 if revcomp:
                     subseq = rc(subseq)
                     qual   = qual[::-1]
@@ -84,6 +90,12 @@ _RC_MAP = dict(list(zip('-ACGNTacgt','-TGCNAtgca')))
 def rc(seq):
     '''revcomp'''
     return "".join([_RC_MAP[c] for c in seq[::-1]])
+
+def phred2prob(q):
+    return 1-10**(-q/10)
+
+def meanRQ(qual):
+    return np.mean(list(map(phred2prob,map(int,qual))))
 
 class Extract_Exception(Exception):
     pass
