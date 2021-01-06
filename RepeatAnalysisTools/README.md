@@ -47,6 +47,7 @@ In order to get the maximum yield for the longest expansion alleles, we need to 
     $ ccs in.subreads.bam out.ccs.bam --all
 
 For version 4.2
+
     $ ccs in.subreads.bam out.ccs.bam --disable-heuristics --draft-mode full
 
 Running ccs in this mode will be considerably slower than running on default, so it is recommended to chunk the ccs calls if you have access to a cluster. The ccs program has built-in chunking capabilities. See the script `chunkCCS.sh` for an example of chunking ccs on the command line.
@@ -56,6 +57,7 @@ This command will start 16 chunked jobs with 9 threads each using qsub:
     $ ./chunkCCS.sh 16 9 cluster ccs in.subreads.bam out.ccs.bam --all
 
 For version 4.2
+
     $ ./chunkCCS.sh 16 9 cluster ccs in.subreads.bam out.ccs.bam --disable-heuristics --draft-mode full
 
 This command will start 4 ccs jobs with 4 threads each on the local machine
@@ -63,6 +65,7 @@ This command will start 4 ccs jobs with 4 threads each on the local machine
     $ ./chunkCCS.sh 4 4 local ccs in.subreads.bam out.ccs.bam --all
 
 For version 4.2
+
     $ ./chunkCCS.sh 4 4 local ccs in.subreads.bam out.ccs.bam --disable-heuristics --draft-mode full
 
 ### Demultiplex
