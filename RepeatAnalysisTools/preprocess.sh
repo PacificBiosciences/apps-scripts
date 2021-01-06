@@ -66,8 +66,13 @@ get_barcode() {
 export -f get_barcode
 
 ccs_cmd () {
-    echo ccs $SUBREADS $(outbase ccs).bam --disable-heuristics --draft-mode full
+    echo ccs $SUBREADS $(outbase ccs).bam --all
 }
+
+#un-comment if using CCS v4.2
+#ccs_cmd () {
+#    echo ccs $SUBREADS $(outbase ccs).bam --disable-heuristics --draft-mode full
+#}
 
 run_demux() {
     lima --ccs --same -j ${PROCPERCHUNK} \

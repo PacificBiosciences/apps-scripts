@@ -3,16 +3,12 @@ This repository contains instructions for processing and repeat analysis of sequ
 
 UPDATE: RepeatAnalysis Tools in this repository now use Python 3. 
 
-Due to a reduction in CCS yield in the longest of expansion alleles using the latest CCS algorithm on default parameters, customers are recommended to follow these command-line instructions for maximum output.  For customers interested in instructions for older versions of SMRT Analysis, please refer to previous instruction sets [here](https://github.com/PacificBiosciences/apps-scripts/blob/master/RepeatAnalysisTools/previous).
-
 Outputs from the analysis scripts include high-accuracy (>=QV20) CCS sequences for target regions so that users can easily analyze the results with other third party tools as necessary.   
 
 ## Dependencies
 
-This version of data preparation requires the use of the latest *ccs* algorithm available from pbbioconda, as well as the demultiplexing tool *lima* and the *pbmm2* alignment program.
-
 ### Sequence Processing on the CL requires the following tools, available from [pbbioconda](https://github.com/PacificBiosciences/pbbioconda)
- - [ccs](https://github.com/PacificBiosciences/ccs)
+ - [ccs](https://ccs.how/)
  - [lima](https://github.com/pacificbiosciences/barcoding)
  - [pbmm2](https://github.com/PacificBiosciences/pbmm2/)
 
@@ -33,25 +29,40 @@ An example dataset with repeat-expansion genotypes for HTT and FMR1 can be found
 
 ## Raw Sequence Processing
 Repeat analysis requires 3 basic steps
-1. CCS
+1. CCS (HiFi)
 2. Demultiplexing
 3. Alignment
+
+We recommend using the latest [CCS](https://ccs.how/) version for processing repeat-expansion sequence on the command line. 
+
+With improvements to CCS versions 5+, previously problematic very long repeat expansions now generate output ccs reads on default settings.  With the addition of the `--all` option to CCS, any sequencing well that produces subreads will have representative data in the output of ccs.  See [CCS --all](https://ccs.how/faq/mode-all.html) for details. We are continually trying to improve on the CCS algorithm, so please contact us if you encounter cases where you see many unpolished consensus reads in ccs outputs. 
+
+For customers still using CCS v4.2 (part of SMRT Link v9.0.0), we recommend upgrading from the links above.  If you must use v4.2, please add the options noted below.
 
 The wrapper script `preprocess.sh` is provided below as a single-command for running all three preprocessing steps.
 
 ### CCS
 In order to get the maximum yield for the longest expansion alleles, we need to run ccs with heuristics turned off and full-length draft mode:
 
+    $ ccs in.subreads.bam out.ccs.bam --all
+
+For version 4.2
     $ ccs in.subreads.bam out.ccs.bam --disable-heuristics --draft-mode full
 
 Running ccs in this mode will be considerably slower than running on default, so it is recommended to chunk the ccs calls if you have access to a cluster. The ccs program has built-in chunking capabilities. See the script `chunkCCS.sh` for an example of chunking ccs on the command line.
 
 This command will start 16 chunked jobs with 9 threads each using qsub: 
 
+    $ ./chunkCCS.sh 16 9 cluster ccs in.subreads.bam out.ccs.bam --all
+
+For version 4.2
     $ ./chunkCCS.sh 16 9 cluster ccs in.subreads.bam out.ccs.bam --disable-heuristics --draft-mode full
 
 This command will start 4 ccs jobs with 4 threads each on the local machine
 
+    $ ./chunkCCS.sh 4 4 local ccs in.subreads.bam out.ccs.bam --all
+
+For version 4.2
     $ ./chunkCCS.sh 4 4 local ccs in.subreads.bam out.ccs.bam --disable-heuristics --draft-mode full
 
 ### Demultiplex
