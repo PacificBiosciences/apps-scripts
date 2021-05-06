@@ -2,9 +2,11 @@
 
 import sys
 import numpy as np
+import pandas as pd
 from sklearn.cluster import KMeans
 from resources.extract import extractRegion
-from resources.utils import countMotifs
+from resources.utils import countMotifs, \
+                            formatMixFloat
 from resources.clust import getCounts, \
                             clusterStats, \
                             addHPtag
@@ -12,6 +14,7 @@ from resources.clust import getCounts, \
 DEFAULTKMER  = 3
 DEFAULTPREFIX= './cluster'
 LENGTHFIELD  = 'totalBp'
+SLCOLNAMES   = ['Item','Metric','cluster0','cluster1'] 
 DEFAULTCI    = [0.025,0.975] #95%
 AGGFUNCS     = [np.median,np.mean]
 FLOATFMT     = '%.1f'
@@ -52,6 +55,24 @@ def main(parser):
     #results.to_excel('%s.summary.xlsx' % args.prefix)
     results.to_csv(f'{args.prefix}.summary.csv', float_format=FLOATFMT)
 
+    if args.smrtlink:
+        #add blank column if nclusters set to 1 by user
+        if args.clusters==1:
+            results.loc['cluster1'] = None
+        #Transpose results table and set colnames
+        resultsSL = results.T.reset_index().set_axis(SLCOLNAMES,axis=1)
+        #Remove duplicate "Items"/first column for esthetics
+        itCol = SLCOLNAMES[0]
+        resultsSL[itCol][resultsSL[itCol].duplicated(keep='first')] = ''
+        #Better counts field name for SL
+        resultsSL[itCol][resultsSL[itCol] == 'Read'] = 'Hifi Reads'
+        #format floats in mixed columns
+        for col in SLCOLNAMES[-2:]:
+            resultsSL[col] = resultsSL[col].map(formatMixFloat(FLOATFMT))
+        #write it
+        resultsSL.to_csv(f'{args.prefix}.summarySL.csv',
+                         index=False)
+
     with open(f'{args.prefix}.readnames.txt', 'w') as namefile:
         for cluster,reads in motifCounts.groupby(names.reindex(clusterIdx).values):
             namefile.write(f'>{cluster}\n')
@@ -66,7 +87,7 @@ def main(parser):
 
     print("Done")
 
-    return kmerCounts,motifCounts
+    return kmerCounts,motifCounts,results
 
 class ClusterByRegion_Exception(Exception):
     pass
@@ -81,25 +102,27 @@ if __name__ == '__main__':
                     help='Reference fasta used for mapping BAM.  Must have .fai index.')
     parser.add_argument('region', metavar='region', type=str,
                     help='Target region, format \'[chr]:[start]-[stop]\'.  Example \'4:3076604-3076660\'')
-    parser.add_argument('-m,--motifs', dest='motifs', type=str, default=None,required=True,
+    parser.add_argument('-m','--motifs', dest='motifs', type=str, default=None,required=True,
                     help='comma-separated list of motifs to count')
-    parser.add_argument('-k,--kmer', dest='kmer', type=int, default=DEFAULTKMER,
+    parser.add_argument('-k','--kmer', dest='kmer', type=int, default=DEFAULTKMER,
                     help=f'kmer size for clustering. Default {DEFAULTKMER}')
-    parser.add_argument('-c,--clusters', dest='clusters', type=int, default=2,
+    parser.add_argument('-c','--clusters', dest='clusters', type=int, default=2,
                     help='clusters/ploidy count. Default 2')
-    parser.add_argument('-r,--revcomp', dest='revcomp', action='store_true',
+    parser.add_argument('-r','--revcomp', dest='revcomp', action='store_true',
                     help='Reverse complement extracted sequence')
-    parser.add_argument('-p,--prefix', dest='prefix', type=str, default=DEFAULTPREFIX,
+    parser.add_argument('-p','--prefix', dest='prefix', type=str, default=DEFAULTPREFIX,
                     help=f'Output prefix. Default {DEFAULTPREFIX}')
-    parser.add_argument('-f,--flanksize', dest='flanksize', type=int, default=100,
+    parser.add_argument('-f','--flanksize', dest='flanksize', type=int, default=100,
                     help='Size of flanking sequence mapped for extracting repeat region.  Default 100')
-    parser.add_argument('-s,--seed', dest='seed', type=int, default=42,
+    parser.add_argument('-s','--seed', dest='seed', type=int, default=42,
                     help='Seed for resampling ci95.  Default 42')
-    parser.add_argument('-x,--noBam', dest='noBam', action='store_true',
+    parser.add_argument('-x','--noBam', dest='noBam', action='store_true',
                     help='Do not export HP-tagged bam of clustered reads')
-    parser.add_argument('-d,--drop', dest='drop', action='store_true',
+    parser.add_argument('--smrtlink', dest='smrtlink', action='store_true',
+                    help='Export smrtlink-formatted report')
+    parser.add_argument('-d','--drop', dest='drop', action='store_true',
                     help='Drop reads with no cluster in output bam.  Default keep all reads.')
-    parser.add_argument('-u,--collapseHP', dest='collapseHP', action='store_true',
+    parser.add_argument('-u','--collapseHP', dest='collapseHP', action='store_true',
                     help='Collapse homopolymers before analysis.  Default use original sequence.')
 
     try:

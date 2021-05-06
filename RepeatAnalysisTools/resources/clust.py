@@ -76,7 +76,9 @@ def clusterStats(motifCounts,clusterIdx,outColumns,
     #set random seed
     np.random.seed(randomSeed)
     results = clusters[outColumns].agg(aggFuncs+[resampleCI])\
-                                  .join(clusterSize)
+                                  .join(clusterSize)\
+                                  .sort_values(('totalBp','median'))\
+                                  .reset_index(drop=True)
     #rename clusters
     names = clusterSize.reset_index().apply(clusterName,axis=1)
     results.index = names.values

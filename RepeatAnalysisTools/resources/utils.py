@@ -57,5 +57,18 @@ _PATT = re.compile(r'([ATGC])\1+')
 def hpCollapse(seq):
     return _PATT.sub(r'\1',seq)
 
+def formatMixFloat(fmt):
+    def formatter(elem):
+        if pd.isnull(elem):
+            return ''
+        try: #integers not in float fmt
+            if int(elem) == elem:
+                return elem
+            else:
+                return fmt % elem
+        except (TypeError,ValueError):
+            return elem
+    return formatter
+
 class RepeatAnalysisUtils_Exception(Exception):
     pass

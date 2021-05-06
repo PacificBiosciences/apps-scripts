@@ -30,7 +30,10 @@ def extractRegion(inBAM,reference,region=None,ctg=None,start=None,stop=None,flan
                 continue
             if rStart:
                 name   = nameFunction(rec.query_name,rStart,rStop)
-                qvVals = rec.query_qualities[rStart:rStop] 
+                try:
+                    qvVals = rec.query_qualities[rStart:rStop] 
+                except: #no qvals
+                    qvVals = [20]*(rStop-rStart)
                 if minRQ:
                     meanrq = meanRQ(qvVals)
                     if meanrq < minRQ:
