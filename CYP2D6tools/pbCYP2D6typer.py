@@ -90,7 +90,7 @@ if __name__ == '__main__':
     inputp.add_argument('-f','--minFrac', dest='minFrac', type=float, default=cfg.caller['minFrac'],
                     help=f'Ignore failed clusters below minFrac. Default {cfg.caller["minFrac"]}')
     inputp.add_argument('-P','--preset', dest='preset', choices=list(Aligner.presets.keys()), default=cfg.caller["preset"],
-                    help=f'Alignment preset for mappy aligner. Choose "splice" for expected large deletions. Default {cfg.caller["preset"]}')
+                    help=f'Alignment preset for mappy aligner. Default {cfg.caller["preset"]}')
     inputp.add_argument('--hifiSupport', dest='hifiSupport', type=str, default=None,
                     help=f'Add per-variant read support depth. Path to hifi fastq used for clustering. Requires read_info option to be set. Default None')
     inputp.add_argument('--read_info', dest='read_info', type=str, default=None,

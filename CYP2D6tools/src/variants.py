@@ -59,7 +59,8 @@ class Caller:
                 tableKey = self._getKey(bc,sample)
                 alleles.append(pd.Series({'uuid'     :tableKey,
                                           'bioSample':sample,
-                                          'barcode'  :bc}))
+                                          'barcode'  :bc,
+                                          'runName'  :self.runName}))
         if len(alleles) == 0: #no recs
             alleles_out = self._getEmpty(cfg.database['alleleTable']).set_index('uuid')
             variant_out = self._getEmpty(cfg.database['variantTable']).set_index(['uuid','CHR','POS'])
