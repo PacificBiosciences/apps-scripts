@@ -9,9 +9,10 @@ from collections import Counter
 from . import config as cfg
 
 class Caller:
-    def __init__(self,consensusFastas,reference,spacer,alnPreset,sMap,minFrac=0.01,
+    def __init__(self,consensusFastas,runName,reference,spacer,alnPreset,sMap,minFrac=0.01,
                  ignoreMissing=False,read_info=None,readsFq=None,datetime=None):
         self.inputFa                = consensusFastas
+        self.runName                = runName
         self.aligner                = Aligner(reference,preset=alnPreset)
         self.spacerAln              = Aligner(spacer,preset=alnPreset)
         self.sMap                   = sampleMap(sMap)
@@ -35,9 +36,10 @@ class Caller:
                 if consensusType == 'failed' and nameDict.get('cluster_freq',0) < self.minFrac:
                     continue #skip it
                 bioSample = self.sMap(nameDict['barcode'])
-                tableKey  = self._getKey(rec.name,bioSample,os.path.abspath(consensusFa))
+                tableKey  = self._getKey(rec.name,bioSample,self.runName,os.path.abspath(consensusFa))
                 nameDict.update({'uuid'         :tableKey,
                                  'bioSample'    :bioSample,
+                                 'runName'      :self.runName,
                                  'source'       :os.path.abspath(consensusFa),
                                  'clusterStatus':consensusType,
                                  'chrom'        :aln.ctg,

@@ -20,6 +20,7 @@ def main(parser):
     spacer    = getPath('spacer') #unique spacer assoc w/D7
 
     vCaller = Caller(args.consensusFasta,
+                     args.runName,
                      reference,
                      spacer,
                      args.preset,
