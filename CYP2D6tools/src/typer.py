@@ -13,7 +13,10 @@ class CypTyper:
         self.dbStore  = dbStore
         self._import2DB()
 
-    def close(self):
+    def __enter__(self):
+        return self
+
+    def __exit__(self,exc_type,exc_value,traceback):
         if not self.dbStore:
             uuids = tuple(self.alleles.index)
             for table in ['variantTable','alleleTable']:
@@ -25,7 +28,6 @@ class CypTyper:
                     con.execute(sql)
                 except (sqla.exc.OperationalError,sqlite3.OperationalError) as e:
                     raise Typer_Error(f'Unable to delete records in {self.dbFile}. DB error as follows:\n\n{e}')            
-        return None
     
     def getSummary(self,table):
         uuids    = tuple(self.alleles.index)

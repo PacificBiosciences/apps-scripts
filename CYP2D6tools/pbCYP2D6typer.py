@@ -46,20 +46,16 @@ def main(parser):
         vCaller.alleles.to_csv(f'{args.prefix}_alleles.csv')
         vCaller.variants.to_csv(f'{args.prefix}_variants.csv')        
 
-    starTyper = CypTyper(vCaller.alleles,
-                         vCaller.variants,
-                         getPath('database'),
-                         args.dbStore)
+    with CypTyper(vCaller.alleles,vCaller.variants,\
+                  getPath('database'),args.dbStore) as starTyper:
 
-    for summary,descr in zip(['summaryTable','shortSummary'],['detailed','short']):    
-        starTyper.getSummary(cfg.database[summary])\
-                 .to_csv(f'{args.prefix}_{descr}_summary.csv',index=False)
-    
-    #TODO: export all potential matches
-    #if args.allCandidateTable:
-        #get long report
-
-    starTyper.close()
+        for summary,descr in zip(['summaryTable','shortSummary'],['detailed','short']):    
+            starTyper.getSummary(cfg.database[summary])\
+                     .to_csv(f'{args.prefix}_{descr}_summary.csv',index=False)
+        
+        #TODO: export all potential matches
+        #if args.allCandidateTable:
+            #get long report
 
     return vCaller
 
