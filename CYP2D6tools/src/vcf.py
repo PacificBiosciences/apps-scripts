@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 import pysam,sys
 import numpy as np
 import pandas as pd
 from operator import itemgetter
 from collections import Counter
-import src.config as cfg
+try:
+    import src.config as cfg
+except ModuleNotFoundError:
+    import config as cfg
+
 
 DEFAULTMINFREQ=0.05
 DEFAULTQUAL=200
@@ -201,7 +205,7 @@ class VcfCreator:
         #variant record
         vrec = self.vcfFile.new_record()
         vrec.chrom,vrec.pos = loc
-        vrec.id      = '.'
+        vrec.id      = data.ID.sort_values(na_position='last').iloc[0] if 'ID' in data.columns else '.' 
         vrec.alleles = alleles
         vrec.qual    = cfg.vcf['defaultQual']
         #TODO make filters more specific

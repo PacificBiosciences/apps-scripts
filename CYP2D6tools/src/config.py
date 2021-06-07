@@ -5,6 +5,7 @@ dataPaths = {'reference': 'src/db/human_GRCh38_no_alt_analysis_set_chr22only_cyp
 
 database = {'alleleTable' : 'pbAA_consensus',
             'variantTable': 'SampleVariants',
+            'variantAnnot': 'SampleVariants_annotated',
             'summaryTable': 'type_summary',
             'shortSummary': 'type_summary_short',
             'supportField': 'supportReads',

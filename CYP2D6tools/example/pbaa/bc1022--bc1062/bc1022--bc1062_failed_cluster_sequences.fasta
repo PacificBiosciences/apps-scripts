@@ -1,0 +1,6 @@
+>sample-bc1022--bc1062_guide-CYP2D6_cluster-5_ReadCount-1 uchime_score:-1 uchime_left_parent:N/A uchime_right_parent:N/A cluster_freq:0.002 diversity:-1 avg_quality:21.0176 duplicate_parent:N/A seq_length:10 filters:fail-too-few-reads,fail-low-frequency,fail-no-consensus
+NNNNNNNNNN
+>sample-bc1022--bc1062_guide-CYP2D6_cluster-6_ReadCount-1 uchime_score:-1 uchime_left_parent:N/A uchime_right_parent:N/A cluster_freq:0.002 diversity:-1 avg_quality:22.796 duplicate_parent:N/A seq_length:10 filters:fail-too-few-reads,fail-low-frequency,fail-no-consensus
+NNNNNNNNNN
+>sample-bc1022--bc1062_guide-CYP2D6_cluster-4_ReadCount-1 uchime_score:-1 uchime_left_parent:N/A uchime_right_parent:N/A cluster_freq:0.002 diversity:-1 avg_quality:21.5978 duplicate_parent:N/A seq_length:10 filters:fail-too-few-reads,fail-low-frequency,fail-no-consensus
+NNNNNNNNNN

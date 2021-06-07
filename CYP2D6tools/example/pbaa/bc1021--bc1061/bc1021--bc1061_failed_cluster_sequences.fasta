@@ -1,0 +1,4 @@
+>sample-bc1021--bc1061_guide-CYP2D6_cluster-3_ReadCount-1 uchime_score:-1 uchime_left_parent:N/A uchime_right_parent:N/A cluster_freq:0.002 diversity:-1 avg_quality:43.0278 duplicate_parent:N/A seq_length:10 filters:fail-too-few-reads,fail-low-frequency,fail-no-consensus
+NNNNNNNNNN
+>sample-bc1021--bc1061_guide-CYP2D6_cluster-2_ReadCount-1 uchime_score:-1 uchime_left_parent:N/A uchime_right_parent:N/A cluster_freq:0.002 diversity:-1 avg_quality:20.7316 duplicate_parent:N/A seq_length:10 filters:fail-too-few-reads,fail-low-frequency,fail-no-consensus
+NNNNNNNNNN

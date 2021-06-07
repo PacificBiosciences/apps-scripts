@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 import os,sys
 from operator import xor
 from datetime import datetime
@@ -31,17 +31,6 @@ def main(parser):
                      args.hifiSupport,
                      getNow())
 
-    if args.vcf:
-        from src.vcf import VcfCreator
-        vcf = VcfCreator(f'{args.prefix}.vcf',
-                         vCaller.alleles,
-                         vCaller.variants,
-                         reference,
-                         sampleCol='barcode' if args.sampleMap is None else 'bioSample',
-                         passOnly=True,
-                         dataframe=True) 
-        vcf.run()
-
     if args.writeCSV:
         vCaller.alleles.to_csv(f'{args.prefix}_alleles.csv')
         vCaller.variants.to_csv(f'{args.prefix}_variants.csv')        
@@ -53,9 +42,17 @@ def main(parser):
             starTyper.getSummary(cfg.database[summary])\
                      .to_csv(f'{args.prefix}_{descr}_summary.csv',index=False)
         
-        #TODO: export all potential matches
-        #if args.allCandidateTable:
-            #get long report
+        if args.vcf:
+            from src.vcf import VcfCreator
+            vcf = VcfCreator(f'{args.prefix}.vcf',
+                             cfg.database['alleleTable'],
+                             cfg.database['variantAnnot'],
+                             reference,
+                             sampleCol='barcode' if args.sampleMap is None else 'bioSample',
+                             passOnly=True,
+                             database=getPath('database'),
+                             dataframe=False) 
+            vcf.run()
 
     return vCaller
 
