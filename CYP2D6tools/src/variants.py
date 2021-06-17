@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 import re,pysam,os
 import mappy as mp
 import pandas as pd

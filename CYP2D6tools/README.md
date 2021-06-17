@@ -8,6 +8,9 @@ Database-driven CYP2D6 typer for full-length amplicons. Uses consensus sequences
     - Update alleles to pharmvar 4.2.7.2
     - Fix vcf output (add ID, actually work)
     - Add new columns to detailed output
+* 0.1.2 - Fixes/updates (06/16/2021)
+    - Add option for failed consensus
+    - fix dup counting/munging for trimodal alleles
 
 
 ### Dependencies

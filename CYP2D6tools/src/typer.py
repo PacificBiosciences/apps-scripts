@@ -2,6 +2,7 @@ import time,sqlite3
 import pandas as pd
 import sqlalchemy as sqla
 from . import config as cfg
+__version__ = '0.1.2'
 
 class CypTyper:
     '''This is really just a db interface.  Typing is done in the db'''
