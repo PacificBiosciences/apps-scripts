@@ -91,7 +91,7 @@ chr22   42126667        .       C       G       200     PASS    NS=1;AF=1       
 ```
 
 ## Advanced Usage
-Use the `--includeFail` option and pass `*failed_cluster_sequences.fasta` along with passed fasta to include failed consensus in detailed summary csv and vcf (down to `minFrac` cluster frequency)'
+Use the `--includeFail` option and pass `*failed_cluster_sequences.fasta` along with `*passed_cluster_sequences.fasta` to see failed consensus in detailed summary csv and vcf (down to `minFrac` cluster frequency).
 ```
 $ python pbCYP2D6typer.py -r myRunID                     \
                           -s example/biosamples.csv -i   \
