@@ -29,6 +29,7 @@ def main(parser):
                      args.ignoreMissing,
                      args.read_info,
                      args.hifiSupport,
+                     args.wgs,
                      getNow())
 
     if args.writeCSV:
@@ -38,19 +39,24 @@ def main(parser):
     with CypTyper(vCaller.alleles,vCaller.variants,\
                   getPath('database'),args.dbStore) as starTyper:
 
-        for summary,descr in zip(['summaryTable','shortSummary'],['detailed','short']):    
-            starTyper.getSummary(cfg.database[summary])\
+        tables      = ['summaryTable','shortSummary']
+        description = ['detailed','short']
+        for summary,descr in zip(tables,description):    
+            starTyper.getSummary(cfg.database[summary],failed=args.includeFail)\
                      .to_csv(f'{args.prefix}_{descr}_summary.csv',index=False)
         
         if args.vcf:
             from src.vcf import VcfCreator
+            query = f'''"{'","'.join(vCaller.alleles.index)}"'''
             vcf = VcfCreator(f'{args.prefix}.vcf',
                              cfg.database['alleleTable'],
                              cfg.database['variantAnnot'],
                              reference,
                              sampleCol='barcode' if args.sampleMap is None else 'bioSample',
-                             passOnly=True,
+                             passOnly=not args.includeFail,
+                             minFreq=args.minFrac,
                              database=getPath('database'),
+                             query=query,
                              dataframe=False) 
             vcf.run()
 
@@ -88,6 +94,8 @@ if __name__ == '__main__':
                     help=f'Add per-variant read support depth. Path to hifi fastq used for clustering. Requires read_info option to be set. Default None')
     inputp.add_argument('--read_info', dest='read_info', type=str, default=None,
                     help=f'Path to pbAA read_info table for the run. Required for hifi-support option. Default None')
+    inputp.add_argument('--wgs', dest='wgs', action='store_true', default=False,
+                    help=f'Treat input as shotgun hifi reads. Default False')
     outputp = parser.add_argument_group('Output Options')
     outputp.add_argument('-p','--prefix', dest='prefix', type=str, default='./cyp2d6typer', required=False,
                     help=f'Output prefix. Default ./cyp2d6typer')
@@ -97,6 +105,8 @@ if __name__ == '__main__':
                     help=f'Output VCF file. HiFi support and read_info required. Default False')
     outputp.add_argument('--dbStore', dest='dbStore', action='store_true', default=False,
                     help=f'Maintain sample records in local db. Default False')
+    outputp.add_argument('--includeFail', dest='includeFail', action='store_true', default=False,
+                    help=f'Include failed consensus in detailed output. Default False (only passing consensus)')
 
     try:
         vCaller = main(parser)

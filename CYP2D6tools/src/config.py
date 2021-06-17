@@ -9,7 +9,7 @@ database = {'alleleTable' : 'pbAA_consensus',
             'summaryTable': 'type_summary',
             'shortSummary': 'type_summary_short',
             'supportField': 'supportReads',
-            'maxTries'    : 2}
+            'maxTries'    : 10}
 
 tableMap = {database['alleleTable']:      {'uuid'               :'uuid',
                                            'runName'            :'runName',

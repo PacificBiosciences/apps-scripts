@@ -10,14 +10,15 @@ from . import config as cfg
 
 class Caller:
     def __init__(self,consensusFastas,runName,reference,spacer,alnPreset,sMap,minFrac=0.01,
-                 ignoreMissing=False,read_info=None,readsFq=None,datetime=None):
+                 ignoreMissing=False,read_info=None,readsFq=None,wgsMode=False,datetime=None):
         self.inputFa                = consensusFastas
         self.runName                = runName
         self.aligner                = Aligner(reference,preset=alnPreset)
         self.spacerAln              = Aligner(spacer,preset=alnPreset)
-        self.sMap                   = sampleMap(sMap)
+        self.sMap                   = sampleMap(None if wgsMode else sMap)
         self.minFrac                = minFrac
         self.ignoreMissing          = ignoreMissing
+        self.wgsMode                = wgsMode
         self.datetime               = datetime
         self.alleles, self.variants = self.callVariants()
         #self.
@@ -29,7 +30,7 @@ class Caller:
         for consensusFa in self.inputFa:
             consensusType = self._parsePbAAfastaName(consensusFa)
             for rec in pysam.FastxFile(consensusFa):
-                aln = self.aligner(rec,skipFailed=(consensusType == 'failed'))
+                aln = self.aligner(rec,skipFailed=(consensusType == 'failed' or self.wgsMode))
                 if aln is None:
                     continue #skip failed consensus if they do not map
                 nameDict  = self._parseRecordName(rec)
@@ -105,6 +106,11 @@ class Caller:
         return None
 
     def _parseRecordName(self,rec):
+        if self.wgsMode: #pass through vanilla name
+            return {'barcode' :'NA',
+                    'guide'   :'NA',
+                    'cluster' : -1,
+                    'numreads': 1}
         resDict = re.compile(cfg.caller['namePattern']).search(rec.name).groupdict()
         for k in ['numreads','cluster']:
             resDict[k] = int(resDict[k])
@@ -115,6 +121,8 @@ class Caller:
         return resDict
 
     def _parsePbAAfastaName(self,fa):
+        if self.wgsMode: #pass through
+            return 'passed'
         if fa.endswith('passed_cluster_sequences.fasta'):
             return 'passed'
         if fa.endswith('failed_cluster_sequences.fasta'):
@@ -153,7 +161,7 @@ class Aligner:
             if skipFailed:
                 return None
             else:
-                raise pbCYP2D6_Error(f'Unable to align {rec.name}')
+                raise Variants_Error(f'Unable to align {rec.name}')
 
 def parseCS(csString,start=0,zeroIndex=True):
     ops = ':*-+~' 

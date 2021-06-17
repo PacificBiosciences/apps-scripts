@@ -11,7 +11,7 @@ except ModuleNotFoundError:
     import config as cfg
 
 
-DEFAULTMINFREQ=0.05
+DEFAULTMINFREQ=0.01
 DEFAULTQUAL=200
 SUPPORTFIELD='supportReads'
 
@@ -41,7 +41,7 @@ class VcfCreator:
     def __init__(self,filename,alleles,
                  variants,referenceFa,
                  mode='w',sampleCol='barcode',
-                 minFreq=0.05,passOnly=False,
+                 minFreq=DEFAULTMINFREQ,passOnly=False,
                  mergeVars=False,database=None,
                  query=None,dataframe=False):
         self.sampleCol   = sampleCol

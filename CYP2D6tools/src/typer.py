@@ -29,13 +29,16 @@ class CypTyper:
                 except (sqla.exc.OperationalError,sqlite3.OperationalError) as e:
                     raise Typer_Error(f'Unable to delete records in {self.dbFile}. DB error as follows:\n\n{e}')            
     
-    def getSummary(self,table):
+    def getSummary(self,table,failed=False):
         uuids    = tuple(self.alleles.index)
         sql = f'SELECT * FROM {table}'
         try:
             result = pd.read_sql(sql,con=self.db)
-            if 'uuid' in result.columns:
-                return result.query('uuid in @uuids') \
+            if 'uuid' in result.columns: #full table
+                query = 'uuid in @uuids'
+                if not failed:
+                    query += ' and status == "passed"'
+                return result.query(query) \
                              .iloc[:,1:] \
                              .sort_values(cfg.typer['sortColumns'])
             else:
