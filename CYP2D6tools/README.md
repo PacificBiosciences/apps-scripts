@@ -11,7 +11,9 @@ Database-driven CYP2D6 typer for full-length amplicons. Uses consensus sequences
 * 0.1.2 - Fixes/updates (06/16/2021)
     - Add option for failed consensus
     - fix dup counting/munging for trimodal alleles
-
+* 0.1.2 - minor fixes (06/24/2021)
+    - Add minLength option (default 2000bp)
+    - Fix db removal of singleton sample amplicons
 
 ### Dependencies
  - [pysam](https://github.com/pysam-developers/pysam)

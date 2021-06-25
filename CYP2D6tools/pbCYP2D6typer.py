@@ -30,6 +30,7 @@ def main(parser):
                      args.read_info,
                      args.hifiSupport,
                      args.wgs,
+                     args.minLength,
                      getNow())
 
     if args.writeCSV:
@@ -88,6 +89,8 @@ if __name__ == '__main__':
                     help=f'Do not report empty rows for missing samples from sample map. Default False')
     inputp.add_argument('-f','--minFrac', dest='minFrac', type=float, default=cfg.caller['minFrac'],
                     help=f'Ignore failed clusters below minFrac. Default {cfg.caller["minFrac"]}')
+    inputp.add_argument('-l','--minLength', dest='minLength', type=int, default=cfg.caller['minLength'],
+                    help=f'Ignore consensus sequences below minLength. Default {cfg.caller["minLength"]}')
     inputp.add_argument('-P','--preset', dest='preset', choices=list(Aligner.presets.keys()), default=cfg.caller["preset"],
                     help=f'Alignment preset for mappy aligner. Default {cfg.caller["preset"]}')
     inputp.add_argument('--hifiSupport', dest='hifiSupport', type=str, default=None,

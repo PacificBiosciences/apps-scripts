@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 import re,pysam,os
 import mappy as mp
 import pandas as pd
@@ -10,7 +10,7 @@ from . import config as cfg
 
 class Caller:
     def __init__(self,consensusFastas,runName,reference,spacer,alnPreset,sMap,minFrac=0.01,
-                 ignoreMissing=False,read_info=None,readsFq=None,wgsMode=False,datetime=None):
+                 ignoreMissing=False,read_info=None,readsFq=None,wgsMode=False,minLength=0,datetime=None):
         self.inputFa                = consensusFastas
         self.runName                = runName
         self.aligner                = Aligner(reference,preset=alnPreset)
@@ -19,6 +19,7 @@ class Caller:
         self.minFrac                = minFrac
         self.ignoreMissing          = ignoreMissing
         self.wgsMode                = wgsMode
+        self.minLength              = minLength
         self.datetime               = datetime
         self.alleles, self.variants = self.callVariants()
         #self.
@@ -50,6 +51,10 @@ class Caller:
                                  'csString'     :aln.cs,
                                  'length'       :len(rec.sequence),
                                  'datetime'     :self.datetime})
+                if nameDict['length'] < self.minLength:
+                    if not consensusType == 'failed':
+                        print(f'WARNING: Skpping {rec.name}: {nameDict["length"]}bp < {self.minLength}bp')
+                    continue
                 alleles.append(pd.Series(nameDict))
                 variants.append(self.makeVarTable(aln,tableKey))
 

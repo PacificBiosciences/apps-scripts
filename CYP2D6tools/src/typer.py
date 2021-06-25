@@ -2,7 +2,7 @@ import time,sqlite3
 import pandas as pd
 import sqlalchemy as sqla
 from . import config as cfg
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 class CypTyper:
     '''This is really just a db interface.  Typing is done in the db'''
@@ -19,14 +19,15 @@ class CypTyper:
 
     def __exit__(self,exc_type,exc_value,traceback):
         if not self.dbStore:
-            uuids = tuple(self.alleles.index)
+            metadata = sqla.MetaData(bind=self.db)
+            metadata.reflect()
+            uuids = list(self.alleles.index)
             for table in ['variantTable','alleleTable']:
-                sql   = f'''DELETE
-                          FROM {cfg.database[table]}
-                          WHERE uuid in {uuids}'''
                 try:
-                    con = self.db.connect()
-                    con.execute(sql)
+                    t = metadata.tables[cfg.database[table]]
+                    t.delete()\
+                     .where(t.c.uuid.in_(uuids))\
+                     .execute()
                 except (sqla.exc.OperationalError,sqlite3.OperationalError) as e:
                     raise Typer_Error(f'Unable to delete records in {self.dbFile}. DB error as follows:\n\n{e}')            
     

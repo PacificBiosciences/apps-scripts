@@ -1,4 +1,4 @@
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 dataPaths = {'reference': 'src/db/human_GRCh38_no_alt_analysis_set_chr22only_cyp2d7-masked.fasta',
              'database' : 'src/db/CYP2D6.db',
@@ -44,6 +44,7 @@ tableMap = {database['alleleTable']:      {'uuid'               :'uuid',
 
 caller = {'namePattern'  : 'sample-(?P<barcode>.*)_guide-(?P<guide>.*)_cluster-(?P<cluster>[0-9]+)_ReadCount-(?P<numreads>[0-9]+)',
           'minFrac'      : 0.01,
+          'minLength'    : 2000,
           'preset'       : 'gapstrict',
           'dateFormat'   : '%Y-%m-%d %H:%M:%S',
           'readInfo'     : ['readName',
