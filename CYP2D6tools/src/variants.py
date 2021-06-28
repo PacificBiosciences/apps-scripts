@@ -53,8 +53,10 @@ class Caller:
                                  'datetime'     :self.datetime})
                 if nameDict['length'] < self.minLength:
                     if not consensusType == 'failed':
-                        print(f'WARNING: Skpping {rec.name}: {nameDict["length"]}bp < {self.minLength}bp')
-                    continue
+                        msg = f'{nameDict["length"]}bp<{self.minLength}bp'
+                        print(f'WARNING: Failing passed consensus {rec.name}: {msg}')
+                        nameDict['clusterStatus'] = 'failed'
+                        nameDict['filters']       = msg
                 alleles.append(pd.Series(nameDict))
                 variants.append(self.makeVarTable(aln,tableKey))
 
