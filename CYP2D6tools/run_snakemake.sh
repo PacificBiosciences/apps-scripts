@@ -29,7 +29,7 @@ snakemake --reason \
     --rerun-incomplete \
     --keep-going \
     --printshellcmds \
-    --configfile workflow/config.yaml \
+    --configfile workflow/CYP2D6tools/config.yaml \
     --config batch="${BATCH}" \
              barcodeFa="${BARCODES}" \
              biosamples="${BIOSAMPLES}" \
@@ -40,8 +40,8 @@ snakemake --reason \
     --max-jobs-per-second 1 \
     --use-conda --conda-frontend mamba \
     --latency-wait 120 \
-    --cluster-config workflow/cluster.yaml \
+    --cluster-config workflow/CYP2D6tools/cluster.yaml \
     --cluster "sbatch --partition={cluster.partition} \
                       --cpus-per-task={cluster.cpus} \
                       --output={cluster.out} {cluster.extra} " \
-    --snakefile workflow/Snakefile
+    --snakefile workflow/CYP2D6tools/Snakefile
