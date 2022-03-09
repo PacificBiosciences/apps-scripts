@@ -251,9 +251,10 @@ class supportEngine:
 
     def _align(self,hifi):
         for rec in pysam.FastxFile(hifi):
-            aln = self.vcaller.aligner(rec)
-            if aln is not None:
-                yield rec.name,aln
+            if rec.name in self.readInfo.index:
+                aln = self.vcaller.aligner(rec)
+                if aln is not None:
+                    yield rec.name,aln
 
     def _countVars(self,reads):
         #numreads = int(reads.numreads.iloc[0])

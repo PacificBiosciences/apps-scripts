@@ -1,0 +1,13 @@
+__default__:
+  partition: compute
+  cpus: 1
+  extra: ''
+  out: cluster_logs/slurm-%x-%j-%N.out
+demux:
+  cpus: 16
+alignHiFi:
+  cpus: 8
+alignConsensus:
+  cpus: 4
+pbaa_cluster:
+  cpus: 16

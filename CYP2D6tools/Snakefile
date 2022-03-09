@@ -1,0 +1,50 @@
+# sample-barcode map
+# requires barcodeCsv to have two columns "barcode","sample" with a header line
+# (header names not important)
+bc2sample = dict(line.strip().split(',') 
+                 for i,line in enumerate(open(config['biosamples']).readlines())
+                 if i>0) 
+
+sample2bc = {v:k for k,v in bc2sample.items()}
+
+def _get_align_bam_from_sample(wildcards):
+    return f'batches/{batch}/aligned/demultiplex.{sample2bc[wildcards.sample]}.aligned_maskd7.bam'
+
+def _get_fastq(wildcards):
+    return f'batches/{batch}/fastq/demultiplex.{sample2bc[wildcards.sample]}.fastq'
+
+def _get_demuxed_samples(wildcards):
+    '''
+    Some samples may not have yield (failed), so update samples after demuxing
+    This feeds into all downstream _agg functions.
+    '''
+    demuxdir = checkpoints.demux.get(**wildcards).output[0]
+    return map(bc2sample.get,glob_wildcards(f'batches/{batch}/{demuxdir}/demultiplex.{{barcode}}.bam').barcode)
+
+def _agg_consensus(wildcards):
+    samples = _get_demuxed_samples(wildcards)
+    return expand(f'batches/{batch}/{{sample}}/pbaa_{{status}}_cluster_sequences.fasta',sample=samples,status=['passed','failed'])
+
+def _agg_mapped_consensus(wildcards):
+    samples = _get_demuxed_samples(wildcards)
+    return expand(f'batches/{batch}/{{sample}}/pbaa_{{status}}_cluster_sequences.aligned_maskD7.bam',sample=samples,status=['passed','failed'])
+
+def _agg_vcf(wildcards):
+    samples = _get_demuxed_samples(wildcards)
+    return expand(f'batches/{batch}/{{sample}}/consensus_passed.vcf',sample=samples)
+
+def _agg_painted(wildcards):
+    samples = _get_demuxed_samples(wildcards)
+    return expand(f'batches/{batch}/{{sample}}/hifi.painted.bam',sample=samples)
+
+include: "rules/demux.smk"
+include: "rules/pbaa.smk"
+include: "rules/align.smk"
+include: "rules/report.smk"
+
+rule all:
+    input:
+        [ f'batches/{batch}/{config["prefix"]}_{kind}_summary.csv' for kind in ['detailed','diplotype'] ],
+        _agg_vcf,
+        _agg_painted,
+        _agg_mapped_consensus,

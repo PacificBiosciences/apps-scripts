@@ -1,6 +1,7 @@
 __version__ = '0.1.3'
 
 dataPaths = {'reference': 'src/db/human_GRCh38_no_alt_analysis_set_chr22only_cyp2d7-masked.fasta',
+             '2d6masked': 'src/db/human_GRCh38_no_alt_analysis_set_chr22only_cyp2d6-masked.fasta', 
              'database' : 'src/db/CYP2D6.db',
              'spacer'   : 'src/db/spacer.fasta'}
 

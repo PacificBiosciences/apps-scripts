@@ -1,0 +1,6 @@
+# Demux
+barcodes: 'workflow/barcodes/Sequel_96_barcodes_v1.IDT_pad.fasta'
+
+# references
+guide: 'src/db/cyp2d6_only.fasta'
+reference: 'src/db/human_GRCh38_no_alt_analysis_set_chr22only_cyp2d7-masked.fasta'
