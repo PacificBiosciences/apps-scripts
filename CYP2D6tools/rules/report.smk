@@ -47,5 +47,5 @@ rule consensus_vcf:
                                --hifiSupport {input.reads} \
                                --read_info {input.info} \
                                -p {params.prefix} \
-                               {input}
+                               {input.cons}
         '''
