@@ -1,3 +1,6 @@
+# temporary storage
+tmpdir: '/scratch'
+
 # Demux
 barcodes: 'workflow/barcodes/Sequel_96_barcodes_v1.IDT_pad.fasta'
 
