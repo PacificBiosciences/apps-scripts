@@ -30,7 +30,7 @@ def _get_demuxed_samples(wildcards):
     This feeds into all downstream _agg functions.
     '''
     demuxdir = checkpoints.demux.get(**wildcards).output[0]
-    return map(bc2sample.get,glob_wildcards(f'batches/{batch}/{demuxdir}/demultiplex.{{barcode}}.bam').barcode)
+    return map(bc2sample.get,glob_wildcards(f'{demuxdir}/demultiplex.{{barcode}}.bam').barcode)
 
 def _agg_consensus(wildcards):
     samples = _get_demuxed_samples(wildcards)
@@ -55,7 +55,8 @@ include: "rules/report.smk"
 
 rule all:
     input:
-        [ f'batches/{batch}/{config["prefix"]}_{kind}_summary.csv' for kind in ['detailed','diplotype'] ],
+        _agg_consensus,
         _agg_vcf,
         _agg_painted,
         _agg_mapped_consensus,
+        [ f'batches/{batch}/{config["prefix"]}_{kind}_summary.csv' for kind in ['detailed','diplotype'] ],
