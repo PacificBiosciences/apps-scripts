@@ -1,3 +1,14 @@
+## prefix every task command with:
+# set -o pipefail  # trace ERR through pipes
+# # umask 002  # group write permissions
+# # export TMPDIR={config['tmpdir']}  # configure temp directory
+# # export SINGULARITY_TMPDIR={config['tmpdir']}  # configure temp directory
+shell.prefix(
+     f"set -o pipefail; umask 002; export TMPDIR={config['tmpdir']}; export SINGULARITY_TMPDIR={config['tmpdir']}; "
+)
+
+batch = config['batch']
+
 # sample-barcode map
 # requires barcodeCsv to have two columns "barcode","sample" with a header line
 # (header names not important)
