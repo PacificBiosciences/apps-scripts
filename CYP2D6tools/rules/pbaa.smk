@@ -71,7 +71,7 @@ rule paint_bam:
         'envs/pbaa.yaml'
     shell:
         '''
-        pbaa bampaint {input.info} {output.tmp} {output}
+        pbaa bampaint {input.info} {input.bam} {output}
         '''
 
 rule index_bam:
