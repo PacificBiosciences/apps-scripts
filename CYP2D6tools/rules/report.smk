@@ -7,7 +7,7 @@ rule star_typing_all:
         f'batches/{batch}/star_typing_details.csv',
         f'batches/{batch}/star_typing_diplotypes.csv',
     params:
-        runname=config['runname'],
+        runname=batch,
         prefix=f'batches/{batch}/star_typing',
     threads: 
         1
@@ -30,6 +30,7 @@ rule consensus_vcf:
     output:
         f'batches/{batch}/{{sample}}/consensus.vcf',
     params:
+        runname=batch,
         prefix=f'batches/{batch}/{{sample}}/consensus'
     threads: 
         1
