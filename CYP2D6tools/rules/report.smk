@@ -1,8 +1,7 @@
 rule star_typing_all:
-    #need to deal with failed samples
     input:
-        cons=expand(f'batches/{batch}/{{sample}}/pbaa_{{status}}_cluster_sequences.fasta',
-                     sample=<demuxed_samples>, status=['passed','failed']),
+        cons=expand(f'batches/{batch}/{{sample}}/pbaa_{{status}}_cluster_sequences.fasta', \
+                     sample=_get_demuxed_samples, status=['passed','failed']),
         biosamples=config['biosamples'],
     output:
         f'batches/{batch}/star_typing_details.csv',
@@ -10,7 +9,8 @@ rule star_typing_all:
     params:
         runname=config['runname'],
         prefix=f'batches/{batch}/star_typing',
-    threads: 1
+    threads: 
+        1
     conda:
         'envs/python.yaml'
     shell:
@@ -31,7 +31,8 @@ rule consensus_vcf:
         f'batches/{batch}/{{sample}}/consensus.vcf',
     params:
         prefix=f'batches/{batch}/{{sample}}/consensus'
-    threads: 1
+    threads: 
+        1
     conda:
         'envs/python.yaml'
     shell:
