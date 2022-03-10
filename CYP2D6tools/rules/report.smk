@@ -16,7 +16,7 @@ rule star_typing_all:
         '''
         python pbCYP2D6typer2.py -H \
                                  -r {params.runname} \
-                                 -s {input..biosamples} \
+                                 -s {input.biosamples} \
                                  -p {params.prefix} \
                                  {input.cons}
         '''
@@ -27,7 +27,7 @@ rule consensus_vcf:
         info=f'batches/{batch}/{{sample}}/pbaa_read_info.txt',
         reads=_get_fastq,
     output:
-        f'batches/{batch}/{{sample}}/consensus.vcf',
+        f'batches/{batch}/{{sample}}/consensus_passed.vcf',
     params:
         runname=batch,
         prefix=f'batches/{batch}/{{sample}}/consensus'
@@ -40,7 +40,7 @@ rule consensus_vcf:
         python pbCYP2D6typer2.py -H \
                                  --vcf \
                                  -r {params.runname} \
-                                 -s {input..biosamples} \
+                                 -s {input.biosamples} \
                                  --hifiSupport {input.reads} \
                                  --read_info {input.info} \
                                  -p {params.prefix} \
