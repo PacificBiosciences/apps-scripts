@@ -1,7 +1,6 @@
 rule star_typing_all:
     input:
-        cons=expand(f'batches/{batch}/{{sample}}/pbaa_{{status}}_cluster_sequences.fasta', \
-                     sample=_get_demuxed_samples, status=['passed','failed']),
+        cons=_agg_consensus,
         biosamples=config['biosamples'],
     output:
         f'batches/{batch}/{config["prefix"]}_detailed_summary.csv',
