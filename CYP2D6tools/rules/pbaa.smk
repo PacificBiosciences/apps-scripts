@@ -19,7 +19,7 @@ rule pbaa_cluster:
     output:
         cons1=f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.fasta',
         cons2=f'batches/{batch}/{{sample}}/pbaa_failed_cluster_sequences.fasta',
-        info=d'batches/{batch}/{{sample}}/pbaa_read_info.txt',
+        info=f'batches/{batch}/{{sample}}/pbaa_read_info.txt',
         log=f'batches/{batch}/{{sample}}/pbaa.log'
     params:
         prefix=f'batches/{batch}/{{sample}}/pbaa',
