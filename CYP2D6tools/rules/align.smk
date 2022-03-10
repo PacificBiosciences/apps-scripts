@@ -4,8 +4,8 @@ rule align_consensus:
         ref=config['reference'],
     output:
         f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.aligned_maskD7.bam',
-        f'batches/{batch}/{{sample}}/pbaa_failed_cluster_sequences.aligned_maskD7.bam'
-    threads: 1
+    threads: 
+        1
     conda:
         'envs/pbmm2.yaml'
     shell:
@@ -22,7 +22,8 @@ rule align_HiFi:
         ref=config['reference'],
     output:
         temp(f'batches/{batch}/aligned/demultiplex.{{barcode}}.aligned_maskd7.bam')
-    threads: 8
+    threads: 
+        8
     conda:
         'envs/pbmm2.yaml'
     shell:
