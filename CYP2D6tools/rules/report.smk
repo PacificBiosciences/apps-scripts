@@ -24,6 +24,7 @@ rule star_typing_all:
 rule consensus_vcf:
     input:
         cons=f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.fasta',
+        biosamples=config['biosamples'],
         info=f'batches/{batch}/{{sample}}/pbaa_read_info.txt',
         reads=_get_fastq,
     output:
