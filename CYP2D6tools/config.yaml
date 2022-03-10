@@ -8,5 +8,6 @@ barcodes: 'workflow/barcodes/Sequel_96_barcodes_v1.IDT_pad.fasta'
 guide: 'workflow/CYP2D6tools/src/db/cyp2d6_only.fasta'
 reference: 'workflow/CYP2D6tools/src/db/human_GRCh38_no_alt_analysis_set_chr22only_cyp2d7-masked.fasta'
 
-# report prefix
+# star-typing
+starscript: 'workflow/CYP2D6tools/pbCYP2D6typer2.py'
 prefix: 'CYP2D6_star_typing'

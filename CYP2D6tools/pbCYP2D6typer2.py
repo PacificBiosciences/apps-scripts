@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 __version__ = '0.2.0'
 import os,sys
 from operator import xor

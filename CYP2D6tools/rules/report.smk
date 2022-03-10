@@ -6,6 +6,7 @@ rule star_typing_all:
         f'batches/{batch}/{config["prefix"]}_detailed_summary.csv',
         f'batches/{batch}/{config["prefix"]}_diplotype_summary.csv',
     params:
+        script=config['starscript'],
         runname=batch,
         prefix=f'batches/{batch}/{config["prefix"]}',
     threads: 
@@ -14,11 +15,11 @@ rule star_typing_all:
         'envs/python.yaml'
     shell:
         '''
-        python pbCYP2D6typer2.py -H \
-                                 -r {params.runname} \
-                                 -s {input.biosamples} \
-                                 -p {params.prefix} \
-                                 {input.cons}
+        python {params.script} -H \
+                               -r {params.runname} \
+                               -s {input.biosamples} \
+                               -p {params.prefix} \
+                               {input.cons}
         '''
 
 rule consensus_vcf:
