@@ -4,11 +4,11 @@ rule star_typing_all:
                      sample=_get_demuxed_samples, status=['passed','failed']),
         biosamples=config['biosamples'],
     output:
-        f'batches/{batch}/star_typing_details.csv',
-        f'batches/{batch}/star_typing_diplotypes.csv',
+        f'batches/{batch}/{config["prefix"]}_detailed_summary.csv',
+        f'batches/{batch}/{config["prefix"]}_diplotype_summary.csv',
     params:
         runname=batch,
-        prefix=f'batches/{batch}/star_typing',
+        prefix=f'batches/{batch}/{config["prefix"]}',
     threads: 
         1
     conda:
