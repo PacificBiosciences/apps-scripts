@@ -31,6 +31,7 @@ rule consensus_vcf:
     output:
         f'batches/{batch}/{{sample}}/consensus_passed.vcf',
     params:
+        script=config['starscript'],
         runname=batch,
         prefix=f'batches/{batch}/{{sample}}/consensus'
     threads: 
@@ -39,12 +40,12 @@ rule consensus_vcf:
         'envs/python.yaml'
     shell:
         '''
-        python pbCYP2D6typer2.py -H \
-                                 --vcf \
-                                 -r {params.runname} \
-                                 -s {input.biosamples} \
-                                 --hifiSupport {input.reads} \
-                                 --read_info {input.info} \
-                                 -p {params.prefix} \
-                                 {input}
+        python {params.script} -H \
+                               --vcf \
+                               -r {params.runname} \
+                               -s {input.biosamples} \
+                               --hifiSupport {input.reads} \
+                               --read_info {input.info} \
+                               -p {params.prefix} \
+                               {input}
         '''
