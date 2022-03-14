@@ -479,7 +479,8 @@ class hybridCaller:
             else:
                 return f'{loci[0]} non-Hybrid'
         if self.exonSummary['CYP2D7'] == (9,): #just exon9 is 2D7
-            return '*36'
+            # check for *4 variant -> *4.013
+            return '*4.013' if '*ct' in self.var['A'].query('POS==42128945').VAR.values else '*36'
         if 9 in self.exonSummary['CYP2D6']: # 2D7-2D6 (*13)
             return '*13'
         if 1 in self.exonSummary['CYP2D6']: # *68 or *83

@@ -2,8 +2,8 @@ rule prep_HiFi:
     input:
         f'batches/{batch}/demux/demultiplex.{{barcode}}.bam'
     output:
-        fq=f'batches/{batch}/fastq/demultiplex.{{barcode}}.fastq',
-        idx=f'batches/{batch}/fastq/demultiplex.{{barcode}}.fastq.fai'
+        fq=temp(f'batches/{batch}/fastq/demultiplex.{{barcode}}.fastq'),
+        idx=temp(f'batches/{batch}/fastq/demultiplex.{{barcode}}.fastq.fai'),
     threads: 
         1
     conda:
