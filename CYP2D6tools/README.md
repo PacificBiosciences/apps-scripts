@@ -4,7 +4,7 @@ CYP2D6 star-typer for full-length HiFi amplicons. Uses consensus sequences gener
 
 # Demo Dataset
 
-22 Coriell samples [blah blah](https://derp)
+[22 Coriell samples](https://downloads.pacbcloud.com/public/dataset/pbAmpliconAnalysis_CYP2D6/)
 
 ## Release History
 * 0.1.0 - Initial Release (05/18/2021)
