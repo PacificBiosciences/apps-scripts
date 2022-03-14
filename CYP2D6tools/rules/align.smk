@@ -4,7 +4,7 @@ rule align_consensus:
         ref=config['reference'],
     output:
         f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.aligned_maskD7.bam',
-        f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.aligned_maskD7.bam',
+        f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.aligned_maskD7.bam.bai',
     threads: 
         1
     conda:
