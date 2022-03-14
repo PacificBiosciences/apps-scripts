@@ -83,7 +83,7 @@ $ sbatch run_snakemake.sh <batch_id> <barcode_fasta> <biosample_csv> <movie.hifi
 5. Align HiFi reads to GRCh38 & paint by cluster
 6. VCF generation per sample
 
-![Snakemake workflow](https://github.com/PacificBiosciences/apps-scripts/blob/master/CYP2D6tools/images/Star-typing_workflow.png)
+![Snakemake workflow](https://github.com/PacificBiosciences/apps-scripts/blob/master/CYP2D6tools/images/Star-typing_wprkflow.png)
 
 ### Directory structure within basedir
  
@@ -118,70 +118,20 @@ NA02016    bc1016--bc1056  1        368       8147       0          *17        *
 ...
 ```
 
-
-
-are in two formats
-```
-$ column -ts, example/typing/multi-sample_short_summary.csv
-barcode         bioSample              diplotype
-bc1022--bc1062  Bio_Sample_19-NA17244  *2x2/*4x2
-bc1021--bc1061  Bio_Sample_20-NA17276  *2/*5
-bc1011--bc1051  Bio_Sample_6-NA16688   *2/*10/*36
-
-$ cut -d, -f1-11 example/typing/multi-sample_detailed_summary.csv | column -ts,
-bioSample              barcode         cluster  numreads  seqLength  hasSpacer  coreType   type  SV   core_all         gDNA_all
-Bio_Sample_19-NA17244  bc1022--bc1062  0        164       8144       0          CYP2D6_2   *2         *2;*34;*39       CYP2D6_2.001;CYP2D6_2.011;CYP2D6_2.019;CYP2D6_2.020;CYP2D6_2.029
-Bio_Sample_19-NA17244  bc1022--bc1062  2        88        8673       1          CYP2D6_2   *2    DUP  *2;*34;*39       CYP2D6_2.001;CYP2D6_2.011;CYP2D6_2.019;CYP2D6_2.020;CYP2D6_2.029
-Bio_Sample_19-NA17244  bc1022--bc1062  1        162       8145       0          CYP2D6_4   *4         *4;*10;*39;*74   CYP2D6_4.001;CYP2D6_4.016;CYP2D6_4.022
-Bio_Sample_19-NA17244  bc1022--bc1062  3        83        8675       1          CYP2D6_4   *4    DUP  *4;*10;*39;*74   CYP2D6_4.001;CYP2D6_4.016;CYP2D6_4.022
-Bio_Sample_20-NA17276  bc1021--bc1061  1        151       8144       0          CYP2D6_2   *2         *2;*34;*39       CYP2D6_2.001;CYP2D6_2.011;CYP2D6_2.019;CYP2D6_2.020;CYP2D6_2.029
-Bio_Sample_20-NA17276  bc1021--bc1061  0        347       5205       0          CYP2D6_5   *5    DEL
-Bio_Sample_6-NA16688   bc1011--bc1051  1        204       8145       0          CYP2D6_10  *10        *10;*39          CYP2D6_10.002
-Bio_Sample_6-NA16688   bc1011--bc1051  0        226       8144       0          CYP2D6_2   *2         *2;*34;*39
-Bio_Sample_6-NA16688   bc1011--bc1051  2        61        10230      1          CYP2D6_36  *36   HYB  *36;*10;*83;*39  CYP2D6_36.001;CYP2D6_36.002;CYP2D6_36.003
-```
 Detailed output columns:
-1. bioSample (if available)
+1. bioSample
 2. barcode
 3. cluster
 4. Number of reads in cluster
 5. Sequence Length
 6. CYP2D7 spacer presence
-7. type
-8. type
-9. Structural variant class
-10. All matching core sets, ordered by impact (most->least)
-11. All matching star subtypes over region (gDNA)
-12. All matching star subtypes over region (cDNA/exons only)
-
-Generate per-sample VCF files with core SNV annotations (one sample at a time):
-```
-$ python pbCYP2D6typer.py -r myRunID                                                           \
-                          -s example/biosamples.csv -i                                         \
-                          -p example/typing/single_bc1011--bc1051                              \
-                          --vcf                                                                \
-                          --hifiSupport example/hifi/demultiplex.bc1011--bc1051.fastq          \
-                          --read_info example/pbaa/bc1011--bc1051/bc1011--bc1051_read_info.txt \
-                          example/pbaa/bc1011--bc1051/bc1011--bc1051_passed_cluster_sequences.fasta
-```
-VCF Results are phased with core SNV annotations
-```
-$ bcftools view -H example/typing/single_bc1011--bc1051.vcf | awk '$2>42126489 && $2<42126758'
-chr22   42126611        rs1135840       C       G       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     1|1|1:491:30.8693,30.7325,27.5607:0,485:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126619        .       G       A       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:0,60:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126622        .       A       G       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:225,62:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126623        rs75467367      G       C       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:1,60:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126624        rs74478221      C       T       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:427,60:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126625        .       A       G       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:427,62:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126627        .       A       C       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:424,62:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126633        .       C       G       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:0,61:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126635        rs766507177     T       G       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:202,60:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126636        rs28371735      G       A       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:204,60:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126658        .       A       G       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:425,64:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126660        rs1135835       T       C       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:201,61:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126663        rs1135833       G       C       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:1,60:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-chr22   42126667        .       C       G       200     PASS    NS=1;AF=1       GT:DP:AQ:AD:VAF:TG:HP:DV:CH     0|0|1:491:30.8693,30.7325,27.5607:203,61:0.452,0.408,0.122:CYP2D6,CYP2D6,CYP2D6:0,1,2:0.00844131,0.0104801,0.0303279:-1,-1,0.0534979
-```
+7. Star Type
+8. Structural variant class
+9. All matching core sets, ordered by impact (most->least)
+10. All matching star subtypes over region (gDNA)
+11. All matching star subtypes over region (cDNA/exons only)
+12. pbaa cluster status
+13. Hybrid exon similarity
 
 ## DISCLAIMER
 
