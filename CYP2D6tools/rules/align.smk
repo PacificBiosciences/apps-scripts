@@ -3,10 +3,12 @@ rule align_consensus:
         cons=f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.fasta',
         ref=config['reference'],
     output:
-        f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.aligned_maskD7.bam',
-        f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.aligned_maskD7.bam.bai',
+        bam=f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.aligned_maskD7.bam',
+        idx=f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.aligned_maskD7.bam.bai',
     threads: 
         1
+    benchmark:
+        f'batches/{batch}/benchmarks/pbmm2/align_consensus.{{sample}}.log'
     conda:
         'envs/pbmm2.yaml'
     shell:
@@ -14,7 +16,7 @@ rule align_consensus:
         pbmm2 align -j {threads} \
                     --preset hifi \
                     --sort \
-                    {input.ref} {input.cons} {output}
+                    {input.ref} {input.cons} {output.bam}
         '''
 
 rule align_HiFi:
@@ -26,6 +28,8 @@ rule align_HiFi:
         idx=temp(f'batches/{batch}/aligned/demultiplex.{{barcode}}.aligned_maskd7.bam.bai'),
     threads: 
         8
+    benchmark:
+        f'batches/{batch}/benchmarks/pbmm2/align_hifi.{{barcode}}.log'
     conda:
         'envs/pbmm2.yaml'
     shell:

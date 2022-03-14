@@ -21,7 +21,7 @@ CYP2D6 star-typer for full-length HiFi amplicons. Uses consensus sequences gener
 * 0.2.0 - major update (03/10/2022)
     - python3+pandas for intersections, no more processing in the db
     - snakemake workflow for one-step processing from multiplexed ccs -> star types
-    - Hybrid call refinement (distinguish \*36,\*68,\*83)
+    - Hybrid call refinement (distinguish \*4.013,\*36,\*68,\*83)
     - improved diplotype munging
 
 ### Dependencies

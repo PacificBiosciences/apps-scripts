@@ -7,6 +7,8 @@ checkpoint demux:
         directory(f'batches/{batch}/demux')
     threads:
         24
+    benchmark:
+        f'batches/{batch}/benchmarks/demux/lima.log'
     conda:
         'envs/lima.yaml'
     shell:

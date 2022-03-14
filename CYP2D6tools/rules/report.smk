@@ -12,6 +12,8 @@ rule star_typing_all:
         extra='-H',
     threads: 
         1
+    benchmark:
+        f'batches/{batch}/benchmarks/pbCYP2D6typer2/all_typing.log'
     conda:
         'envs/python.yaml'
     shell:
@@ -38,6 +40,8 @@ rule consensus_vcf:
         extra='-H --vcf --ignoreMissing'
     threads: 
         1
+    benchmark:
+        f'batches/{batch}/benchmarks/pbCYP2D6typer2/vcf.{{sample}}.log'
     conda:
         'envs/python.yaml'
     shell:

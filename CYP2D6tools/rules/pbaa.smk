@@ -6,6 +6,8 @@ rule prep_HiFi:
         idx=temp(f'batches/{batch}/fastq/demultiplex.{{barcode}}.fastq.fai'),
     threads: 
         1
+    benchmark:
+        f'batches/{batch}/benchmarks/samtools/bam2fastq.{{barcode}}.log'
     conda:
         'envs/samtools.yaml'
     shell:
@@ -29,6 +31,8 @@ rule pbaa_cluster:
         loglevel='INFO',
     threads:
         16
+    benchmark:
+        f'batches/{batch}/benchmarks/pbaa/cluster.{{sample}}.log'
     conda:
         'envs/pbaa.yaml'
     shell:
@@ -54,6 +58,8 @@ rule extract_clustered_reads:
         1
     conda:
         'envs/samtools.yaml'
+    benchmark:
+        f'batches/{batch}/benchmarks/samtoole/extract.{{sample}}.log'
     shell:
         '''
         cut -d' ' -f1 {input.info} > {output.incl}
@@ -70,6 +76,8 @@ rule paint_bam:
         1
     conda:
         'envs/pbaa.yaml'
+    benchmark:
+        f'batches/{batch}/benchmarks/pbaa/bampaint.{{sample}}.log'
     shell:
         '''
         pbaa bampaint {input.info} {input.bam} {output}
@@ -82,6 +90,8 @@ rule index_bam:
         f'batches/{batch}/{{sample}}/hifi.painted.bam.bai'
     threads: 
         1
+    benchmark:
+        f'batches/{batch}/benchmarks/samtools/index_painted.{{sample}}.log'
     conda:
         'envs/samtools.yaml'
     shell: 
