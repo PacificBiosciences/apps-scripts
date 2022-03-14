@@ -16,7 +16,8 @@ rule prep_HiFi:
 
 rule pbaa_cluster:
     input:
-        _get_fastq
+        fq=_get_fastq,
+        idx=_get_fq_idx,
     output:
         cons1=f'batches/{batch}/{{sample}}/pbaa_passed_cluster_sequences.fasta',
         cons2=f'batches/{batch}/{{sample}}/pbaa_failed_cluster_sequences.fasta',
@@ -39,7 +40,7 @@ rule pbaa_cluster:
                      -j {threads} \
                      --log-file {output.log} \
                      --log-level {params.loglevel} \
-                     {params.guide} {input} {params.prefix}
+                     {params.guide} {input.fq} {params.prefix}
         '''
 
 rule extract_clustered_reads:

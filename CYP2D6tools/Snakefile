@@ -24,6 +24,9 @@ def _get_align_bam_from_sample(wildcards):
 def _get_fastq(wildcards):
     return f'batches/{batch}/fastq/demultiplex.{sample2bc[wildcards.sample]}.fastq'
 
+def _get_fq_idx(wildcards):
+    return f'batches/{batch}/fastq/demultiplex.{sample2bc[wildcards.sample]}.fastq.fai'
+
 def _get_demuxed_samples(wildcards):
     '''
     Some samples may not have yield (failed), so update samples after demuxing
