@@ -57,7 +57,7 @@ $ echo "CYP2D6tools/" >> .git/info/sparse-checkout
 $ git pull origin master
 $ cd ..
 
-# to clone the whole repository
+# OR to clone the whole repository
 
 $ git clone https://github.com/jrharting/hifi-probe-capture-workflow.git workflow
 
@@ -83,7 +83,7 @@ $ sbatch run_snakemake.sh <batch_id> <barcode_fasta> <biosample_csv> <movie.hifi
 5. Align HiFi reads to GRCh38 & paint by cluster
 6. VCF generation per sample
 
-![Snakemake workflow](https://github.com/PacificBiosciences/apps-scripts/blob/master/CYP2D6tools/images/Star-typing_wprkflow.png)
+![Snakemake workflow](https://github.com/PacificBiosciences/apps-scripts/blob/master/CYP2D6tools/images/Star-typing_workflow.png)
 
 ### Directory structure within basedir
  
