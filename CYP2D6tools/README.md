@@ -59,7 +59,7 @@ $ cd ..
 
 # OR to clone the whole repository
 
-$ git clone https://github.com/jrharting/hifi-probe-capture-workflow.git workflow
+$ git clone https://github.com/PacificBiosciences/apps-scripts.git workflow
 
 # create directory for snakemake workflow
 
