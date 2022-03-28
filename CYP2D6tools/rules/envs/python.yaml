@@ -10,4 +10,4 @@ dependencies:
   - seaborn
   - pysam
   - mappy
-  - python
+  - python=3.7
