@@ -9,7 +9,7 @@ rule star_typing_all:
         script=config['starscript'],
         runname=batch,
         prefix=f'batches/{batch}/{config["prefix"]}',
-        extra='-H -P map-pb',
+        extra=f'-H -P cyp2d6',
     threads: 
         1
     benchmark:
@@ -37,7 +37,7 @@ rule consensus_vcf:
         script=config['starscript'],
         runname=batch,
         prefix=f'batches/{batch}/{{sample}}/consensus_passed',
-        extra='-H -P map-pb --vcf --ignoreMissing'
+        extra='-H -P cyp2d6 --vcf --ignoreMissing'
     threads: 
         1
     benchmark:
