@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-__version__ = '0.1.3'
+__version__ = '0.2.0'
 import re,pysam,os
 import mappy as mp
 import pandas as pd
@@ -151,13 +151,18 @@ class Caller:
 
 class Aligner:
     presets = {'splice'    : {'preset' :'splice'},
-               'map-pb'    : {'preset' :'map-pb'},
+               'map-hifi'  : {'preset' :'map-hifi'}, #minimap2 hifi preset
+               'pb-hifi'   : {'scoring':(2,5,5,4,56,1)}, #pbmm2 hifi settings
+               'cyp2d6'    : {'scoring':(1,4,10,2,26,1)}, #recommended for cyp2d6 to align hybrid exon9
                'gaplenient': {'scoring':(1,2,2,1,18,0)},  # (A,B,o,e,O,E)
                'gapstrict' : {'scoring':(2,5,10,4,56,1)}} # equiv to pbmm2 align --preset CCS -o 10
 
-    def __init__(self,reference,preset='gaplenient'):
-        self.kwargs = {'fn_idx_in' : reference,
-                       'best_n'    : 1}
+    def __init__(self,reference,preset='pb-hifi'):
+        self.kwargs = {'fn_idx_in'   : reference,
+                       'best_n'      : 1,
+                       'k'           : 19,
+                       'w'           : 19,
+                       'min_dp_score': 200}
         self.kwargs.update(self.presets[preset])
         self._aligner = mp.Aligner(**self.kwargs)
     
