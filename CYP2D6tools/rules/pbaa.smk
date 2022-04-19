@@ -69,7 +69,7 @@ rule extract_clustered_reads:
 rule paint_bam:
     input:
         info=f'batches/{batch}/{{sample}}/pbaa_read_info.txt',
-        bam=_get_align_bam_from_sample
+        bam=f'batches/{batch}/{{sample}}/hifi.bam',
     output:
         f'batches/{batch}/{{sample}}/hifi.painted.bam'
     threads: 
